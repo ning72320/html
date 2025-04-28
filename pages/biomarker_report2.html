@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>检测报告 - 麦若</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #6A5ACD;
+            --secondary-color: #5D4FB8;
+            --light-yellow: #FFFACC;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            background-image: none;
+        }
+
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 15px;
+            background: transparent;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .status-left {
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .status-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-right i {
+            font-size: 16px;
+        }
+
+        .app-header {
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            position: relative;
+        }
+
+        .back-button {
+            font-size: 20px;
+            color: #333;
+            text-decoration: none;
+            margin-right: 15px;
+        }
+
+        .page-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 0;
+            flex-grow: 1;
+            text-align: center;
+            margin-right: 30px; /* 平衡左侧按钮空间 */
+        }
+
+        .app-content {
+            padding: 20px;
+            padding-bottom: 160px;
+        }
+
+        .report-container {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .report-header {
+            background: linear-gradient(135deg, #4CAF50, #2E7D32);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .report-header h2 {
+            margin: 0 0 10px 0;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .report-header p {
+            margin: 0;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .pdf-container {
+            position: relative;
+            width: 100%;
+            height: 500px;
+            overflow: hidden;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .pdf-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        .pdf-page {
+            max-width: 100%;
+            max-height: 100%;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: none;
+        }
+        
+        .pdf-page.active {
+            display: block;
+        }
+        
+        .pdf-controls {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 15px;
+            background-color: #f9f9f9;
+            border-top: 1px solid #eee;
+        }
+        
+        .pdf-controls button {
+            background: none;
+            border: none;
+            color: #666;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        
+        .pdf-controls button i {
+            margin-right: 5px;
+        }
+        
+        .pdf-page-count {
+            display: flex;
+            align-items: center;
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .pdf-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .pdf-placeholder i {
+            font-size: 50px;
+            color: #ccc;
+            margin-bottom: 15px;
+        }
+        
+        .pdf-placeholder h3 {
+            margin: 0 0 10px 0;
+            color: #666;
+            font-size: 18px;
+        }
+        
+        .pdf-placeholder p {
+            margin: 0;
+            color: #999;
+            font-size: 14px;
+            max-width: 300px;
+        }
+
+        .report-footer {
+            padding: 15px 20px;
+            border-top: 1px solid #eee;
+            text-align: center;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .bottom-nav {
+            background-color: white;
+            border-radius: 15px 15px 0 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+        }
+
+        /* 添加固定底部分析按钮样式 */
+        .fixed-bottom-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, #4F8DF5, #2E6AD4);
+            padding: 15px 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 100;
+            border-radius: 15px 15px 0 0;
+        }
+
+        .fixed-bottom-text {
+            color: white;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .fixed-bottom-text h3 {
+            margin: 0 0 8px 0;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .fixed-bottom-text p {
+            margin: 0 0 5px 0;
+            font-size: 13px;
+            opacity: 0.9;
+            line-height: 1.5;
+        }
+
+        .fixed-analyze-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 300px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .fixed-analyze-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .fixed-analyze-btn i {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body class="app-body">
+    <div class="status-bar" style="display: none;">
+        <div class="status-left">18:15</div>
+        <div class="status-right">
+            <i class="fas fa-signal"></i>
+            <i class="fas fa-wifi"></i>
+            <span>65%</span>
+        </div>
+    </div>
+
+    <header class="app-header">
+        <a href="home.html" class="back-button">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+        <h1 class="page-title">检测报告</h1>
+    </header>
+
+    <main class="app-content">
+        <div class="report-container">
+            <div class="report-header">
+                <h2>最近检测报告</h2>
+                <p>检测日期：2023年9月15日</p>
+            </div>
+            
+            <div class="pdf-container">
+                <img src="../img/page1.png" class="pdf-page active" data-page="1" alt="报告第1页">
+                <img src="../assets/report/page2.jpg" class="pdf-page" data-page="2" alt="报告第2页">
+                <img src="../assets/report/page3.jpg" class="pdf-page" data-page="3" alt="报告第3页">
+                <img src="../assets/report/page4.jpg" class="pdf-page" data-page="4" alt="报告第4页">
+                <img src="../assets/report/page5.jpg" class="pdf-page" data-page="5" alt="报告第5页">
+                <img src="../assets/report/page6.jpg" class="pdf-page" data-page="6" alt="报告第6页">
+                <img src="../assets/report/page7.jpg" class="pdf-page" data-page="7" alt="报告第7页">
+                <img src="../assets/report/page8.jpg" class="pdf-page" data-page="8" alt="报告第8页">
+                <img src="../assets/report/page9.jpg" class="pdf-page" data-page="9" alt="报告第9页">
+                <img src="../assets/report/page10.jpg" class="pdf-page" data-page="10" alt="报告第10页">
+            </div>
+            
+            <div class="pdf-controls">
+                <button><i class="fas fa-chevron-left"></i> 上一页</button>
+                <span class="pdf-page-count">1/10</span>
+                <button>下一页 <i class="fas fa-chevron-right"></i></button>
+            </div>
+            
+            <div class="pdf-placeholder" style="display: none;">
+                <i class="fas fa-file-pdf"></i>
+                <h3>报告未生成</h3>
+                <p>请稍后再试，或联系医生获取报告。</p>
+            </div>
+        </div>
+    </main>
+
+    <div class="fixed-bottom-bar">
+        <div class="fixed-bottom-text">
+            <h3>想要了解这些数据对您的健康意味着什么？</h3>
+            <p>我们的AI可以为您分析这份报告，提供健康建议和改善方案，帮助您更好地了解自己的身体状况。</p>
+        </div>
+        <button class="fixed-analyze-btn" id="analyze-report-btn">
+            <i class="fas fa-robot"></i> 开始分析
+        </button>
+    </div>
+
+    <script src="../js/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 设置时间
+            function updateTime() {
+                const now = new Date();
+                let hours = now.getHours();
+                let minutes = now.getMinutes();
+                hours = hours < 10 ? '0' + hours : hours;
+                minutes = minutes < 10 ? '0' + minutes : minutes;
+                document.querySelector('.status-left').textContent = hours + ':' + minutes;
+            }
+            
+            updateTime();
+            setInterval(updateTime, 60000);
+            
+            // AI分析按钮点击事件
+            const analyzeReportBtn = document.getElementById('analyze-report-btn');
+            if (analyzeReportBtn) {
+                analyzeReportBtn.addEventListener('click', function() {
+                    window.location.href = 'report_analysis.html';
+                });
+            }
+            
+            // PDF相关功能
+            const pdfContainer = document.querySelector('.pdf-container');
+            const pdfPages = document.querySelectorAll('.pdf-page');
+            const pdfPlaceholder = document.querySelector('.pdf-placeholder');
+            const pdfControls = document.querySelector('.pdf-controls');
+            const prevPageBtn = pdfControls.querySelector('button:first-child');
+            const nextPageBtn = pdfControls.querySelector('button:last-child');
+            const pageCount = document.querySelector('.pdf-page-count');
+            
+            let currentPage = 1;
+            const totalPages = pdfPages.length;
+            
+            // 更新页码显示
+            function updatePageCount() {
+                pageCount.textContent = currentPage + '/' + totalPages;
+            }
+            
+            // 显示当前页
+            function showCurrentPage() {
+                pdfPages.forEach(page => {
+                    page.classList.remove('active');
+                });
+                const activePage = document.querySelector(`.pdf-page[data-page="${currentPage}"]`);
+                if (activePage) {
+                    activePage.classList.add('active');
+                }
+                
+                // 更新导航按钮状态
+                prevPageBtn.disabled = currentPage === 1;
+                nextPageBtn.disabled = currentPage === totalPages;
+                
+                updatePageCount();
+            }
+            
+            // 上一页按钮点击事件
+            prevPageBtn.addEventListener('click', function() {
+                if (currentPage > 1) {
+                    currentPage--;
+                    showCurrentPage();
+                }
+            });
+            
+            // 下一页按钮点击事件
+            nextPageBtn.addEventListener('click', function() {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    showCurrentPage();
+                }
+            });
+            
+            // 初始化页面显示
+            showCurrentPage();
+            
+            // 处理触摸滑动翻页
+            let touchStartX = 0;
+            pdfContainer.addEventListener('touchstart', function(e) {
+                touchStartX = e.touches[0].clientX;
+            });
+            
+            pdfContainer.addEventListener('touchend', function(e) {
+                const touchEndX = e.changedTouches[0].clientX;
+                const diff = touchStartX - touchEndX;
+                
+                // 向左滑动，下一页
+                if (diff > 50 && currentPage < totalPages) {
+                    currentPage++;
+                    showCurrentPage();
+                }
+                
+                // 向右滑动，上一页
+                if (diff < -50 && currentPage > 1) {
+                    currentPage--;
+                    showCurrentPage();
+                }
+            });
+            
+            // 错误处理：如果图片加载失败
+            pdfPages.forEach(page => {
+                page.addEventListener('error', function() {
+                    pdfContainer.innerHTML = '';
+                    pdfPlaceholder.style.display = 'flex';
+                    pdfControls.style.display = 'none';
+                });
+            });
+        });
+    </script>
+</body>
+</html> 
