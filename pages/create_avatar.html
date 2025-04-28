@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>创建数字分身 - 麦若</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .guide-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            height: 100%;
+            text-align: center;
+        }
+        
+        .avatar-icon {
+            width: 160px;
+            height: 160px;
+            background: linear-gradient(135deg, #6A5ACD, #4B0082);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 25px rgba(106, 90, 205, 0.3);
+        }
+        
+        .avatar-icon i {
+            font-size: 80px;
+            color: white;
+        }
+        
+        .guide-text {
+            font-size: 18px;
+            color: #333;
+            line-height: 1.6;
+            margin-bottom: 50px;
+            max-width: 320px;
+        }
+        
+        .create-btn {
+            background-color: #6A5ACD;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 16px 40px;
+            font-size: 18px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(106, 90, 205, 0.3);
+        }
+        
+        .create-btn:hover {
+            background-color: #5D4FB8;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(106, 90, 205, 0.4);
+        }
+        
+        .create-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 4px 10px rgba(106, 90, 205, 0.3);
+        }
+        
+        .create-btn i {
+            margin-right: 10px;
+        }
+        
+        .skip-link {
+            margin-top: 20px;
+            color: #666;
+            text-decoration: none;
+            font-size: 16px;
+        }
+        
+        .skip-link:hover {
+            color: #6A5ACD;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body class="app-body">
+    <div class="status-bar">
+        <div class="status-left">
+            <span class="time" id="current-time">9:41</span>
+        </div>
+        <div class="status-right">
+            <i class="fas fa-signal"></i>
+            <i class="fas fa-wifi"></i>
+            <i class="fas fa-battery-full"></i>
+        </div>
+    </div>
+
+    <div class="guide-container">
+        <div class="avatar-icon">
+            <i class="fas fa-robot"></i>
+        </div>
+        
+        <p class="guide-text">
+            欢迎使用麦若！创建您专属的数字分身，帮助您记录生活点滴，保存珍贵记忆，陪伴您的日常生活。
+        </p>
+        
+        <button class="create-btn" id="create-avatar-btn">
+            <i class="fas fa-plus-circle"></i>创建数字分身
+        </button>
+        
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 更新当前时间
+            function updateTime() {
+                const now = new Date();
+                let hours = now.getHours();
+                let minutes = now.getMinutes();
+                hours = hours < 10 ? '0' + hours : hours;
+                minutes = minutes < 10 ? '0' + minutes : minutes;
+                document.getElementById('current-time').textContent = hours + ':' + minutes;
+            }
+            
+            updateTime();
+            setInterval(updateTime, 60000);
+            
+            // 创建数字分身按钮点击事件
+            document.getElementById('create-avatar-btn').addEventListener('click', function() {
+                window.location.href = 'avatar_generation.html';
+                // 在真实应用中，这里应该跳转到数字分身创建流程页面
+            });
+        });
+    </script>
+</body>
+</html>

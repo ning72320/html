@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>首页 - 麦若</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #6A5ACD;
+            --secondary-color: #5D4FB8;
+            --light-yellow: #FFFACC;
+        }
+
+        body {
+            background-color: white;
+            background-image: none;
+            background-size: 100% 100%;
+            background-attachment: fixed;
+            position: relative;
+        }
+
+        body::before {
+            content: none;
+        }
+
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 15px;
+            background: transparent;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .status-left {
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .status-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-right i {
+            font-size: 16px;
+        }
+
+        .header-container {
+            padding: 10px 20px 0;
+            background: none;
+        }
+
+        .app-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            background: none;
+        }
+
+        .user-greeting {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+        }
+
+        .user-greeting h2 {
+            margin: 0;
+            font-size: 26px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .user-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            border-radius: 15px;
+            margin-left: 12px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--primary-color);
+        }
+        
+        .badge-icon {
+            font-size: 12px;
+            margin-right: 5px;
+            color: #FFD700;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .header-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .header-icon i {
+            font-size: 20px;
+            color: #333;
+        }
+
+        /* 原有样式保留 */
+        .digital-avatar-card {
+            background: linear-gradient(135deg, #4F8DF5, #2E6AD4);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            margin-top: 10px;
+            margin-bottom: 0;
+            color: white;
+            display: flex;
+            align-items: center;
+            height: 220px;
+            box-shadow: 0 4px 15px rgba(79, 141, 245, 0.2);
+        }
+        
+        .avatar-container {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin-right: 25px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            overflow: hidden;
+        }
+        
+        .avatar-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+        
+        .avatar-status {
+            position: absolute;
+            bottom: 3px;
+            right: 3px;
+            width: 14px;
+            height: 14px;
+            background-color: #55C67F;
+            border-radius: 50%;
+            border: 2px solid #2E6AD4;
+        }
+        
+        .avatar-wave {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.6);
+            animation: wave 2s infinite;
+        }
+        
+        @keyframes wave {
+            0% {
+                transform: scale(0.8);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1.3);
+                opacity: 0;
+            }
+        }
+        
+        .digital-avatar-info {
+            flex: 1;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .digital-avatar-info h3 {
+            margin: 0 0 12px 0;
+            font-size: 22px;
+            line-height: 1.4;
+        }
+        
+        .digital-avatar-description {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+        
+        .chat-now-btn {
+            background: rgba(255, 255, 255, 0.15);
+            border: none;
+            color: rgba(255, 255, 255, 0.6);
+            padding: 12px 20px;
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: not-allowed;
+            transition: background 0.2s;
+            width: fit-content;
+        }
+        
+        .chat-now-btn i {
+            margin-right: 6px;
+        }
+        
+        .training-card {
+            background: linear-gradient(135deg, #4CAF50, #2E7D32);
+            color: white;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-top: 20px;
+            position: relative;
+        }
+        
+        .training-card h3 {
+            margin: 0 0 16px 0;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            width: 100%;
+            text-align: left;
+        }
+        
+        .training-card h3 i {
+            margin-right: 10px;
+            font-size: 24px;
+            background: rgba(255, 255, 255, 0.2);
+            width: 40px;
+            height: 40px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .training-item {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .training-item i {
+            margin-right: 12px;
+            font-size: 20px;
+            opacity: 0.9;
+        }
+        
+        .training-item-info {
+            flex: 1;
+        }
+        
+        .training-item-info h4 {
+            margin: 0 0 4px 0;
+            font-size: 16px;
+        }
+        
+        .training-item-info p {
+            margin: 0;
+            font-size: 12px;
+            opacity: 0.9;
+            color: white;
+        }
+        
+        .memory-card {
+            background: linear-gradient(135deg, #FF9F1C, #F57600);
+        }
+
+        .start-training-btn {
+            background-color: #4285f4;
+            color: white;
+            border: none;
+            border-radius: 24px;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+            width: 100%;
+            max-width: 250px;
+        }
+        
+        .start-training-btn:hover {
+            background-color: #2b6def;
+        }
+        
+        /* 添加数字人助手图标样式 */
+        .ai-assistant-icon {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            z-index: 2;
+        }
+        
+        .ai-assistant-icon:hover {
+            transform: scale(1.1);
+            background: rgba(255, 255, 255, 0.4);
+        }
+        
+        .ai-assistant-icon i {
+            font-size: 20px;
+            color: white;
+        }
+
+        /* 底部导航修改 */
+        .bottom-nav {
+            background-color: white;
+            border-radius: 15px 15px 0 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+        }
+
+        .app-content {
+            padding: 0 20px 30px;
+            margin-top: -20px;
+        }
+
+        .avatar-training-mask {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 14px;
+            z-index: 2;
+        }
+        
+        .training-text {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .training-percentage {
+            font-size: 20px;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+
+        .report-card {
+            background: linear-gradient(135deg, #4CAF50, #2E7D32);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            margin-top: 30px;
+            margin-bottom: 0;
+            color: white;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.2);
+            height: 140px;
+        }
+        
+        .report-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 25px;
+            font-size: 28px;
+        }
+        
+        .report-content {
+            flex: 1;
+        }
+        
+        .report-content h3 {
+            margin: 0 0 20px 0;
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        .report-btn {
+            background: rgba(255, 255, 255, 0.25);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .report-btn:hover {
+            background: rgba(255, 255, 255, 0.35);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .report-btn i {
+            margin-right: 8px;
+        }
+        .report-btn i {
+            margin-right: 8px;
+        }
+        
+        /* 个性化区域样式 */
+        .personalization-card {
+            background-color: #fff;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            position: relative;
+        }
+        
+        .personalization-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin: 0 0 5px 0;
+            text-align: left;
+            color: #333;
+        }
+        
+        .personalization-subtitle {
+            font-size: 16px;
+            color: #666;
+            margin: 0 0 20px 0;
+            text-align: left;
+        }
+        
+        .personalization-options {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px;
+            padding: 0;
+            gap: 15px;
+        }
+        
+        .option-item {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            width: 100%;
+            padding: 16px;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        
+        .option-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+        }
+        
+        .option-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            margin-right: 16px;
+            flex-shrink: 0;
+        }
+        
+        .option-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .option-label {
+            font-size: 17px;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .option-description {
+            font-size: 13px;
+            color: #888;
+        }
+        
+        .option-status {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            margin-left: 12px;
+        }
+        
+        .status-badge {
+            font-size: 12px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 500;
+            margin-bottom: 6px;
+        }
+        
+        .status-complete {
+            background-color: #E8F5E9;
+            color: #4CAF50;
+        }
+        
+        .status-incomplete {
+            background-color: #FFF8E1;
+            color: #FFA000;
+        }
+        
+        .status-locked {
+            background-color: #EEEEEE;
+            color: #757575;
+        }
+        
+        .status-progress {
+            font-size: 13px;
+            color: #666;
+        }
+        
+        .memory-icon {
+            background-color: #E3F2FD;
+            color: #2196F3;
+        }
+        
+        .attention-icon {
+            background-color: #FFF3E0;
+            color: #FF9800;
+        }
+        
+        .reasoning-icon {
+            background-color: #E8F5E9;
+            color: #4CAF50;
+        }
+        
+        .spatial-icon {
+            background-color: #F3E5F5;
+            color: #9C27B0;
+        }
+        
+        .recall-icon {
+            background-color: #FFEBEE;
+            color: #F44336;
+        }
+        
+        .start-now-btn {
+            background-color: #4285f4;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: 100%;
+            max-width: 300px;
+        }
+        
+        .start-now-btn:hover {
+            background-color: #2b6def;
+        }
+    </style>
+</head>
+<body class="app-body">
+    <div class="status-bar">
+        <div class="status-left">18:13</div>
+        <div class="status-right">
+            <i class="fas fa-signal"></i>
+            <i class="fas fa-wifi"></i>
+            <span>65%</span>
+        </div>
+    </div>
+
+    <div class="header-container">
+        <div class="app-header">
+            <div class="user-greeting">
+                <h2>Hi, 麦若lyk</h2>
+                <div class="user-badge">
+                    <i class="fas fa-crown badge-icon"></i>
+                    <span>普通会员</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <main class="app-content">
+        <section class="digital-avatar-card">
+            <div class="avatar-container">
+                <img src="../img/WechatIMG12.jpg" alt="数字分身" class="avatar-img" onerror="this.src='https://via.placeholder.com/80?text=小智'">
+                <div class="avatar-status"></div>
+                <div class="avatar-wave"></div>
+                <div class="avatar-training-mask">
+                    <div class="training-text">AI训练中</div>
+                    <div class="training-percentage">68%</div>
+                </div>
+            </div>
+            <div class="digital-avatar-info">
+                <h3>您的数字分身正在训练</h3>
+                <div class="digital-avatar-description">系统正在学习您的表情和语音特征，敬请期待...</div>
+                <button class="chat-now-btn" id="chat-with-avatar" disabled>
+                    <i class="fas fa-comments"></i> 立即对话
+                </button>
+            </div>
+        </section>
+
+         <!-- 个性化区域 -->
+         <section class="personalization-card">
+            <h3 class="personalization-title">个性化</h3>
+            <p class="personalization-subtitle"></p>
+            
+            <div class="personalization-options">
+                <div class="option-item">
+                    <div class="option-icon memory-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <div class="option-content">
+                        <div class="option-label">记忆力训练</div>
+                        <div class="option-description">提升短期和长期记忆能力</div>
+                    </div>
+                    <div class="option-status">
+                        <div class="status-badge status-complete">已完成</div>
+                       
+                    </div>
+                </div>
+                
+                <div class="option-item">
+                    <div class="option-icon attention-icon">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <div class="option-content">
+                        <div class="option-label">注意力训练</div>
+                        <div class="option-description">增强专注力和注意力持续性</div>
+                    </div>
+                    <div class="option-status">
+                       
+                        <div class="status-badge status-complete">已完成</div>
+                    </div>
+                </div>
+                
+                <div class="option-item">
+                    <div class="option-icon reasoning-icon">
+                        <i class="fas fa-calculator"></i>
+                    </div>
+                    <div class="option-content">
+                        <div class="option-label">数学能力训练</div>
+                        <div class="option-description">强化逻辑思维和计算能力</div>
+                    </div>
+                    <div class="option-status">
+                       
+                    <div class="status-badge status-complete">已完成</div>
+                    </div>
+                </div>
+                
+                <div class="option-item">
+                    <div class="option-icon spatial-icon">
+                        <i class="fas fa-cube"></i>
+                    </div>
+                    <div class="option-content">
+                        <div class="option-label">空间力训练</div>
+                        <div class="option-description">改善空间感知和导航能力</div>
+                    </div>
+                    <div class="option-status">
+                        <div class="status-badge status-locked">未开始</div>
+                        
+                    </div>
+                </div>
+                
+                <div class="option-item">
+                    <div class="option-icon recall-icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <div class="option-content">
+                        <div class="option-label">对话回忆训练</div>
+                        <div class="option-description">增强语境记忆和对话理解</div>
+                    </div>
+                    <div class="option-status">
+                        <div class="status-badge status-locked">未开始</div>
+                        
+                    </div>
+                </div>
+            </div>
+           
+        </section>
+
+
+       
+
+      
+    </main>
+
+    <nav class="bottom-nav">
+        <a href="home copy.html" class="nav-item active">
+            <i class="fas fa-home"></i>
+            <span>首页</span>
+        </a>
+        <a href="memory_bank.html" class="nav-item">
+            <i class="fas fa-images"></i>
+            <span>记忆库</span>
+        </a>
+        <a href="academy.html" class="nav-item">
+            <i class="fas fa-graduation-cap"></i>
+            <span>学院</span>
+        </a>
+        <a href="results.html" class="nav-item">
+            <i class="fas fa-chart-line"></i>
+            <span>结果</span>
+        </a>
+        <a href="profile.html" class="nav-item">
+            <i class="fas fa-user"></i>
+            <span>我的</span>
+        </a>
+    </nav>
+
+    <script src="../js/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 设置时间
+            function updateTime() {
+                const now = new Date();
+                let hours = now.getHours();
+                let minutes = now.getMinutes();
+                hours = hours < 10 ? '0' + hours : hours;
+                minutes = minutes < 10 ? '0' + minutes : minutes;
+                document.querySelector('.status-left').textContent = hours + ':' + minutes;
+            }
+            
+            updateTime();
+            setInterval(updateTime, 60000);
+            
+            // 处理个性化训练按钮点击
+            const startPersonalizationBtn = document.getElementById('start-personalization-btn');
+            if (startPersonalizationBtn) {
+                startPersonalizationBtn.addEventListener('click', function() {
+                    window.location.href = 'membership.html';
+                });
+            }
+            
+            // 处理数字分身聊天按钮点击
+            const chatWithAvatarBtn = document.getElementById('chat-with-avatar');
+            if (chatWithAvatarBtn) {
+                chatWithAvatarBtn.addEventListener('click', function() {
+                    if (!this.disabled) {
+                        window.location.href = 'chat.html?mode=memory&subject=family';
+                    }
+                });
+            }
+            
+            // 处理报告查看按钮点击
+            const viewReportBtn = document.getElementById('view-report-btn');
+            if (viewReportBtn) {
+                viewReportBtn.addEventListener('click', function() {
+                    window.location.href = 'biomarker_report.html';
+                });
+            }
+            
+            // 添加头像波浪动画
+            setInterval(function() {
+                const wave = document.querySelector('.avatar-wave');
+                if (wave) {
+                    wave.style.opacity = '1';
+                    setTimeout(function() {
+                        const newWave = wave.cloneNode(true);
+                        wave.parentNode.replaceChild(newWave, wave);
+                    }, 2000);
+                }
+            }, 3000);
+
+            // 报告场景切换功能
+            const biomarkerReportCard = document.querySelector('.report-card');
+            const otherReportCard = document.getElementById('other-report-card');
+            const noReportCard = document.getElementById('no-report-card');
+            
+            // 场景切换按钮
+            const showBiomarkerBtn = document.getElementById('show-biomarker');
+            const showOtherBtn = document.getElementById('show-other');
+            const showNoneBtn = document.getElementById('show-none');
+            
+            // 隐藏所有报告卡片
+            function hideAllReports() {
+                biomarkerReportCard.style.display = 'none';
+                otherReportCard.style.display = 'none';
+                noReportCard.style.display = 'none';
+            }
+            
+            // 场景一：显示生物标志物报告
+            showBiomarkerBtn.addEventListener('click', function() {
+                hideAllReports();
+                biomarkerReportCard.style.display = 'flex';
+            });
+            
+            // 场景二：显示其他报告
+            showOtherBtn.addEventListener('click', function() {
+                hideAllReports();
+                otherReportCard.style.display = 'flex';
+            });
+            
+            // 场景三：显示无报告
+            showNoneBtn.addEventListener('click', function() {
+                hideAllReports();
+                noReportCard.style.display = 'flex';
+            });
+            
+            // 默认显示场景一
+            biomarkerReportCard.style.display = 'flex';
+            
+            // 其他报告按钮点击事件
+            const viewOtherReportBtn = document.getElementById('view-other-report-btn');
+            if (viewOtherReportBtn) {
+                viewOtherReportBtn.addEventListener('click', function() {
+                    window.location.href = 'cognitive_test.html';
+                });
+            }
+            
+            // 创建报告按钮点击事件
+            const createReportBtn = document.getElementById('create-report-btn');
+            if (createReportBtn) {
+                createReportBtn.addEventListener('click', function() {
+                    window.location.href = 'create_report.html';
+                });
+            }
+        });
+    </script>
+</body>
+</html> 

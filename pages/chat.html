@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数字人对话 - 阿尔茨海默认知训练应用</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .chat-header {
+            background-color: white;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .chat-header .back-btn {
+            font-size: 20px;
+            margin-right: 16px;
+        }
+        
+        .chat-header .avatar-sm {
+            margin-right: 12px;
+        }
+        
+        .chat-container {
+            padding: 16px;
+            overflow-y: auto;
+            height: calc(100% - 130px);
+        }
+        
+        .chat-input {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .chat-input input {
+            flex: 1;
+            border: none;
+            background: #f0f0f0;
+            padding: 12px 16px;
+            border-radius: 20px;
+            margin-right: 12px;
+        }
+        
+        .chat-input input:focus {
+            outline: none;
+        }
+        
+        .chat-input button {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .chat-date {
+            text-align: center;
+            color: #999;
+            font-size: 12px;
+            margin: 16px 0;
+        }
+        
+        .ai-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 20px;
+            margin-right: 8px;
+            background-color: #4F8DF5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+        }
+        
+        .ai-avatar.memory {
+            background-color: #8E44AD;
+        }
+        
+        .chat-message-container {
+            display: flex;
+            margin-bottom: 16px;
+            align-items: flex-end;
+        }
+        
+        .chat-message-container.sent {
+            justify-content: flex-end;
+        }
+        
+        .chat-message-time {
+            font-size: 10px;
+            color: #999;
+            margin-top: 4px;
+        }
+
+        .training-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .training-option {
+            background-color: #f5f5f5;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .training-option:hover {
+            background-color: #e0e0e0;
+        }
+        
+        .training-option i {
+            font-size: 24px;
+            margin-bottom: 8px;
+            color: var(--primary-color);
+        }
+        
+        .memory-option i {
+            color: #8E44AD;
+        }
+    </style>
+</head>
+<body class="app-body">
+    <div class="status-bar">
+        <div class="status-left">9:41</div>
+        <div class="status-right">
+            <i class="fas fa-signal"></i>
+            <i class="fas fa-wifi"></i>
+            <i class="fas fa-battery-full"></i>
+        </div>
+    </div>
+
+    <div class="chat-header">
+        <a href="home.html" class="back-btn">
+            <i class="fas fa-chevron-left"></i>
+        </a>
+        <div class="ai-avatar" id="avatar-icon">
+            <i class="fas fa-robot"></i>
+        </div>
+        <div>
+            <h3 style="margin:0">小智</h3>
+            <p style="margin:0;font-size:12px;color:#999" id="assistant-role">AI助手</p>
+        </div>
+    </div>
+
+    <div class="chat-container" id="chat-container">
+        <div class="chat-date">
+            2023年10月15日
+        </div>
+    </div>
+
+    <div class="chat-input">
+        <input type="text" placeholder="输入消息..." id="message-input">
+        <button id="send-btn">
+            <i class="fas fa-paper-plane"></i>
+        </button>
+    </div>
+
+    <script src="../js/app.js"></script>
+    <script>
+        // Initialize chat based on mode parameter
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const mode = urlParams.get('mode') || 'default';
+            const subject = urlParams.get('subject') || '';
+            const trainingType = urlParams.get('type') || '';
+            
+            const chatContainer = document.getElementById('chat-container');
+            const messageInput = document.getElementById('message-input');
+            const sendButton = document.getElementById('send-btn');
+            const avatarIcon = document.getElementById('avatar-icon');
+            const assistantRole = document.getElementById('assistant-role');
+            
+            // Set UI based on mode
+            if (mode === 'memory') {
+                assistantRole.textContent = 'AI记忆助手';
+                avatarIcon.classList.add('memory');
+                
+                // Customize greeting based on subject
+                let greeting = '您好，张先生！今天我们来做一些个人记忆训练。您想回忆一下哪方面的记忆呢？我可以帮您回忆家庭照片、工作经历、旅行记忆或童年故事。';
+                let followUpQuestion = '';
+                
+                if (subject === 'family') {
+                    greeting = '您好，张先生！今天我们来回忆一下关于家庭的记忆。';
+                    followUpQuestion = '您还记得您2000年的婚礼吗？那天您穿着什么？您的妻子叫什么名字？';
+                } else if (subject === 'work') {
+                    greeting = '您好，张先生！今天我们来回忆一下您的工作经历。';
+                    followUpQuestion = '您曾经是一位优秀的教师。您还记得您教过的最喜欢的课程是什么吗？您在哪所学校任教的时间最长？';
+                } else if (subject === 'travel') {
+                    greeting = '您好，张先生！今天我们来回忆一下您的旅行记忆。';
+                    followUpQuestion = '您去过很多地方旅行。您还记得2015年去北京的那次旅行吗？您去了哪些景点？当时天气如何？';
+                } else if (subject === 'childhood') {
+                    greeting = '您好，张先生！今天我们来回忆一下您的童年故事。';
+                    followUpQuestion = '回忆童年总是很有趣。您小时候最喜欢玩什么游戏？您还记得您上小学时最好的朋友是谁吗？';
+                }
+                
+                addMessage('ai', greeting);
+                
+                // If we have a specific subject, add a follow-up question after a delay
+                if (followUpQuestion) {
+                    setTimeout(() => {
+                        addMessage('ai', followUpQuestion);
+                    }, 500);
+                    
+                    // We don't need to show the memory options if we already have a subject
+                } else {
+                    // Add memory category options
+                    const optionsHTML = `
+                        <div class="training-options">
+                            <div class="training-option memory-option" data-option="family">
+                                <i class="fas fa-users"></i>
+                                <div>家庭照片</div>
+                            </div>
+                            <div class="training-option memory-option" data-option="work">
+                                <i class="fas fa-briefcase"></i>
+                                <div>工作经历</div>
+                            </div>
+                            <div class="training-option memory-option" data-option="travel">
+                                <i class="fas fa-plane"></i>
+                                <div>旅行记忆</div>
+                            </div>
+                            <div class="training-option memory-option" data-option="childhood">
+                                <i class="fas fa-child"></i>
+                                <div>童年故事</div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Add options to chat
+                    const aiMessage = document.createElement('div');
+                    aiMessage.className = 'chat-message-container';
+                    aiMessage.innerHTML = `
+                        <div class="ai-avatar memory">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <div>
+                            <div class="chat-bubble received">
+                                请选择一个您想回忆的主题：
+                                ${optionsHTML}
+                            </div>
+                            <div class="chat-message-time">9:30</div>
+                        </div>
+                    `;
+                    
+                    chatContainer.appendChild(aiMessage);
+                    setupMemoryOptions();
+                }
+                
+            } else if (mode === 'training') {
+                assistantRole.textContent = 'AI训练助手';
+                
+                // 根据训练类型提供不同的开场白
+                let greeting = '您好，张先生！根据您的训练计划，今天我为您准备了记忆训练、注意力训练和推理能力训练。每个训练只需5分钟，您想先从哪个训练开始呢？';
+                
+                if (trainingType === 'memory') {
+                    greeting = '您好，张先生！欢迎来到位置记忆训练。这个训练只需5分钟，可以有效提高您的空间记忆能力。我会先展示几个图形的位置，请您记住它们的位置。准备好开始了吗？';
+                } else if (trainingType === 'attention') {
+                    greeting = '您好，张先生！欢迎来到颜色匹配训练。这个训练只需5分钟，可以帮助提高您的视觉注意力和专注度。您需要快速识别并匹配相同颜色的物品。准备好开始了吗？';
+                } else if (trainingType === 'reasoning') {
+                    greeting = '您好，张先生！欢迎来到数字序列训练。这个训练只需5分钟，可以锻炼您的逻辑思维和推理能力。我会给您一个数字序列，请您找出规律并告诉我下一个数字是什么。准备好开始了吗？';
+                }
+                
+                addMessage('ai', greeting);
+                
+                // 如果指定了训练类型，直接开始相应训练
+                if (trainingType) {
+                    setTimeout(() => {
+                        if (trainingType === 'memory') {
+                            addMessage('ai', '很好！请观察以下九宫格中亮起的位置：<div style="width:200px;height:200px;margin:10px auto;display:grid;grid-template-columns:repeat(3,1fr);grid-gap:5px;"><div style="background:#e0e0e0;height:60px;border-radius:5px;"></div><div style="background:#e0e0e0;height:60px;border-radius:5px;"></div><div style="background:#4F8DF5;height:60px;border-radius:5px;"></div><div style="background:#e0e0e0;height:60px;border-radius:5px;"></div><div style="background:#4F8DF5;height:60px;border-radius:5px;"></div><div style="background:#e0e0e0;height:60px;border-radius:5px;"></div><div style="background:#4F8DF5;height:60px;border-radius:5px;"></div><div style="background:#e0e0e0;height:60px;border-radius:5px;"></div><div style="background:#e0e0e0;height:60px;border-radius:5px;"></div></div>请记住蓝色方块的位置，5秒后它们将消失，然后我会请您回忆它们的位置。');
+                        } else if (trainingType === 'attention') {
+                            addMessage('ai', '很好！接下来您将看到一组不同颜色的圆形，请迅速找出与示例相同颜色的所有圆形。<div style="margin:10px auto;text-align:center;"><div style="display:inline-block;width:30px;height:30px;border-radius:50%;background:#FF5733;margin:5px;"></div> ← 目标颜色</div><div style="width:250px;margin:10px auto;text-align:center;"><div style="display:inline-block;width:30px;height:30px;border-radius:50%;background:#900C3F;margin:5px;"></div><div style="display:inline-block;width:30px;height:30px;border-radius:50%;background:#FF5733;margin:5px;"></div><div style="display:inline-block;width:30px;height:30px;border-radius:50%;background:#5DADE2;margin:5px;"></div><div style="display:inline-block;width:30px;height:30px;border-radius:50%;background:#FF5733;margin:5px;"></div><div style="display:inline-block;width:30px;height:30px;border-radius:50%;background:#58D68D;margin:5px;"></div><div style="display:inline-block;width:30px;height:30px;border-radius:50%;background:#F4D03F;margin:5px;"></div><div style="display:inline-block;width:30px;height:30px;border-radius:50%;background:#FF5733;margin:5px;"></div></div>请告诉我有多少个与目标颜色相同的圆形？');
+                        } else if (trainingType === 'reasoning') {
+                            addMessage('ai', '很好！我们来看一个数字序列问题：2, 4, 6, 8, ?<br>请找出规律，并告诉我下一个数字应该是什么？');
+                        }
+                    }, 1000);
+                } else {
+                    // 显示训练选项
+                    const optionsHTML = `
+                        <div class="training-options">
+                            <div class="training-option" data-option="memory">
+                                <i class="fas fa-brain"></i>
+                                <div>记忆训练</div>
+                            </div>
+                            <div class="training-option" data-option="attention">
+                                <i class="fas fa-eye"></i>
+                                <div>注意力训练</div>
+                            </div>
+                            <div class="training-option" data-option="reasoning">
+                                <i class="fas fa-puzzle-piece"></i>
+                                <div>推理能力训练</div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Add options to chat
+                    const aiMessage = document.createElement('div');
+                    aiMessage.className = 'chat-message-container';
+                    aiMessage.innerHTML = `
+                        <div class="ai-avatar">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div>
+                            <div class="chat-bubble received">
+                                请选择您想开始的训练：
+                                ${optionsHTML}
+                            </div>
+                            <div class="chat-message-time">9:30</div>
+                        </div>
+                    `;
+                    
+                    chatContainer.appendChild(aiMessage);
+                    setupTrainingOptions();
+                }
+                
+            } else {
+                // Default chat
+                addMessage('ai', '您好，张先生！今天感觉如何？我可以为您提供认知训练或记忆回忆服务。');
+            }
+            
+            // Setup message sending
+            function sendMessage() {
+                const message = messageInput.value.trim();
+                if (message) {
+                    addMessage('user', message);
+                    messageInput.value = '';
+                    
+                    // Scroll to bottom
+                    chatContainer.scrollTop = chatContainer.scrollHeight;
+                    
+                    // Simulate AI response
+                    setTimeout(() => {
+                        handleAIResponse(message, mode);
+                    }, 1000);
+                }
+            }
+            
+            // Handle AI responses based on mode and user input
+            function handleAIResponse(userMessage, mode) {
+                let response = "我理解了，您想聊些什么呢？";
+                
+                if (mode === 'memory') {
+                    if (userMessage.includes("家庭") || userMessage.includes("照片") || userMessage.includes("婚礼")) {
+                        response = "您的家庭照片中有很多珍贵的回忆。您还记得您2000年的婚礼吗？那天您穿着什么？您的妻子叫什么名字？";
+                    } else if (userMessage.includes("工作") || userMessage.includes("经历") || userMessage.includes("教师")) {
+                        response = "您曾经是一位优秀的教师。您还记得您教过的最喜欢的课程是什么吗？您在哪所学校任教的时间最长？";
+                    } else if (userMessage.includes("旅行") || userMessage.includes("旅游") || userMessage.includes("北京")) {
+                        response = "您去过很多地方旅行。您还记得2015年去北京的那次旅行吗？您去了哪些景点？当时天气如何？";
+                    } else if (userMessage.includes("童年") || userMessage.includes("小时候") || userMessage.includes("朋友")) {
+                        response = "回忆童年总是很有趣。您小时候最喜欢玩什么游戏？您还记得您上小学时最好的朋友是谁吗？";
+                    } else if (userMessage.includes("李芳") || userMessage.includes("妻子")) {
+                        response = "是的，您的妻子叫李芳。您们已经在一起生活了将近23年了。您能描述一下您记忆中她的样子吗？";
+                    } else if (userMessage.includes("黑色") || userMessage.includes("西装") || userMessage.includes("婚纱")) {
+                        response = "您记得很清楚！在您的婚礼上，您穿着一套黑色西装，您的妻子李芳穿着一件美丽的白色婚纱。您还记得当天的其他细节吗？比如婚礼的地点？";
+                    } else if (userMessage.includes("数学") || userMessage.includes("语文") || userMessage.includes("课程")) {
+                        response = "原来您最喜欢教数学课。学生们一定很喜欢您的课。您还记得您教过的某个特别的学生吗？";
+                    } else if (userMessage.includes("长城") || userMessage.includes("故宫") || userMessage.includes("景点")) {
+                        response = "是的，北京的长城和故宫都是非常著名的景点。您去故宫那天天气晴朗，您和家人一起拍了很多照片。您还记得和家人一起吃了什么特别的北京小吃吗？";
+                    } else if (userMessage.includes("不记得") || userMessage.includes("忘记")) {
+                        response = "没关系，记忆有时候会模糊，这很正常。让我们尝试从一些简单的细节开始：您记得您小时候住在哪个城市吗？";
+                    } else {
+                        response = "理解了。记忆训练的过程需要耐心。您可以尝试集中注意力，回想一下关于这个话题的一些场景或者人物。您现在能想起什么细节吗？";
+                    }
+                } else if (mode === 'training') {
+                    if (trainingType === 'memory' || userMessage.includes("记忆") || userMessage.includes("位置")) {
+                        if (userMessage.includes("准备好") || userMessage.includes("开始") || userMessage.includes("是的")) {
+                            response = "很好！请观察以下九宫格中亮起的位置：<div style=\"width:200px;height:200px;margin:10px auto;display:grid;grid-template-columns:repeat(3,1fr);grid-gap:5px;\"><div style=\"background:#e0e0e0;height:60px;border-radius:5px;\"></div><div style=\"background:#e0e0e0;height:60px;border-radius:5px;\"></div><div style=\"background:#4F8DF5;height:60px;border-radius:5px;\"></div><div style=\"background:#e0e0e0;height:60px;border-radius:5px;\"></div><div style=\"background:#4F8DF5;height:60px;border-radius:5px;\"></div><div style=\"background:#e0e0e0;height:60px;border-radius:5px;\"></div><div style=\"background:#4F8DF5;height:60px;border-radius:5px;\"></div><div style=\"background:#e0e0e0;height:60px;border-radius:5px;\"></div><div style=\"background:#e0e0e0;height:60px;border-radius:5px;\"></div></div>请记住蓝色方块的位置，5秒后它们将消失，然后我会请您回忆它们的位置。";
+                        } else if (userMessage.includes("右上") || userMessage.includes("中间") || userMessage.includes("左下")) {
+                            response = "太棒了！您正确记住了蓝色方块的位置：右上角、中间、左下角。这个训练有助于提高您的空间记忆能力。要继续下一轮训练吗？";
+                        } else {
+                            response = "位置记忆训练对提高空间记忆能力很有帮助。我会先展示几个图形的位置，请您记住它们，然后我会询问您它们的位置。准备好了吗？";
+                        }
+                    } else if (trainingType === 'attention' || userMessage.includes("注意力") || userMessage.includes("颜色")) {
+                        if (userMessage.includes("准备好") || userMessage.includes("开始") || userMessage.includes("是的")) {
+                            response = "很好！接下来您将看到一组不同颜色的圆形，请迅速找出与示例相同颜色的所有圆形。<div style=\"margin:10px auto;text-align:center;\"><div style=\"display:inline-block;width:30px;height:30px;border-radius:50%;background:#FF5733;margin:5px;\"></div> ← 目标颜色</div><div style=\"width:250px;margin:10px auto;text-align:center;\"><div style=\"display:inline-block;width:30px;height:30px;border-radius:50%;background:#900C3F;margin:5px;\"></div><div style=\"display:inline-block;width:30px;height:30px;border-radius:50%;background:#FF5733;margin:5px;\"></div><div style=\"display:inline-block;width:30px;height:30px;border-radius:50%;background:#5DADE2;margin:5px;\"></div><div style=\"display:inline-block;width:30px;height:30px;border-radius:50%;background:#FF5733;margin:5px;\"></div><div style=\"display:inline-block;width:30px;height:30px;border-radius:50%;background:#58D68D;margin:5px;\"></div><div style=\"display:inline-block;width:30px;height:30px;border-radius:50%;background:#F4D03F;margin:5px;\"></div><div style=\"display:inline-block;width:30px;height:30px;border-radius:50%;background:#FF5733;margin:5px;\"></div></div>请告诉我有多少个与目标颜色相同的圆形？";
+                        } else if (userMessage.includes("3") || userMessage.includes("三")) {
+                            response = "回答正确！目标颜色的圆形共有3个。这个训练帮助提高您的视觉注意力和处理速度。要继续下一轮训练吗？";
+                        } else {
+                            response = "颜色匹配训练可以有效提高您的注意力。在这个训练中，您需要快速识别并匹配相同颜色的物品。这有助于提高您的视觉注意力和处理速度。准备好开始了吗？";
+                        }
+                    } else if (trainingType === 'reasoning' || userMessage.includes("推理") || userMessage.includes("数字")) {
+                        if (userMessage.includes("准备好") || userMessage.includes("开始") || userMessage.includes("是的")) {
+                            response = "很好！我们来看一个数字序列问题：2, 4, 6, 8, ?<br>请找出规律，并告诉我下一个数字应该是什么？";
+                        } else if (userMessage.includes("10") || userMessage.includes("十")) {
+                            response = "回答正确！这个序列的规律是每次加2，所以下一个数字是10。这个训练有助于提高您的推理能力和模式识别能力。要继续下一轮训练吗？";
+                        } else {
+                            response = "数字序列训练是一个很好的推理能力训练。我会给您一个数字序列，请您找出规律并告诉我下一个数字是什么。这有助于提高您的逻辑思维能力。准备好了吗？";
+                        }
+                    } else if (userMessage.includes("继续") || userMessage.includes("下一轮")) {
+                        response = "太好了！您对这些训练做得很好。您还想继续哪种类型的训练呢？记忆训练、注意力训练还是推理能力训练？";
+                    } else {
+                        response = "您想尝试哪种训练？我们有记忆训练、注意力训练和推理能力训练可供选择。每种训练都只需要5分钟，对认知能力的不同方面有帮助。";
+                    }
+                } else {
+                    // Default responses
+                    if (userMessage.includes("你好") || userMessage.includes("早上好")) {
+                        response = "您好！很高兴和您交流。今天我能为您提供什么帮助呢？";
+                    } else if (userMessage.includes("训练") || userMessage.includes("开始")) {
+                        response = "我们可以开始今天的认知训练。您想先进行记忆训练、注意力训练还是推理能力训练呢？";
+                    } else if (userMessage.includes("记忆")) {
+                        response = "记忆训练是一个很好的选择。我们可以进行位置记忆训练或者个人记忆回忆训练。您更喜欢哪一种？";
+                    } else {
+                        response = "我理解了。您想了解更多关于认知训练的信息，还是想直接开始训练？我可以为您提供各种训练方案和建议。";
+                    }
+                }
+                
+                addMessage('ai', response);
+                
+                // Scroll to bottom after adding message
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }
+            
+            // Add message to chat
+            function addMessage(sender, text) {
+                const now = new Date();
+                const timeString = now.getHours() + ':' + now.getMinutes().toString().padStart(2, '0');
+                
+                if (sender === 'user') {
+                    const userMessageHTML = `
+                        <div class="chat-message-container sent">
+                            <div>
+                                <div class="chat-bubble sent">
+                                    ${text}
+                                </div>
+                                <div class="chat-message-time" style="text-align:right">${timeString}</div>
+                            </div>
+                        </div>
+                    `;
+                    chatContainer.insertAdjacentHTML('beforeend', userMessageHTML);
+                } else {
+                    const avatarClass = mode === 'memory' ? 'memory' : '';
+                    const iconClass = mode === 'memory' ? 'brain' : 'robot';
+                    
+                    const aiMessageHTML = `
+                        <div class="chat-message-container">
+                            <div class="ai-avatar ${avatarClass}">
+                                <i class="fas fa-${iconClass}"></i>
+                            </div>
+                            <div>
+                                <div class="chat-bubble received">
+                                    ${text}
+                                </div>
+                                <div class="chat-message-time">${timeString}</div>
+                            </div>
+                        </div>
+                    `;
+                    chatContainer.insertAdjacentHTML('beforeend', aiMessageHTML);
+                }
+            }
+            
+            // Setup training option clicks
+            function setupTrainingOptions() {
+                document.querySelectorAll('.training-option').forEach(option => {
+                    option.addEventListener('click', function() {
+                        const trainingType = this.getAttribute('data-option');
+                        let responseText = "";
+                        
+                        if (trainingType === 'memory') {
+                            responseText = "我想进行记忆训练";
+                        } else if (trainingType === 'attention') {
+                            responseText = "我想进行注意力训练";
+                        } else if (trainingType === 'reasoning') {
+                            responseText = "我想进行推理能力训练";
+                        }
+                        
+                        if (responseText) {
+                            addMessage('user', responseText);
+                            
+                            setTimeout(() => {
+                                if (trainingType === 'memory') {
+                                    addMessage('ai', "很好的选择！位置记忆训练可以帮助提高您的空间记忆能力。我会向您展示一个有高亮格子的九宫格，请您记住这些格子的位置。准备好了吗？");
+                                } else if (trainingType === 'attention') {
+                                    addMessage('ai', "注意力训练是个好选择！在这个训练中，您需要快速识别并点击屏幕上出现的特定颜色或形状。这有助于提高您的视觉注意力和反应速度。准备好开始了吗？");
+                                } else if (trainingType === 'reasoning') {
+                                    addMessage('ai', "推理能力训练可以帮助提高您的逻辑思维。我会给您一个数字序列：2, 4, 6, 8...，您能告诉我下一个数字是什么吗？");
+                                }
+                                
+                                chatContainer.scrollTop = chatContainer.scrollHeight;
+                            }, 1000);
+                        }
+                    });
+                });
+            }
+            
+            // Setup memory option clicks
+            function setupMemoryOptions() {
+                document.querySelectorAll('.memory-option').forEach(option => {
+                    option.addEventListener('click', function() {
+                        const memoryType = this.getAttribute('data-option');
+                        let responseText = "";
+                        
+                        if (memoryType === 'family') {
+                            responseText = "我想回忆家庭照片";
+                        } else if (memoryType === 'work') {
+                            responseText = "我想回忆工作经历";
+                        } else if (memoryType === 'travel') {
+                            responseText = "我想回忆旅行记忆";
+                        } else if (memoryType === 'childhood') {
+                            responseText = "我想回忆童年故事";
+                        }
+                        
+                        if (responseText) {
+                            addMessage('user', responseText);
+                            
+                            setTimeout(() => {
+                                if (memoryType === 'family') {
+                                    addMessage('ai', "家庭照片中藏着许多珍贵的回忆。您还记得您2000年举行婚礼的情景吗？您的妻子叫什么名字？当时您们在哪里举办的婚礼？");
+                                } else if (memoryType === 'work') {
+                                    addMessage('ai', "您曾经是一位受人尊敬的教师。您还记得您教过的最喜欢的课程是什么吗？您是在哪所学校任教的？您教过哪些年级的学生？");
+                                } else if (memoryType === 'travel') {
+                                    addMessage('ai', "旅行是人生中美好的经历。您还记得2015年去北京的那次旅行吗？您去了哪些景点？有什么特别难忘的事情发生吗？");
+                                } else if (memoryType === 'childhood') {
+                                    addMessage('ai', "童年的记忆总是那么美好。您还记得您小时候住在哪个城市吗？您最好的朋友是谁？您喜欢玩什么游戏？");
+                                }
+                                
+                                chatContainer.scrollTop = chatContainer.scrollHeight;
+                            }, 1000);
+                        }
+                    });
+                });
+            }
+            
+            // Send message on button click
+            sendButton.addEventListener('click', sendMessage);
+            
+            // Send message on Enter key
+            messageInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+            
+            // Scroll to bottom on load
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        });
+    </script>
+</body>
+</html> 

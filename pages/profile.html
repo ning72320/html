@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的 - 阿尔茨海默认知训练应用</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="app-body">
+    <div class="status-bar">
+        <div class="status-left">9:41</div>
+        <div class="status-right">
+            <i class="fas fa-signal"></i>
+            <i class="fas fa-wifi"></i>
+            <i class="fas fa-battery-full"></i>
+        </div>
+    </div>
+
+    <main class="app-content">
+        <div class="card avatar-preview">
+            <img src="../img/WechatIMG11.jpg" alt="用户头像" class="avatar" onerror="this.src='https://via.placeholder.com/140?text=用户'">
+            <div class="avatar-preview-info">
+                <h3>张先生</h3>
+                <p>68岁 · 退休教师</p>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <h3>个人信息</h3>
+            
+            <div class="form-group mt-2">
+                <div class="flex justify-between">
+                    <p>姓名</p>
+                    <p>张先生</p>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <div class="flex justify-between">
+                    <p>年龄</p>
+                    <p>68岁</p>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <div class="flex justify-between">
+                    <p>职业</p>
+                    <p>退休教师</p>
+                </div>
+            </div>
+            
+            <button class="btn btn-secondary btn-block mt-2">
+                <i class="fas fa-edit mr-1"></i> 编辑个人信息
+            </button>
+        </div>
+        <div class="card mt-3">
+            <h3>账户设置</h3> 
+            <div class="form-group mt-2">
+                <div class="flex justify-between">
+                    <p>当前账户</p>
+                    <p class="text-primary">zhang@example.com</p>
+                </div>
+            </div>     
+            <div class="form-group">
+                <div class="flex justify-between">
+                    <p>账户类型</p>
+                    <p>标准版</p>
+                </div>
+            </div>  
+
+            <button class="btn btn-secondary btn-block mt-2">
+                <i class="fas fa-key mr-1"></i> 修改密码
+            </button>
+        </div>
+        <div class="card mt-3">
+            <h3>关于应用</h3>
+            
+            <div class="form-group mt-2">
+                <div class="flex justify-between">
+                    <p>版本</p>
+                    <p>1.0.0</p>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <div class="flex justify-between">
+                    <p>构建日期</p>
+                    <p>2023年10月1日</p>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <div class="flex justify-between">
+                    <p>最后更新</p>
+                    <p>2023年10月10日</p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <nav class="bottom-nav">
+        <a href="home.html" class="nav-item">
+            <i class="fas fa-home"></i>
+            <span>首页</span>
+        </a>
+        <a href="memory_bank.html" class="nav-item">
+            <i class="fas fa-images"></i>
+            <span>记忆库</span>
+        </a>
+        <a href="academy.html" class="nav-item">
+            <i class="fas fa-graduation-cap"></i>
+            <span>学院</span>
+        </a>
+        <a href="results.html" class="nav-item">
+            <i class="fas fa-chart-line"></i>
+            <span>结果</span>
+        </a>
+        <a href="profile.html" class="nav-item active">
+            <i class="fas fa-user"></i>
+            <span>我的</span>
+        </a>
+    </nav>
+
+    <script src="../js/app.js"></script>
+</body>
+</html> 

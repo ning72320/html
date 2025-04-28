@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI报告分析 - 麦若</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #6A5ACD;
+            --secondary-color: #5D4FB8;
+            --light-yellow: #FFFACC;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            background-image: none;
+        }
+
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 15px;
+            background: transparent;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .status-left {
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .status-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-right i {
+            font-size: 16px;
+        }
+
+        .app-header {
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            position: relative;
+        }
+
+        .back-button {
+            font-size: 20px;
+            color: #333;
+            text-decoration: none;
+            margin-right: 15px;
+        }
+
+        .page-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 0;
+            flex-grow: 1;
+            text-align: center;
+            margin-right: 30px; /* 平衡左侧按钮空间 */
+        }
+
+        .app-content {
+            padding: 20px;
+            padding-bottom: 110px;
+        }
+
+        .analysis-container {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .analysis-header {
+            background: linear-gradient(135deg, #6A5ACD, #5D4FB8);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .analysis-header h2 {
+            margin: 0 0 10px 0;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .analysis-header p {
+            margin: 0;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .analysis-body {
+            padding: 25px 20px;
+        }
+
+        .analysis-summary {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 25px;
+        }
+
+        .summary-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin: 0 0 10px 0;
+            color: #333;
+        }
+
+        .summary-text {
+            font-size: 14px;
+            line-height: 1.5;
+            color: #555;
+            margin: 0;
+        }
+
+        .biomarker-analysis {
+            margin-bottom: 20px;
+        }
+
+        .biomarker-analysis-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 0 0 15px 0;
+            color: #333;
+            text-align: center;
+        }
+
+        .cognitive-item {
+            margin-bottom: 25px;
+            background-color: #f5f8ff;
+            border-radius: 12px;
+            padding: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cognitive-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 4px;
+        }
+
+        .normal-item::before {
+            background-color: #4CAF50;
+        }
+
+        .warning-item::before {
+            background-color: #FF9800;
+        }
+
+        .risk-item::before {
+            background-color: #F44336;
+        }
+
+        .cognitive-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .cognitive-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin: 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .cognitive-title i {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+
+        .normal-title i {
+            color: #4CAF50;
+        }
+
+        .warning-title i {
+            color: #FF9800;
+        }
+
+        .risk-title i {
+            color: #F44336;
+        }
+
+        .biomarker-value {
+            font-size: 15px;
+            font-weight: 500;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+
+        .biomarker-value .value {
+            margin-bottom: 5px;
+        }
+
+        .biomarker-value .range {
+            font-size: 12px;
+            color: #777;
+        }
+
+        .cognitive-description {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #555;
+            margin: 0 0 15px 0;
+        }
+
+        .cognitive-suggestion {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 13px;
+            color: #555;
+            line-height: 1.5;
+            border-left: 3px solid #4F8DF5;
+        }
+
+        .cognitive-suggestion strong {
+            color: #333;
+        }
+
+        .fixed-bottom-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, #FF9F1C, #F57600);
+            padding: 15px 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 100;
+            border-radius: 15px 15px 0 0;
+        }
+
+        .fixed-bottom-text {
+            color: white;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .fixed-bottom-text h3 {
+            margin: 0 0 8px 0;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .fixed-bottom-text p {
+            margin: 0 0 5px 0;
+            font-size: 13px;
+            opacity: 0.9;
+            line-height: 1.5;
+        }
+
+        .fixed-training-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 300px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .fixed-training-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .fixed-training-btn i {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body class="app-body">
+    <div class="status-bar">
+        <div class="status-left">18:20</div>
+        <div class="status-right">
+            <i class="fas fa-signal"></i>
+            <i class="fas fa-wifi"></i>
+            <span>65%</span>
+        </div>
+    </div>
+
+    <header class="app-header">
+        <a href="biomarker_report.html" class="back-button">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+        <h1 class="page-title">AI健康分析</h1>
+    </header>
+
+    <main class="app-content">
+        <div class="analysis-container">
+            <div class="analysis-header">
+                <h2>阿尔兹海默症风险分析</h2>
+                <p>基于您的生物标志物报告</p>
+            </div>
+            
+            <div class="analysis-body">
+                <div class="analysis-summary">
+                    <h3 class="summary-title">综合评估</h3>
+                    <p class="summary-text">根据您的生物标志物指标分析，您目前处于轻度认知风险状态。部分指标显示存在早期警示信号，建议适当调整生活方式并关注认知健康。</p>
+                    <p class="summary-text" style="margin-top: 12px; font-style: italic; color: #777; font-size: 12px;">本分析结果由 AI 生成，内容仅供参考，不作为临床诊断和治疗依据。</p>
+                </div>
+                
+                <h3 class="biomarker-analysis-title">认知能力详细分析</h3>
+                
+                <!-- 记忆力分析 -->
+                <div class="cognitive-item warning-item">
+                    <div class="cognitive-header">
+                        <h4 class="cognitive-title warning-title">
+                            <i class="fas fa-exclamation-triangle"></i>记忆力
+                        </h4>
+                        <div class="biomarker-value">
+                            <span class="value">Aβ42/40: 0.68</span>
+                            <span class="range">正常：>0.85</span>
+                        </div>
+                    </div>
+                    <p class="cognitive-description">
+                        您的Aβ42/40比值略低于健康水平，这可能与早期记忆功能变化相关。目前您可能在回忆近期事件、学习新信息时偶尔遇到困难。
+                    </p>
+                    <div class="cognitive-suggestion">
+                        <strong>建议：</strong>增加记忆训练活动，如背诵、记忆游戏；保持充足睡眠，睡眠对记忆巩固至关重要；考虑补充Omega-3脂肪酸。
+                    </div>
+                </div>
+                
+                <!-- 注意力分析 -->
+                <div class="cognitive-item normal-item">
+                    <div class="cognitive-header">
+                        <h4 class="cognitive-title normal-title">
+                            <i class="fas fa-check-circle"></i>注意力
+                        </h4>
+                        <div class="biomarker-value">
+                            <span class="value">NfL: 21 pg/mL</span>
+                            <span class="range">正常：<35 pg/mL</span>
+                        </div>
+                    </div>
+                    <p class="cognitive-description">
+                        您的神经丝轻链蛋白(NfL)水平在健康范围内，表明您的注意力系统目前保持良好。您应该能够有效地集中注意力并完成需要持续关注的任务。
+                    </p>
+                    <div class="cognitive-suggestion">
+                        <strong>建议：</strong>继续保持良好的注意力习惯；适当减少多任务处理，专注于单一任务可以提高效率；定期进行专注力训练。
+                    </div>
+                </div>
+                
+                <!-- 推理能力分析 -->
+                <div class="cognitive-item risk-item">
+                    <div class="cognitive-header">
+                        <h4 class="cognitive-title risk-title">
+                            <i class="fas fa-exclamation-circle"></i>推理能力
+                        </h4>
+                        <div class="biomarker-value">
+                            <span class="value">p-tau181: 28 pg/mL</span>
+                            <span class="range">正常：<20 pg/mL</span>
+                        </div>
+                    </div>
+                    <p class="cognitive-description">
+                        您的磷酸化tau蛋白(p-tau181)水平高于正常范围，这与脑内tau蛋白沉积相关，可能影响您的逻辑推理、问题解决和决策能力。
+                    </p>
+                    <div class="cognitive-suggestion">
+                        <strong>建议：</strong>增加逻辑思维训练，如数独、象棋等策略游戏；培养结构化思考习惯；适当补充叶酸和B族维生素；考虑定期认知测评监测变化。
+                    </div>
+                </div>
+                
+                <!-- 执行功能分析 -->
+                <div class="cognitive-item warning-item">
+                    <div class="cognitive-header">
+                        <h4 class="cognitive-title warning-title">
+                            <i class="fas fa-exclamation-triangle"></i>执行功能
+                        </h4>
+                        <div class="biomarker-value">
+                            <span class="value">TNF-α: 2.4 pg/mL</span>
+                            <span class="range">正常：<2.0 pg/mL</span>
+                        </div>
+                    </div>
+                    <p class="cognitive-description">
+                        您的肿瘤坏死因子(TNF-α)水平轻度升高，表明存在一定炎症反应，这可能影响您的执行功能，包括计划、组织和完成复杂任务的能力。
+                    </p>
+                    <div class="cognitive-suggestion">
+                        <strong>建议：</strong>采用抗炎饮食，多摄入富含抗氧化物的食物；增加有氧运动，降低炎症水平；尝试使用计划工具辅助任务管理；保持规律作息减轻压力。
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div class="fixed-bottom-bar">
+        <div class="fixed-bottom-text">
+            <h3>基于您的分析结果，我们可以为您定制认知训练计划</h3>
+            <p>个性化训练方案将针对您的记忆力、推理能力等弱项进行强化</p>
+        </div>
+        <button class="fixed-training-btn" id="create-training-btn">
+            <i class="fas fa-brain"></i> 创建训练计划
+        </button>
+    </div>
+
+    <script src="../js/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 设置时间
+            function updateTime() {
+                const now = new Date();
+                let hours = now.getHours();
+                let minutes = now.getMinutes();
+                hours = hours < 10 ? '0' + hours : hours;
+                minutes = minutes < 10 ? '0' + minutes : minutes;
+                document.querySelector('.status-left').textContent = hours + ':' + minutes;
+            }
+            
+            updateTime();
+            setInterval(updateTime, 60000);
+            
+            // 创建训练计划按钮点击事件
+            const createTrainingBtn = document.getElementById('create-training-btn');
+            if (createTrainingBtn) {
+                createTrainingBtn.addEventListener('click', function() {
+                    window.location.href = 'cognitive_training.html';
+                });
+            }
+            
+            // 添加页面加载动画效果
+            const cognitiveItems = document.querySelectorAll('.cognitive-item');
+            cognitiveItems.forEach((item, index) => {
+                setTimeout(() => {
+                    item.style.opacity = '0';
+                    item.style.transform = 'translateY(20px)';
+                    item.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                    
+                    setTimeout(() => {
+                        item.style.opacity = '1';
+                        item.style.transform = 'translateY(0)';
+                    }, 50);
+                }, index * 150);
+            });
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人记忆库 - 阿尔茨海默认知训练应用</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="app-body">
+    <div class="status-bar">
+        <div class="status-left">9:41</div>
+        <div class="status-right">
+            <i class="fas fa-signal"></i>
+            <i class="fas fa-wifi"></i>
+            <i class="fas fa-battery-full"></i>
+        </div>
+    </div>
+
+    <header class="app-header">
+        <div class="user-greeting">
+            <h2>主题</h2>
+            <p class="date">婚姻与家庭</p>
+        </div>
+        <div class="user-avatar">
+            <img src="../img/WechatIMG11.jpg" alt="用户头像" onerror="this.src='https://via.placeholder.com/50?text=用户'">
+        </div>
+    </header>
+
+    <main class="app-content">
+        <div class="search-bar">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="搜索记忆..." class="search-input" data-search-target="memory-item">
+        </div>
+
+        <div class="category-pills">
+            <div class="pill active" data-category="all">全部</div>
+            <div class="pill" data-category="family">家人</div>
+            <div class="pill" data-category="event">事件</div>
+            <div class="pill" data-category="place">地点</div>
+            <div class="pill" data-category="hobby">爱好</div>
+        </div>
+
+        <div class="memory-grid">
+            <div class="memory-card" data-category="family" data-searchable="memory-item">
+                <img src="../img/WechatIMG10.jpg" alt="家庭照片" class="memory-img">
+                <div class="memory-info">
+                    <h3 class="memory-title">婚礼纪念日</h3>
+                    <p class="memory-date">2000年5月15日</p>
+                </div>
+            </div>
+            
+            <div class="memory-card" data-category="place" data-searchable="memory-item">
+                <img src="../img/WechatIMG11.jpg" alt="北京之旅" class="memory-img">
+                <div class="memory-info">
+                    <h3 class="memory-title">北京之旅</h3>
+                    <p class="memory-date">2015年10月1日</p>
+                </div>
+            </div>
+            
+            <div class="memory-card" data-category="event" data-searchable="memory-item">
+                <img src="../img/WechatIMG12.jpg" alt="退休纪念" class="memory-img">
+                <div class="memory-info">
+                    <h3 class="memory-title">退休纪念</h3>
+                    <p class="memory-date">2018年12月30日</p>
+                </div>
+            </div>
+            
+            <div class="memory-card" data-category="hobby" data-searchable="memory-item">
+                <img src="../img/WechatIMG13.jpg" alt="钓鱼之旅" class="memory-img">
+                <div class="memory-info">
+                    <h3 class="memory-title">钓鱼之旅</h3>
+                    <p class="memory-date">2022年7月8日</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-4">
+            <h3>记忆训练</h3>
+            <p>使用个人记忆库中的内容进行记忆训练，帮助加强对重要事件、人物和地点的记忆。</p>
+            <button class="btn btn-block mt-2">开始记忆训练</button>
+        </div>
+
+        <div class="text-center mt-4">
+            <button class="btn btn-secondary add-memory-btn">
+                <i class="fas fa-plus mr-1"></i> 添加新记忆
+            </button>
+        </div>
+    </main>
+
+    <nav class="bottom-nav">
+        <a href="home.html" class="nav-item">
+            <i class="fas fa-home"></i>
+            <span>首页</span>
+        </a>
+        <a href="memory_bank.html" class="nav-item">
+            <i class="fas fa-dumbbell"></i>
+            <span>记忆库</span>
+        </a>
+        <a href="results.html" class="nav-item">
+            <i class="fas fa-chart-line"></i>
+            <span>结果</span>
+        </a>
+        <a href="profile.html" class="nav-item">
+            <i class="fas fa-user"></i>
+            <span>我的</span>
+        </a>
+    </nav>
+
+    <script src="../js/app.js"></script>
+</body>
+</html> 

@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>认知测试 - 麦若</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #6A5ACD;
+            --secondary-color: #5D4FB8;
+            --light-yellow: #FFFACC;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            background-image: none;
+        }
+
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 15px;
+            background: transparent;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .status-left {
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .status-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-right i {
+            font-size: 16px;
+        }
+
+        .app-header {
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            position: relative;
+        }
+
+        .back-button {
+            font-size: 20px;
+            color: #333;
+            text-decoration: none;
+            margin-right: 15px;
+        }
+
+        .page-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 0;
+            flex-grow: 1;
+            text-align: center;
+            margin-right: 30px;
+        }
+
+        .app-content {
+            padding: 20px;
+        }
+
+        .question-card {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .question-header {
+            background: linear-gradient(135deg, #FF9F1C, #F57600);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .question-header h2 {
+            margin: 0 0 10px 0;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .question-header p {
+            margin: 0;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .question-body {
+            padding: 30px 20px;
+        }
+
+        .question-text {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .question-text h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin: 0 0 15px 0;
+        }
+
+        .question-text p {
+            font-size: 15px;
+            color: #666;
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .option-btn {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option-btn:hover {
+            background-color: #f5f5f5;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+        }
+
+        .option-btn.selected {
+            background-color: #f0f7ff;
+            border-color: #4F8DF5;
+        }
+
+        .option-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background-color: rgba(106, 90, 205, 0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 15px;
+        }
+
+        .option-icon i {
+            font-size: 20px;
+            color: var(--primary-color);
+        }
+
+        .option-text {
+            flex: 1;
+        }
+
+        .option-text h4 {
+            margin: 0 0 5px 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .option-text p {
+            margin: 0;
+            font-size: 13px;
+            color: #777;
+        }
+
+        .next-step-container {
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        .next-btn {
+            background: linear-gradient(135deg, #6A5ACD, #5D4FB8);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            min-width: 200px;
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .next-btn.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .next-btn.active:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(106, 90, 205, 0.3);
+        }
+
+        .next-btn i {
+            margin-left: 8px;
+        }
+
+        /* 上传报告区域样式 */
+        .upload-section {
+            padding: 30px 20px;
+            display: none;
+        }
+
+        .upload-container {
+            border: 2px dashed #ccc;
+            border-radius: 12px;
+            padding: 30px 20px;
+            text-align: center;
+            background-color: #f9f9f9;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .upload-container:hover {
+            border-color: var(--primary-color);
+            background-color: #f5f5ff;
+        }
+
+        .upload-icon {
+            font-size: 40px;
+            color: #999;
+            margin-bottom: 15px;
+        }
+
+        .upload-text h3 {
+            margin: 0 0 10px 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .upload-text p {
+            margin: 0;
+            font-size: 14px;
+            color: #777;
+        }
+
+        .upload-formats {
+            margin-top: 15px;
+            font-size: 12px;
+            color: #999;
+        }
+
+        /* 认知测试区域样式 */
+        .cognitive-test-section {
+            padding: 30px 20px;
+            text-align: center;
+            display: none;
+        }
+
+        .test-intro-container {
+            background-color: #f0f7ff;
+            border-radius: 12px;
+            padding: 25px 20px;
+        }
+
+        .test-icon {
+            font-size: 40px;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .test-text h3 {
+            margin: 0 0 15px 0;
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .test-text p {
+            margin: 0 0 20px 0;
+            font-size: 14px;
+            color: #555;
+            line-height: 1.5;
+        }
+
+        .test-details {
+            display: flex;
+            justify-content: space-around;
+            margin: 25px 0;
+        }
+
+        .test-detail-item {
+            text-align: center;
+        }
+
+        .test-detail-item i {
+            font-size: 24px;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+        }
+
+        .test-detail-item p {
+            margin: 0;
+            font-size: 13px;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .start-test-btn {
+            background: linear-gradient(135deg, #6A5ACD, #5D4FB8);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            min-width: 200px;
+        }
+
+        .start-test-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(106, 90, 205, 0.3);
+        }
+
+        .start-test-btn i {
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body class="app-body">
+    <div class="status-bar">
+        <div class="status-left">18:30</div>
+        <div class="status-right">
+            <i class="fas fa-signal"></i>
+            <i class="fas fa-wifi"></i>
+            <span>65%</span>
+        </div>
+    </div>
+
+    <header class="app-header">
+        <a href="home.html" class="back-button">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+        <h1 class="page-title">认知测试</h1>
+    </header>
+
+    <main class="app-content">
+        <div class="question-card" id="question-section">
+            <div class="question-header">
+                <h2>认知健康评估</h2>
+                <p>帮助我们了解您的情况，提供更精准的服务</p>
+            </div>
+            
+            <div class="question-body">
+                <div class="question-text">
+                    <h3>您好！</h3>
+                    <p>请问您有血液报告或者脑脊液报告吗？<br>选择适合您的选项，我们将为您提供个性化服务。</p>
+                </div>
+                
+                <div class="options-container">
+                    <div class="option-btn" data-value="has-report">
+                        <div class="option-icon">
+                            <i class="fas fa-file-medical"></i>
+                        </div>
+                        <div class="option-text">
+                            <h4>是的，我有</h4>
+                            <p>上传您的报告，我们将为您提供基于生物标志物的专业分析</p>
+                        </div>
+                    </div>
+                    
+                    <div class="option-btn" data-value="no-report">
+                        <div class="option-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <div class="option-text">
+                            <h4>没有</h4>
+                            <p>无需担心，您可以通过在线认知测试来评估您的认知状态</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="next-step-container">
+                    <button class="next-btn" id="next-step-btn">
+                        下一步 <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 上传报告区域 -->
+        <div class="question-card" id="upload-report-section" style="display: none;">
+            <div class="question-header">
+                <h2>上传您的报告</h2>
+                <p>为您提供精准的生物标志物分析</p>
+            </div>
+            
+            <div class="upload-section" style="display: block;">
+                <div class="upload-container" id="upload-area">
+                    <div class="upload-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <div class="upload-text">
+                        <h3>点击上传文件或拖放至此</h3>
+                        <p>您可以上传血液检测报告或脑脊液检测报告</p>
+                    </div>
+                    <div class="upload-formats">
+                        支持格式：PDF, JPG, PNG (最大20MB)
+                    </div>
+                </div>
+                
+                <div class="next-step-container" style="margin-top: 30px;">
+                    <button class="next-btn active" id="upload-submit-btn">
+                        提交报告 <i class="fas fa-check"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 认知测试引导区域 -->
+        <div class="question-card" id="cognitive-test-intro-section" style="display: none;">
+            <div class="question-header">
+                <h2>认知能力测试</h2>
+                <p>一套科学的测试帮助评估您的认知状态</p>
+            </div>
+            
+            <div class="cognitive-test-section" style="display: block;">
+                <div class="test-intro-container">
+                    <div class="test-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <div class="test-text">
+                        <h3>开始您的认知能力测试</h3>
+                        <p>此测试包含多个认知领域的评估，将帮助您了解自己的认知健康状况，并为您提供个性化建议。</p>
+                    </div>
+                    
+                    <div class="test-details">
+                        <div class="test-detail-item">
+                            <i class="fas fa-clock"></i>
+                            <p>约10分钟</p>
+                        </div>
+                        <div class="test-detail-item">
+                            <i class="fas fa-tasks"></i>
+                            <p>5项测试</p>
+                        </div>
+                        <div class="test-detail-item">
+                            <i class="fas fa-chart-line"></i>
+                            <p>即时结果</p>
+                        </div>
+                    </div>
+                    
+                    <button class="start-test-btn" id="start-test-btn">
+                        <i class="fas fa-play"></i> 开始测试
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../js/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 设置时间
+            function updateTime() {
+                const now = new Date();
+                let hours = now.getHours();
+                let minutes = now.getMinutes();
+                hours = hours < 10 ? '0' + hours : hours;
+                minutes = minutes < 10 ? '0' + minutes : minutes;
+                document.querySelector('.status-left').textContent = hours + ':' + minutes;
+            }
+            
+            updateTime();
+            setInterval(updateTime, 60000);
+            
+            // 选项按钮点击事件
+            const optionBtns = document.querySelectorAll('.option-btn');
+            const nextBtn = document.getElementById('next-step-btn');
+            let selectedOption = null;
+            
+            optionBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // 移除之前的选中状态
+                    optionBtns.forEach(b => b.classList.remove('selected'));
+                    
+                    // 添加当前选中状态
+                    this.classList.add('selected');
+                    selectedOption = this.getAttribute('data-value');
+                    
+                    // 激活下一步按钮
+                    nextBtn.classList.add('active');
+                });
+            });
+            
+            // 下一步按钮点击事件
+            nextBtn.addEventListener('click', function() {
+                if (!selectedOption) return;
+                
+                // 隐藏问题区域
+                document.getElementById('question-section').style.display = 'none';
+                
+                // 根据选择显示不同的区域
+                if (selectedOption === 'has-report') {
+                    // 显示上传报告区域
+                    document.getElementById('upload-report-section').style.display = 'block';
+                } else if (selectedOption === 'no-report') {
+                    // 显示认知测试引导区域
+                    document.getElementById('cognitive-test-intro-section').style.display = 'block';
+                }
+            });
+            
+            // 上传报告区域交互
+            const uploadArea = document.getElementById('upload-area');
+            const uploadSubmitBtn = document.getElementById('upload-submit-btn');
+            
+            uploadArea.addEventListener('click', function() {
+                // 模拟文件上传点击
+                const fileInput = document.createElement('input');
+                fileInput.type = 'file';
+                fileInput.accept = '.pdf,.jpg,.jpeg,.png';
+                fileInput.click();
+                
+                fileInput.addEventListener('change', function(e) {
+                    if (e.target.files.length > 0) {
+                        // 这里可以处理文件上传逻辑
+                        const fileName = e.target.files[0].name;
+                        alert('已选择文件: ' + fileName);
+                    }
+                });
+            });
+            
+            uploadSubmitBtn.addEventListener('click', function() {
+                // 模拟上传完成后跳转
+                window.location.href = 'biomarker_report.html';
+            });
+            
+            // 开始测试按钮点击事件
+            const startTestBtn = document.getElementById('start-test-btn');
+            
+            startTestBtn.addEventListener('click', function() {
+                // 跳转到认知测试页面
+                window.location.href = 'cognitive_assessment.html';
+            });
+        });
+    </script>
+</body>
+</html> 

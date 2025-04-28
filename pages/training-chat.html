@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>训练助手 - 阿尔茨海默认知训练应用</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* 基础样式 - 适合50-60岁老年人 */
+        body {
+            font-size: 20px;
+            line-height: 1.6;
+            color: #333333;
+            background-color: #f7f5f0;
+        }
+        
+        /* 聊天界面容器 */
+        .chat-container {
+            height: calc(100vh - 200px);
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 15px;
+        }
+        
+        /* 聊天标题栏 */
+        .chat-header {
+            background: linear-gradient(135deg, #4CAF50, #2E7D32);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 15px 15px 0 0;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .chat-header .avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 15px;
+            object-fit: cover;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+        }
+        
+        .chat-header .info {
+            flex: 1;
+        }
+        
+        .chat-header h2 {
+            margin: 0;
+            font-size: 22px;
+            font-weight: 600;
+        }
+        
+        .chat-header p {
+            margin: 5px 0 0 0;
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .chat-header .back-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .chat-header .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        /* 聊天消息区域 */
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background-color: #fff;
+            border-left: 1px solid #eee;
+            border-right: 1px solid #eee;
+        }
+        
+        .message {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        .message.ai {
+            flex-direction: row;
+        }
+        
+        .message.user {
+            flex-direction: row-reverse;
+        }
+        
+        .message .avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            margin: 0 15px;
+            object-fit: cover;
+        }
+        
+        .message .bubble {
+            max-width: 70%;
+            padding: 15px;
+            border-radius: 18px;
+            font-size: 18px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .message.ai .bubble {
+            background-color: #f0f0f0;
+            border-top-left-radius: 5px;
+        }
+        
+        .message.user .bubble {
+            background-color: #4CAF50;
+            color: white;
+            border-top-right-radius: 5px;
+        }
+        
+        .message .time {
+            font-size: 14px;
+            color: #999;
+            margin-top: 5px;
+            text-align: center;
+        }
+        
+        /* 训练任务卡片 - 嵌入在聊天消息中 */
+        .task-card {
+            background-color: #fff;
+            border-radius: 15px;
+            padding: 15px;
+            margin: 10px 0;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .task-card h4 {
+            margin: 0 0 10px 0;
+            color: #4CAF50;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .task-card h4 i {
+            margin-right: 8px;
+        }
+        
+        .task-card p {
+            margin: 0 0 10px 0;
+            font-size: 16px;
+        }
+        
+        .task-card .progress {
+            height: 10px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            margin-bottom: 8px;
+            overflow: hidden;
+        }
+        
+        .task-card .progress-bar {
+            height: 100%;
+            background-color: #4CAF50;
+            border-radius: 5px;
+        }
+        
+        .task-card .progress-text {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .task-card .task-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 10px;
+            gap: 10px;
+        }
+        
+        .task-card .task-btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 20px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .task-card .start-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+        
+        .task-card .details-btn {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+        
+        /* 训练结果 */
+        .result-card {
+            background-color: #f9f9f9;
+            border-radius: 15px;
+            padding: 15px;
+            margin: 10px 0;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .result-card h4 {
+            margin: 0 0 10px 0;
+            color: #FF9F1C;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .result-card h4 i {
+            margin-right: 8px;
+        }
+        
+        .result-card .stat {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+        
+        .result-card .stat-label {
+            color: #666;
+        }
+        
+        .result-card .stat-value {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .result-card .chart {
+            height: 100px;
+            background-color: #f0f0f0;
+            border-radius: 8px;
+            margin: 10px 0;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            padding: 0 10px;
+        }
+        
+        .result-card .chart-bar {
+            width: 30px;
+            background-color: #FF9F1C;
+            border-radius: 5px 5px 0 0;
+        }
+        
+        /* 输入框区域 */
+        .chat-input {
+            display: flex;
+            padding: 15px;
+            background-color: #fff;
+            border-top: 1px solid #eee;
+            border-radius: 0 0 15px 15px;
+            box-shadow: 0 -2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .chat-input input {
+            flex: 1;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            font-size: 18px;
+            outline: none;
+            transition: border 0.2s;
+        }
+        
+        .chat-input input:focus {
+            border-color: #4CAF50;
+        }
+        
+        .chat-input button {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            margin-left: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .chat-input button:hover {
+            background-color: #388E3C;
+        }
+        
+        .chat-input button i {
+            font-size: 20px;
+        }
+        
+        /* 快捷回复按钮 */
+        .quick-replies {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 0 15px 15px 15px;
+            background-color: #fff;
+        }
+        
+        .quick-reply {
+            padding: 10px 15px;
+            background-color: #f0f0f0;
+            border-radius: 20px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+        
+        .quick-reply:hover {
+            background-color: #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+    <div class="status-bar">
+        <div class="status-left">9:41</div>
+        <div class="status-right">
+            <i class="fas fa-signal"></i>
+            <i class="fas fa-wifi"></i>
+            <i class="fas fa-battery-full"></i>
+        </div>
+    </div>
+
+    <main class="app-content">
+        <div class="chat-container">
+            <div class="chat-header">
+                <button class="back-btn" id="back-button">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <img src="../img/WechatIMG12.jpg" alt="训练助手" class="avatar" onerror="this.src='https://via.placeholder.com/50?text=助手'">
+                <div class="info">
+                    <h2>训练助手</h2>
+                    <p>今日训练专家</p>
+                </div>
+            </div>
+            
+            <div class="chat-messages" id="chat-messages">
+                <!-- AI 消息 - 欢迎 -->
+                <div class="message ai">
+                    <img src="../img/WechatIMG12.jpg" alt="训练助手" class="avatar" onerror="this.src='https://via.placeholder.com/45?text=助手'">
+                    <div>
+                        <div class="bubble">
+                            您好，姚先生！我是您的训练助手。今天您有3项训练任务，其中1项已完成，1项进行中，1项未开始。您想了解哪个训练的详情呢？
+                        </div>
+                        <div class="time">09:30</div>
+                    </div>
+                </div>
+                
+                <!-- AI 消息 - 训练任务卡片 -->
+                <div class="message ai">
+                    <img src="../img/WechatIMG12.jpg" alt="训练助手" class="avatar" onerror="this.src='https://via.placeholder.com/45?text=助手'">
+                    <div>
+                        <div class="bubble">
+                            以下是您今日的训练计划：
+                            
+                            <div class="task-card">
+                                <h4><i class="fas fa-brain"></i> 位置记忆训练</h4>
+                                <p>通过记忆物品位置，增强空间记忆能力</p>
+                                <div class="progress">
+                                    <div class="progress-bar" style="width: 100%;"></div>
+                                </div>
+                                <div class="progress-text">
+                                    <span>已完成</span>
+                                    <span>100%</span>
+                                </div>
+                                <div class="task-actions">
+                                    <button class="task-btn details-btn">查看结果</button>
+                                </div>
+                            </div>
+                            
+                            <div class="task-card">
+                                <h4><i class="fas fa-eye"></i> 颜色匹配训练</h4>
+                                <p>通过颜色识别和匹配，提升注意力</p>
+                                <div class="progress">
+                                    <div class="progress-bar" style="width: 30%;"></div>
+                                </div>
+                                <div class="progress-text">
+                                    <span>进行中</span>
+                                    <span>30%</span>
+                                </div>
+                                <div class="task-actions">
+                                    <button class="task-btn start-btn">继续训练</button>
+                                </div>
+                            </div>
+                            
+                            <div class="task-card">
+                                <h4><i class="fas fa-puzzle-piece"></i> 数字序列训练</h4>
+                                <p>通过数字规律挑战，增强推理能力</p>
+                                <div class="progress">
+                                    <div class="progress-bar" style="width: 0%;"></div>
+                                </div>
+                                <div class="progress-text">
+                                    <span>未开始</span>
+                                    <span>0%</span>
+                                </div>
+                                <div class="task-actions">
+                                    <button class="task-btn start-btn">开始训练</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="time">09:31</div>
+                    </div>
+                </div>
+                
+                <!-- 用户消息 -->
+                <div class="message user">
+                    <img src="../img/WechatIMG11.jpg" alt="用户" class="avatar" onerror="this.src='https://via.placeholder.com/45?text=用户'">
+                    <div>
+                        <div class="bubble">
+                            我想了解位置记忆训练的结果
+                        </div>
+                        <div class="time">09:32</div>
+                    </div>
+                </div>
+                
+                <!-- AI 消息 - 训练结果 -->
+                <div class="message ai">
+                    <img src="../img/WechatIMG12.jpg" alt="训练助手" class="avatar" onerror="this.src='https://via.placeholder.com/45?text=助手'">
+                    <div>
+                        <div class="bubble">
+                            好的，以下是您今天位置记忆训练的详细结果：
+                            
+                            <div class="result-card">
+                                <h4><i class="fas fa-chart-line"></i> 位置记忆训练结果</h4>
+                                
+                                <div class="stat">
+                                    <span class="stat-label">完成时间：</span>
+                                    <span class="stat-value">今天 08:45</span>
+                                </div>
+                                
+                                <div class="stat">
+                                    <span class="stat-label">正确率：</span>
+                                    <span class="stat-value">85%</span>
+                                </div>
+                                
+                                <div class="stat">
+                                    <span class="stat-label">平均反应时间：</span>
+                                    <span class="stat-value">2.3秒</span>
+                                </div>
+                                
+                                <div class="stat">
+                                    <span class="stat-label">完成难度：</span>
+                                    <span class="stat-value">中等</span>
+                                </div>
+                                
+                                <h4><i class="fas fa-calendar-alt"></i> 近期表现</h4>
+                                <div class="chart">
+                                    <div class="chart-bar" style="height: 40%;"></div>
+                                    <div class="chart-bar" style="height: 60%;"></div>
+                                    <div class="chart-bar" style="height: 55%;"></div>
+                                    <div class="chart-bar" style="height: 65%;"></div>
+                                    <div class="chart-bar" style="height: 85%;"></div>
+                                </div>
+                                <div class="progress-text">
+                                    <span>近5次训练</span>
+                                    <span>持续进步</span>
+                                </div>
+                            </div>
+                            
+                            您在位置记忆训练中表现很好！相比上周，正确率提高了15%，反应时间缩短了0.5秒。要继续保持这样的好成绩！
+                        </div>
+                        <div class="time">09:33</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="quick-replies">
+                <button class="quick-reply">查看所有训练计划</button>
+                <button class="quick-reply">我的训练进度如何？</button>
+                <button class="quick-reply">什么时候完成下一个训练最好？</button>
+            </div>
+            
+            <div class="chat-input">
+                <input type="text" placeholder="输入您想问的问题..." id="message-input">
+                <button id="send-button">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const chatMessages = document.getElementById('chat-messages');
+            const messageInput = document.getElementById('message-input');
+            const sendButton = document.getElementById('send-button');
+            const backButton = document.getElementById('back-button');
+            const quickReplies = document.querySelectorAll('.quick-reply');
+            const taskButtons = document.querySelectorAll('.task-btn');
+            
+            // 返回按钮事件
+            backButton.addEventListener('click', function() {
+                window.location.href = 'home.html';
+            });
+            
+            // 发送消息事件
+            function sendMessage() {
+                const message = messageInput.value.trim();
+                if (message) {
+                    // 添加用户消息
+                    addUserMessage(message);
+                    
+                    // 清空输入框
+                    messageInput.value = '';
+                    
+                    // 模拟AI回复
+                    setTimeout(function() {
+                        if (message.includes('颜色') || message.includes('注意力')) {
+                            addAIMessage('颜色匹配训练目前完成了30%，您上次在第3关停止。这项训练可以有效提高您的注意力和视觉识别能力。现在是继续训练的好时机！');
+                        } else if (message.includes('数字') || message.includes('序列') || message.includes('推理')) {
+                            addAIMessage('数字序列训练是今天的新任务，这项训练通过让您识别数字规律来增强逻辑思维和推理能力。根据您的训练计划，建议您今天下午完成此项训练。');
+                        } else {
+                            addAIMessage('您还有任何关于训练的问题吗？我可以帮您查看训练进度、解释训练内容或提供训练建议。');
+                        }
+                    }, 1000);
+                }
+            }
+            
+            // 添加用户消息到聊天界面
+            function addUserMessage(text) {
+                const now = new Date();
+                const timeString = now.getHours() + ':' + (now.getMinutes() < 10 ? '0' : '') + now.getMinutes();
+                
+                const messageHTML = `
+                <div class="message user">
+                    <img src="../img/WechatIMG11.jpg" alt="用户" class="avatar" onerror="this.src='https://via.placeholder.com/45?text=用户'">
+                    <div>
+                        <div class="bubble">
+                            ${text}
+                        </div>
+                        <div class="time">${timeString}</div>
+                    </div>
+                </div>
+                `;
+                
+                chatMessages.insertAdjacentHTML('beforeend', messageHTML);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+            
+            // 添加AI消息到聊天界面
+            function addAIMessage(text) {
+                const now = new Date();
+                const timeString = now.getHours() + ':' + (now.getMinutes() < 10 ? '0' : '') + now.getMinutes();
+                
+                const messageHTML = `
+                <div class="message ai">
+                    <img src="../img/WechatIMG12.jpg" alt="训练助手" class="avatar" onerror="this.src='https://via.placeholder.com/45?text=助手'">
+                    <div>
+                        <div class="bubble">
+                            ${text}
+                        </div>
+                        <div class="time">${timeString}</div>
+                    </div>
+                </div>
+                `;
+                
+                chatMessages.insertAdjacentHTML('beforeend', messageHTML);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+            
+            // 发送按钮点击事件
+            sendButton.addEventListener('click', sendMessage);
+            
+            // 回车键发送消息
+            messageInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+            
+            // 快捷回复按钮点击事件
+            quickReplies.forEach(button => {
+                button.addEventListener('click', function() {
+                    addUserMessage(this.textContent);
+                    
+                    // 模拟AI回复
+                    setTimeout(function() {
+                        if (button.textContent.includes('训练计划')) {
+                            addAIMessage('您今天的训练计划包括3项内容：位置记忆训练（已完成）、颜色匹配训练（进行中30%）和数字序列训练（未开始）。建议您今天完成剩余的两项训练，这样可以保持训练的连续性。');
+                        } else if (button.textContent.includes('进度')) {
+                            addAIMessage('您本周的训练进度非常好！已经完成了计划的65%，比上周提高了15%。特别是在位置记忆训练中表现优秀，正确率达到85%。继续保持这样的状态！');
+                        } else if (button.textContent.includes('什么时候')) {
+                            addAIMessage('根据您的历史数据，您在下午2-4点之间训练效果最好。建议您在今天下午2点继续颜色匹配训练，完成后再进行数字序列训练。这样可以确保有足够的精力应对挑战。');
+                        }
+                    }, 1000);
+                });
+            });
+            
+            // 训练任务按钮点击事件
+            taskButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const taskCard = this.closest('.task-card');
+                    const taskTitle = taskCard.querySelector('h4').textContent.trim();
+                    
+                    if (this.classList.contains('start-btn')) {
+                        if (taskTitle.includes('颜色匹配')) {
+                            window.location.href = 'game.html?type=attention';
+                        } else if (taskTitle.includes('数字序列')) {
+                            window.location.href = 'game.html?type=reasoning';
+                        }
+                    } else if (this.classList.contains('details-btn')) {
+                        if (taskTitle.includes('位置记忆')) {
+                            addUserMessage('我想了解位置记忆训练的结果');
+                            
+                            // 滚动到已有的结果消息
+                            setTimeout(function() {
+                                const resultMessage = document.querySelector('.result-card');
+                                if (resultMessage) {
+                                    resultMessage.scrollIntoView({ behavior: 'smooth' });
+                                }
+                            }, 500);
+                        }
+                    }
+                });
+            });
+            
+            // 初始滚动到底部
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        });
+    </script>
+</body>
+</html> 

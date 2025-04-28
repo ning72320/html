@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>训练结果 - 阿尔茨海默认知训练应用</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="app-body">
+    <div class="status-bar">
+        <div class="status-left">9:41</div>
+        <div class="status-right">
+            <i class="fas fa-signal"></i>
+            <i class="fas fa-wifi"></i>
+            <i class="fas fa-battery-full"></i>
+        </div>
+    </div>
+
+    <header class="app-header">
+        <div class="user-greeting">
+            <h2>训练结果</h2>
+            <p class="date">查看您的训练进度和成绩</p>
+        </div>
+        <div class="user-avatar">
+            <img src="../img/WechatIMG11.jpg" alt="用户头像" onerror="this.src='https://via.placeholder.com/50?text=用户'">
+        </div>
+    </header>
+
+    <main class="app-content">
+        <div class="segmented-control mb-3">
+            <div class="segment active" data-content="weekly">本周</div>
+            <div class="segment" data-content="monthly">本月</div>
+            <div class="segment" data-content="all-time">所有</div>
+        </div>
+
+        <div data-segment-content="weekly" style="display: block;">
+            <div class="card">
+                <h3 class="mb-2">本周总结</h3>
+                <p>完成训练 <strong>12</strong> 次，总时长 <strong>3.5</strong> 小时</p>
+                <div class="progress-container mt-2">
+                    <div class="progress-bar progress-bar-success" style="width: 75%"></div>
+                </div>
+                <p class="text-success mt-1">较上周提升 <strong>15%</strong></p>
+            </div>
+
+            <div class="card mt-3">
+                <h3 class="mb-2">认知能力分析</h3>
+                
+                <div class="flex justify-between items-center mb-1">
+                    <p>记忆力</p>
+                    <p>78/100</p>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-bar" style="width: 78%"></div>
+                </div>
+                
+                <div class="flex justify-between items-center mb-1 mt-2">
+                    <p>注意力</p>
+                    <p>85/100</p>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-bar" style="width: 85%"></div>
+                </div>
+                
+                <div class="flex justify-between items-center mb-1 mt-2">
+                    <p>推理能力</p>
+                    <p>65/100</p>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-bar" style="width: 65%"></div>
+                </div>
+            </div>
+
+            <div class="card mt-3">
+                <h3 class="mb-2">最近训练记录</h3>
+                
+                <div class="activity-item" data-searchable="activity-item">
+                    <div class="activity-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <div class="activity-details">
+                        <h4>记忆卡片匹配</h4>
+                        <p>10月14日 - 分数: 85/100</p>
+                    </div>
+                    <div class="activity-trend">
+                        <i class="fas fa-arrow-up"></i>
+                        <span>+5%</span>
+                    </div>
+                </div>
+                
+                <div class="activity-item" data-searchable="activity-item">
+                    <div class="activity-icon">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <div class="activity-details">
+                        <h4>注意力测试</h4>
+                        <p>10月12日 - 分数: 78/100</p>
+                    </div>
+                    <div class="activity-trend">
+                        <i class="fas fa-arrow-up"></i>
+                        <span>+3%</span>
+                    </div>
+                </div>
+                
+                <div class="activity-item" data-searchable="activity-item">
+                    <div class="activity-icon">
+                        <i class="fas fa-puzzle-piece"></i>
+                    </div>
+                    <div class="activity-details">
+                        <h4>逻辑推理游戏</h4>
+                        <p>10月10日 - 分数: 70/100</p>
+                    </div>
+                    <div class="activity-trend">
+                        <i class="fas fa-arrow-down"></i>
+                        <span class="text-danger">-2%</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-4 mb-4">
+                <button class="btn share-btn">
+                    <i class="fas fa-share-alt mr-1"></i> 分享结果
+                </button>
+            </div>
+        </div>
+
+        <div data-segment-content="monthly" style="display: none;">
+            <div class="card">
+                <h3>本月数据加载中...</h3>
+                <p>请稍候查看您的月度训练报告</p>
+            </div>
+        </div>
+
+        <div data-segment-content="all-time" style="display: none;">
+            <div class="card">
+                <h3>历史数据加载中...</h3>
+                <p>请稍候查看您的所有训练历史</p>
+            </div>
+        </div>
+    </main>
+
+    <nav class="bottom-nav">
+        <a href="home.html" class="nav-item">
+            <i class="fas fa-home"></i>
+            <span>首页</span>
+        </a>
+        <a href="memory_bank.html" class="nav-item">
+            <i class="fas fa-images"></i>
+            <span>记忆库</span>
+        </a>
+        <a href="academy.html" class="nav-item">
+            <i class="fas fa-graduation-cap"></i>
+            <span>学院</span>
+        </a>
+        <a href="results.html" class="nav-item active">
+            <i class="fas fa-chart-line"></i>
+            <span>结果</span>
+        </a>
+        <a href="profile.html" class="nav-item">
+            <i class="fas fa-user"></i>
+            <span>我的</span>
+        </a>
+    </nav>
+
+    <script src="../js/app.js"></script>
+</body>
+</html> 

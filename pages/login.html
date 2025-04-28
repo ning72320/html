@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录 - 麦若</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .login-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            height: 100%;
+        }
+        
+        .logo-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+        
+        .logo {
+            width: 100px;
+            height: 100px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #6A5ACD, #4B0082);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 12px rgba(106, 90, 205, 0.3);
+        }
+        
+        .logo i {
+            font-size: 50px;
+            color: white;
+        }
+        
+        .app-name {
+            font-size: 28px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 6px;
+        }
+        
+        .app-slogan {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        .login-methods {
+            width: 100%;
+            max-width: 320px;
+        }
+        
+        .login-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 14px 0;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .primary-btn {
+            background-color: #6A5ACD;
+            color: white;
+            border: none;
+        }
+        
+        .primary-btn:hover {
+            background-color: #5D4FB8;
+        }
+        
+        .secondary-btn {
+            background-color: white;
+            color: #6A5ACD;
+            border: 1px solid #6A5ACD;
+        }
+        
+        .secondary-btn:hover {
+            background-color: #F8F7FF;
+        }
+        
+        .login-btn i {
+            margin-right: 8px;
+        }
+        
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 24px 0;
+        }
+        
+        .divider-line {
+            flex: 1;
+            height: 1px;
+            background-color: #E0E0E0;
+        }
+        
+        .divider-text {
+            padding: 0 16px;
+            font-size: 14px;
+            color: #999;
+        }
+        
+        .agreement-section {
+            margin-top: 30px;
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        .custom-checkbox {
+            min-width: 20px;
+            height: 20px;
+            border: 1px solid #D0D0D0;
+            border-radius: 4px;
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .custom-checkbox.checked {
+            background-color: #6A5ACD;
+            border-color: #6A5ACD;
+        }
+        
+        .custom-checkbox i {
+            color: white;
+            font-size: 12px;
+            display: none;
+        }
+        
+        .custom-checkbox.checked i {
+            display: block;
+        }
+        
+        .agreement-text {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.5;
+        }
+        
+        .agreement-text a {
+            color: #6A5ACD;
+            text-decoration: none;
+        }
+        
+        .phone-input-container {
+            position: relative;
+            margin-bottom: 15px;
+        }
+        
+        .phone-input {
+            width: 100%;
+            padding: 14px 110px 14px 15px;
+            border: 1px solid #E0E0E0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        .phone-input:focus {
+            border-color: #6A5ACD;
+            outline: none;
+        }
+        
+        .verification-btn {
+            position: absolute;
+            right: 5px;
+            top: 5px;
+            padding: 9px 15px;
+            background-color: #F0F0F0;
+            color: #666;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        
+        .verification-btn.active {
+            background-color: #6A5ACD;
+            color: white;
+        }
+        
+        .verification-input {
+            width: 100%;
+            padding: 14px 15px;
+            border: 1px solid #E0E0E0;
+            border-radius: 8px;
+            font-size: 16px;
+            margin-bottom: 20px;
+            transition: border-color 0.3s;
+        }
+        
+        .verification-input:focus {
+            border-color: #6A5ACD;
+            outline: none;
+        }
+        
+        .login-form {
+            width: 100%;
+            display: none;
+        }
+        
+        .login-form.active {
+            display: block;
+        }
+        
+        .back-btn {
+            align-self: flex-start;
+            display: flex;
+            align-items: center;
+            color: #666;
+            text-decoration: none;
+            font-size: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .back-btn i {
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body class="app-body">
+    <div class="status-bar">
+        <div class="status-left">
+            <span class="time" id="current-time">9:41</span>
+        </div>
+        <div class="status-right">
+            <i class="fas fa-signal"></i>
+            <i class="fas fa-wifi"></i>
+            <i class="fas fa-battery-full"></i>
+        </div>
+    </div>
+
+    <div class="login-container">
+        <div class="logo-section">
+            <div class="logo">
+                <i class="fas fa-brain"></i>
+            </div>
+            <h1 class="app-name">麦若</h1>
+            <p class="app-slogan">守护您的认知健康，记录美好回忆</p>
+        </div>
+        
+        <div class="login-methods">
+            <button class="login-btn primary-btn" id="quick-login-btn">
+                <i class="fas fa-mobile-alt"></i>本机号码一键登录
+            </button>
+            <button class="login-btn secondary-btn" id="phone-login-btn">
+                <i class="fas fa-sms"></i>验证码登录/注册
+            </button>
+        </div>
+        
+        <!-- 验证码登录表单 -->
+        <div class="login-form" id="phone-login-form">
+            <a href="#" class="back-btn" id="back-to-methods">
+                <i class="fas fa-chevron-left"></i>返回
+            </a>
+            
+            <div class="phone-input-container">
+                <input type="tel" class="phone-input" placeholder="请输入手机号码" maxlength="11">
+                <button class="verification-btn" id="send-code-btn">获取验证码</button>
+            </div>
+            
+            <input type="text" class="verification-input" placeholder="请输入验证码" maxlength="6">
+            
+            <button class="login-btn primary-btn" id="verify-login-btn">
+                登录/注册
+            </button>
+        </div>
+        
+        <div class="agreement-section">
+            <div class="custom-checkbox checked" id="agreement-checkbox">
+                <i class="fas fa-check"></i>
+            </div>
+            <div class="agreement-text">
+                我已阅读并同意 <a href="#">《用户协议》</a>和<a href="#">《隐私协议》</a>，并授权麦若使用该账号信息（如昵称、头像）进行统一管理
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 更新当前时间
+            function updateTime() {
+                const now = new Date();
+                let hours = now.getHours();
+                let minutes = now.getMinutes();
+                hours = hours < 10 ? '0' + hours : hours;
+                minutes = minutes < 10 ? '0' + minutes : minutes;
+                document.getElementById('current-time').textContent = hours + ':' + minutes;
+            }
+            
+            updateTime();
+            setInterval(updateTime, 60000);
+            
+            // 协议勾选功能
+            const agreementCheckbox = document.getElementById('agreement-checkbox');
+            let isAgreed = true; // 默认勾选
+            
+            agreementCheckbox.addEventListener('click', function() {
+                isAgreed = !isAgreed;
+                if (isAgreed) {
+                    this.classList.add('checked');
+                } else {
+                    this.classList.remove('checked');
+                }
+            });
+            
+            // 切换到验证码登录表单
+            const phoneLoginBtn = document.getElementById('phone-login-btn');
+            const phoneLoginForm = document.getElementById('phone-login-form');
+            const loginMethods = document.querySelector('.login-methods');
+            
+            phoneLoginBtn.addEventListener('click', function() {
+                loginMethods.style.display = 'none';
+                phoneLoginForm.classList.add('active');
+            });
+            
+            // 返回登录方式选择
+            const backToMethods = document.getElementById('back-to-methods');
+            
+            backToMethods.addEventListener('click', function(e) {
+                e.preventDefault();
+                phoneLoginForm.classList.remove('active');
+                loginMethods.style.display = 'block';
+            });
+            
+            // 获取验证码按钮逻辑
+            const sendCodeBtn = document.getElementById('send-code-btn');
+            const phoneInput = document.querySelector('.phone-input');
+            
+            phoneInput.addEventListener('input', function() {
+                if (this.value.length === 11) {
+                    sendCodeBtn.classList.add('active');
+                } else {
+                    sendCodeBtn.classList.remove('active');
+                }
+            });
+            
+            let countdown = 60;
+            let timer = null;
+            
+            sendCodeBtn.addEventListener('click', function() {
+                const phoneNumber = phoneInput.value;
+                
+                if (phoneNumber.length !== 11) {
+                    alert('请输入正确的手机号码');
+                    return;
+                }
+                
+                // 模拟发送验证码
+                alert(`验证码已发送至 ${phoneNumber}`);
+                
+                // 开始倒计时
+                this.disabled = true;
+                this.classList.remove('active');
+                this.textContent = `重新获取(${countdown}s)`;
+                
+                timer = setInterval(() => {
+                    countdown--;
+                    this.textContent = `重新获取(${countdown}s)`;
+                    
+                    if (countdown === 0) {
+                        clearInterval(timer);
+                        this.disabled = false;
+                        this.textContent = '获取验证码';
+                        countdown = 60;
+                        
+                        if (phoneInput.value.length === 11) {
+                            this.classList.add('active');
+                        }
+                    }
+                }, 1000);
+            });
+            
+            // 一键登录按钮逻辑
+            const quickLoginBtn = document.getElementById('quick-login-btn');
+            
+            quickLoginBtn.addEventListener('click', function() {
+                if (!isAgreed) {
+                    alert('请先同意用户协议和隐私协议');
+                    return;
+                }
+                
+                // 模拟一键登录
+                //alert('正在使用本机号码登录...');
+                setTimeout(function() {
+                    window.location.href = 'create_avatar.html';
+                }, 1000);
+            });
+            
+            // 验证码登录按钮逻辑
+            const verifyLoginBtn = document.getElementById('verify-login-btn');
+            const verificationInput = document.querySelector('.verification-input');
+            
+            verifyLoginBtn.addEventListener('click', function() {
+                const phoneNumber = phoneInput.value;
+                const verificationCode = verificationInput.value;
+                
+                if (!isAgreed) {
+                    alert('请先同意用户协议和隐私协议');
+                    return;
+                }
+                
+                if (phoneNumber.length !== 11) {
+                    alert('请输入正确的手机号码');
+                    return;
+                }
+                
+                if (verificationCode.length !== 6) {
+                    alert('请输入6位验证码');
+                    return;
+                }
+                
+                // 模拟验证登录
+                alert('验证成功，正在登录...');
+                setTimeout(function() {
+                    window.location.href = 'create_avatar.html';
+                }, 1000);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学院 - 阿尔茨海默认知训练应用</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .academy-header {
+            background: linear-gradient(135deg, #6A5ACD, #4B0082);
+            color: white;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .academy-tabs {
+            display: flex;
+            background-color: white;
+            border-radius: var(--border-radius);
+            margin-bottom: 20px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .academy-tab {
+            flex: 1;
+            text-align: center;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            position: relative;
+        }
+        
+        .academy-tab.active {
+            color: #6A5ACD;
+        }
+        
+        .academy-tab.active::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: #6A5ACD;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .content-item {
+            background-color: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .content-thumbnail {
+            height: 180px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .content-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .content-thumbnail .play-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50px;
+            height: 50px;
+            background-color: rgba(0,0,0,0.5);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 20px;
+        }
+        
+        .content-info {
+            padding: 15px;
+        }
+        
+        .content-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin: 0 0 10px 0;
+            color: var(--text-dark);
+        }
+        
+        .content-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--text-light);
+            font-size: 12px;
+        }
+        
+        .content-meta i {
+            margin-right: 5px;
+        }
+        
+        .category-tag {
+            display: inline-block;
+            padding: 4px 10px;
+            background-color: #f0f0f0;
+            border-radius: 12px;
+            font-size: 12px;
+            color: #666;
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+        
+        .category-tag.active {
+            background-color: #6A5ACD;
+            color: white;
+        }
+        
+        .filter-tags {
+            display: flex;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+            padding: 5px 0;
+        }
+        
+        .search-section {
+            margin-bottom: 20px;
+        }
+        
+        .duration-badge {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background-color: rgba(0,0,0,0.7);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        
+        .article-preview {
+            color: var(--text-medium);
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 10px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        /* 修复底部导航栏问题 */
+        .app-content {
+            padding-bottom: 70px; /* 为底部导航栏留出空间 */
+        }
+    </style>
+</head>
+<body class="app-body">
+    <div class="status-bar">
+        <div class="status-left">
+            <span class="time" id="current-time">10:58</span>
+        </div>
+        <div class="status-right">
+            <i class="fas fa-signal"></i>
+            <i class="fas fa-wifi"></i>
+            <i class="fas fa-battery-full"></i>
+        </div>
+    </div>
+
+    <header class="app-header">
+        <div class="user-greeting" style="text-align: center;">
+            <h2>学院</h2>
+        </div>
+    </header>
+    
+    <main class="app-content">
+        <div class="academy-tabs">
+            <div class="academy-tab active" data-tab="videos">视频</div>
+            <div class="academy-tab" data-tab="articles">文章</div>
+        </div>     
+        <!-- 视频内容 -->
+        <div class="tab-content active" id="videos-content">
+            <div class="content-item">
+                <div class="content-thumbnail">
+                    <img src="../img/academy/video1.jpg" alt="认知训练视频" onerror="this.src='https://via.placeholder.com/400x225?text=认知训练视频'">
+                    <div class="play-icon">
+                        <i class="fas fa-play"></i>
+                    </div>
+                    <div class="duration-badge">05:42</div>
+                </div>
+                <div class="content-info">
+                    <h3 class="content-title">认知训练的基本方法与技巧</h3>
+                    <div class="content-meta">
+                        <span><i class="fas fa-calendar-alt"></i>2023-06-15</span>
+                        <span><i class="fas fa-eye"></i>1,245次观看</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="content-item">
+                <div class="content-thumbnail">
+                    <img src="../img/academy/video2.jpg" alt="健康饮食视频" onerror="this.src='https://via.placeholder.com/400x225?text=健康饮食视频'">
+                    <div class="play-icon">
+                        <i class="fas fa-play"></i>
+                    </div>
+                    <div class="duration-badge">08:16</div>
+                </div>
+                <div class="content-info">
+                    <h3 class="content-title">地中海饮食法与大脑健康的关系</h3>
+                    <div class="content-meta">
+                        <span><i class="fas fa-calendar-alt"></i>2023-05-28</span>
+                        <span><i class="fas fa-eye"></i>982次观看</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="content-item">
+                <div class="content-thumbnail">
+                    <img src="../img/academy/video3.jpg" alt="预防知识视频" onerror="this.src='https://via.placeholder.com/400x225?text=预防知识视频'">
+                    <div class="play-icon">
+                        <i class="fas fa-play"></i>
+                    </div>
+                    <div class="duration-badge">12:04</div>
+                </div>
+                <div class="content-info">
+                    <h3 class="content-title">阿尔茨海默症早期症状识别与预防</h3>
+                    <div class="content-meta">
+                        <span><i class="fas fa-calendar-alt"></i>2023-05-10</span>
+                        <span><i class="fas fa-eye"></i>2,103次观看</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 文章内容 -->
+        <div class="tab-content" id="articles-content">
+            <div class="content-item">
+                <div class="content-thumbnail">
+                    <img src="../img/academy/article1.jpg" alt="认知健康文章" onerror="this.src='https://via.placeholder.com/400x225?text=认知健康文章'">
+                </div>
+                <div class="content-info">
+                    <h3 class="content-title">保持认知健康的10个日常习惯</h3>
+                    <p class="article-preview">良好的生活习惯对于大脑健康至关重要，本文将介绍10个简单易行的日常习惯，帮助您保持认知健康，预防阿尔茨海默症的发生...</p>
+                    <div class="content-meta">
+                        <span><i class="fas fa-calendar-alt"></i>2023-06-20</span>
+                        <span><i class="fas fa-book-reader"></i>5分钟阅读</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="content-item">
+                <div class="content-thumbnail">
+                    <img src="../img/academy/article2.jpg" alt="护理指南文章" onerror="this.src='https://via.placeholder.com/400x225?text=护理指南文章'">
+                </div>
+                <div class="content-info">
+                    <h3 class="content-title">阿尔茨海默症患者家庭护理指南</h3>
+                    <p class="article-preview">对于阿尔茨海默症患者的家庭成员来说，了解如何提供适当的护理非常重要。本文提供了一系列实用的护理技巧和建议，帮助家庭照顾者更好地照顾患者...</p>
+                    <div class="content-meta">
+                        <span><i class="fas fa-calendar-alt"></i>2023-06-05</span>
+                        <span><i class="fas fa-book-reader"></i>8分钟阅读</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="content-item">
+                <div class="content-thumbnail">
+                    <img src="../img/academy/article3.jpg" alt="研究进展文章" onerror="this.src='https://via.placeholder.com/400x225?text=研究进展文章'">
+                </div>
+                <div class="content-info">
+                    <h3 class="content-title">阿尔茨海默症研究最新进展</h3>
+                    <p class="article-preview">近年来，阿尔茨海默症研究领域取得了多项突破性进展。本文汇总了最新的研究成果和治疗方法，为患者和家属带来希望...</p>
+                    <div class="content-meta">
+                        <span><i class="fas fa-calendar-alt"></i>2023-05-25</span>
+                        <span><i class="fas fa-book-reader"></i>10分钟阅读</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <nav class="bottom-nav">
+        <a href="home.html" class="nav-item">
+            <i class="fas fa-home"></i>
+            <span>首页</span>
+        </a>
+        <a href="memory_bank.html" class="nav-item">
+            <i class="fas fa-images"></i>
+            <span>记忆库</span>
+        </a>
+        <a href="academy.html" class="nav-item active">
+            <i class="fas fa-graduation-cap"></i>
+            <span>学院</span>
+        </a>
+        <a href="results.html" class="nav-item">
+            <i class="fas fa-chart-line"></i>
+            <span>结果</span>
+        </a>
+        <a href="profile.html" class="nav-item">
+            <i class="fas fa-user"></i>
+            <span>我的</span>
+        </a>
+    </nav>
+
+    <script src="../js/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 更新当前时间
+            function updateTime() {
+                const now = new Date();
+                let hours = now.getHours();
+                let minutes = now.getMinutes();
+                hours = hours < 10 ? '0' + hours : hours;
+                minutes = minutes < 10 ? '0' + minutes : minutes;
+                document.getElementById('current-time').textContent = hours + ':' + minutes;
+            }
+            
+            updateTime();
+            setInterval(updateTime, 60000);
+            
+            // 标签切换功能
+            const tabs = document.querySelectorAll('.academy-tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // 移除所有标签的激活状态
+                    tabs.forEach(t => t.classList.remove('active'));
+                    // 添加当前标签的激活状态
+                    this.classList.add('active');
+                    
+                    // 隐藏所有内容
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    // 显示对应的内容
+                    const tabId = this.getAttribute('data-tab');
+                    document.getElementById(tabId + '-content').classList.add('active');
+                });
+            });
+            
+            // 分类标签功能
+            const categoryTags = document.querySelectorAll('.category-tag');
+            
+            categoryTags.forEach(tag => {
+                tag.addEventListener('click', function() {
+                    // 移除所有标签的激活状态
+                    categoryTags.forEach(t => t.classList.remove('active'));
+                    // 添加当前标签的激活状态
+                    this.classList.add('active');
+                    
+                    // 这里可以添加筛选内容的逻辑
+                    const category = this.textContent;
+                    console.log('选择分类：', category);
+                    // 实际应用中应该根据分类筛选显示内容
+                });
+            });
+            
+            // 内容项点击事件
+            const contentItems = document.querySelectorAll('.content-item');
+            
+            contentItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const isVideo = this.closest('.tab-content').id === 'videos-content';
+                    const title = this.querySelector('.content-title').textContent;
+                    
+                    if (isVideo) {
+                        // 点击视频内容
+                        console.log('打开视频：', title);
+                        // 这里应该跳转到视频详情页面或打开视频播放器
+                        alert('即将播放视频：' + title);
+                    } else {
+                        // 点击文章内容
+                        console.log('打开文章：', title);
+                        // 这里应该跳转到文章详情页面
+                        alert('即将打开文章：' + title);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html> 

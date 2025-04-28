@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>设置 - 阿尔茨海默认知训练应用</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="app-body">
+    <div class="status-bar">
+        <div class="status-left">9:41</div>
+        <div class="status-right">
+            <i class="fas fa-signal"></i>
+            <i class="fas fa-wifi"></i>
+            <i class="fas fa-battery-full"></i>
+        </div>
+    </div>
+
+    <header class="app-header">
+        <div class="user-greeting">
+            <h2>设置</h2>
+            <p class="date">个性化您的应用设置</p>
+        </div>
+        <a href="profile.html" style="color: var(--primary-color); font-size: 24px;">
+            <i class="fas fa-times"></i>
+        </a>
+    </header>
+
+    <main class="app-content">
+        <div class="card">
+            <h3>通知设置</h3>
+            
+            <div class="switch-container">
+                <span>训练提醒</span>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div class="switch-container">
+                <span>每日进度报告</span>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div class="switch-container">
+                <span>AI助手消息</span>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div class="form-group mt-3">
+                <label class="form-label">提醒时间</label>
+                <select class="form-control">
+                    <option>上午 9:00</option>
+                    <option>上午 10:00</option>
+                    <option selected>下午 3:00</option>
+                    <option>晚上 7:00</option>
+                    <option>晚上 8:00</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <h3>账户设置</h3>
+            
+            <div class="form-group mt-2">
+                <div class="flex justify-between">
+                    <p>当前账户</p>
+                    <p class="text-primary">zhang@example.com</p>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <div class="flex justify-between">
+                    <p>账户类型</p>
+                    <p>标准版</p>
+                </div>
+            </div>
+            
+            <button class="btn btn-secondary btn-block mt-2">
+                <i class="fas fa-user mr-1"></i> 查看账户详情
+            </button>
+
+            <button class="btn btn-secondary btn-block mt-2">
+                <i class="fas fa-key mr-1"></i> 修改密码
+            </button>
+        </div>
+
+        <div class="card mt-3">
+            <h3>应用设置</h3>
+            
+            <div class="switch-container">
+                <span>深色模式</span>
+                <label class="switch">
+                    <input type="checkbox">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div class="switch-container">
+                <span>数据同步</span>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div class="switch-container">
+                <span>自动播放视频</span>
+                <label class="switch">
+                    <input type="checkbox">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="form-group mt-3">
+                <label class="form-label">字体大小</label>
+                <select class="form-control">
+                    <option>小</option>
+                    <option selected>中</option>
+                    <option>大</option>
+                    <option>特大</option>
+                </select>
+            </div>
+        </div>
+        <div class="card mt-3">
+            <h3>隐私设置</h3>
+            
+            <div class="switch-container">
+                <span>允许数据收集</span>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div class="switch-container">
+                <span>共享训练结果</span>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>   
+            <button class="btn btn-secondary btn-block mt-3">
+                <i class="fas fa-shield-alt mr-1"></i> 隐私政策
+            </button>
+        </div>
+        <div class="card mt-3">
+            <h3>关于应用</h3>      
+            <div class="form-group mt-2">
+                <div class="flex justify-between">
+                    <p>版本</p>
+                    <p>1.0.0</p>
+                </div>
+            </div>         
+            <div class="form-group">
+                <div class="flex justify-between">
+                    <p>构建日期</p>
+                    <p>2023年10月1日</p>
+                </div>
+            </div>        
+            <div class="form-group">
+                <div class="flex justify-between">
+                    <p>最后更新</p>
+                    <p>2023年10月10日</p>
+                </div>
+            </div>
+        </div>
+        <div class="text-center mt-4 mb-4">
+            <button class="btn btn-secondary">
+                <i class="fas fa-question-circle mr-1"></i> 帮助与支持
+            </button>
+        </div>
+    </main>
+    <script src="../js/app.js"></script>
+</body>
+</html> 

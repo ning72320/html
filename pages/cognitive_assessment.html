@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>认知能力测试 - 麦若</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #6A5ACD;
+            --secondary-color: #5D4FB8;
+            --light-yellow: #FFFACC;
+            --memory-color: #4CAF50;
+            --attention-color: #FF9800;
+            --math-color: #2196F3;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            background-image: none;
+        }
+
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 15px;
+            background: transparent;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .status-left {
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .status-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-right i {
+            font-size: 16px;
+        }
+
+        .app-header {
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            position: relative;
+        }
+
+        .back-button {
+            font-size: 20px;
+            color: #333;
+            text-decoration: none;
+            margin-right: 15px;
+        }
+
+        .page-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 0;
+            flex-grow: 1;
+            text-align: center;
+            margin-right: 30px;
+        }
+
+        .app-content {
+            padding: 20px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .game-container {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .game-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .game-header.memory-header {
+            background: linear-gradient(135deg, #4CAF50, #2E7D32);
+        }
+
+        .game-header.attention-header {
+            background: linear-gradient(135deg, #FF9800, #E65100);
+        }
+
+        .game-header.math-header {
+            background: linear-gradient(135deg, #2196F3, #0D47A1);
+        }
+
+        .game-header h2 {
+            margin: 0 0 10px 0;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .game-header p {
+            margin: 0;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .game-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 5px;
+            background-color: rgba(255, 255, 255, 0.3);
+            width: 100%;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: white;
+            width: 0%;
+            transition: width 1s linear;
+        }
+
+        .timer-display {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 5px 10px;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+
+        .timer-display i {
+            margin-right: 5px;
+        }
+
+        .game-body {
+            padding: 30px 20px;
+            min-height: 350px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .instruction-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .instruction-container h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin: 0 0 15px 0;
+        }
+
+        .instruction-container p {
+            font-size: 15px;
+            color: #666;
+            margin: 0 0 20px 0;
+            line-height: 1.5;
+        }
+
+        .game-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 200px;
+        }
+
+        .game-action {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .action-btn {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            min-width: 200px;
+        }
+
+        .action-btn.memory-btn {
+            background: linear-gradient(135deg, #4CAF50, #2E7D32);
+        }
+
+        .action-btn.attention-btn {
+            background: linear-gradient(135deg, #FF9800, #E65100);
+        }
+
+        .action-btn.math-btn {
+            background: linear-gradient(135deg, #2196F3, #0D47A1);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(106, 90, 205, 0.3);
+        }
+
+        .action-btn i {
+            margin-right: 8px;
+        }
+
+        /* 游戏结果样式 */
+        .result-container {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .result-score {
+            font-size: 60px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin: 0 0 10px 0;
+        }
+
+        .result-text {
+            font-size: 16px;
+            font-weight: 500;
+            color: #555;
+            margin: 0 0 20px 0;
+        }
+
+        .result-description {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.5;
+            margin: 0 0 30px 0;
+            text-align: left;
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        /* 游戏结果面板 */
+        .final-results {
+            display: none;
+        }
+
+        .result-chart {
+            width: 100%;
+            height: 200px;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .result-bar {
+            position: relative;
+            height: 30px;
+            margin: 15px 0;
+            border-radius: 15px;
+            background-color: #f0f0f0;
+            overflow: hidden;
+        }
+
+        .result-bar-fill {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            border-radius: 15px;
+        }
+
+        .result-bar-memory .result-bar-fill {
+            background-color: var(--memory-color);
+        }
+
+        .result-bar-attention .result-bar-fill {
+            background-color: var(--attention-color);
+        }
+
+        .result-bar-math .result-bar-fill {
+            background-color: var(--math-color);
+        }
+
+        .result-bar-label {
+            position: absolute;
+            top: 0;
+            left: 15px;
+            line-height: 30px;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            z-index: 2;
+        }
+
+        .result-bar-score {
+            position: absolute;
+            top: 0;
+            right: 15px;
+            line-height: 30px;
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        /* 记忆力游戏样式 */
+        .memory-game {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            width: 100%;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+
+        .memory-card {
+            aspect-ratio: 1/1;
+            background-color: #f0f0f0;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.3s ease;
+        }
+
+        .memory-card.highlight {
+            background-color: var(--memory-color);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        /* 注意力游戏样式 */
+        .attention-game {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            width: 100%;
+            max-width: 350px;
+            margin: 0 auto;
+        }
+
+        .attention-item {
+            aspect-ratio: 1/1;
+            background-color: #f0f0f0;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.2s ease;
+        }
+
+        .attention-item:hover {
+            transform: scale(1.05);
+        }
+
+        .attention-item.target {
+            background-color: var(--attention-color);
+            color: white;
+        }
+
+        /* 数学能力游戏样式 */
+        .math-problem {
+            font-size: 32px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        .math-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .math-option {
+            background-color: #f0f0f0;
+            border: 2px solid transparent;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .math-option:hover {
+            background-color: #e9e9e9;
+            transform: translateY(-2px);
+        }
+
+        .math-option.selected {
+            border-color: var(--math-color);
+            background-color: rgba(33, 150, 243, 0.1);
+        }
+
+        /* 分步显示相关内容 */
+        .intro-panel, .memory-game-panel, .memory-result-panel,
+        .attention-intro-panel, .attention-game-panel, .attention-result-panel,
+        .math-intro-panel, .math-game-panel, .math-result-panel,
+        .final-results-panel {
+            display: none;
+        }
+
+        .active-panel {
+            display: block;
+        }
+    </style>
+</head>
+<body class="app-body">
+    <div class="status-bar">
+        <div class="status-left">18:35</div>
+        <div class="status-right">
+            <i class="fas fa-signal"></i>
+            <i class="fas fa-wifi"></i>
+            <span>65%</span>
+        </div>
+    </div>
+
+    <header class="app-header">
+        <a href="cognitive_test.html" class="back-button">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+        <h1 class="page-title">认知能力测试</h1>
+    </header>
+
+    <main class="app-content">
+        <!-- 记忆力游戏介绍面板 -->
+        <div class="game-container memory-intro-panel active-panel" id="memory-intro-panel">
+            <div class="game-header memory-header">
+                <h2>记忆力测试</h2>
+                <p>测试您的短期记忆能力</p>
+            </div>
+            
+            <div class="game-body">
+                <div class="instruction-container">
+                    <h3>记忆色块</h3>
+                    <p>在这个游戏中，您需要记住突出显示的色块顺序，然后按相同顺序点击它们。</p>
+                    <p>每轮游戏会增加一个色块，看看您能记住多长的序列！</p>
+                </div>
+                
+                <div class="game-action">
+                    <button class="action-btn memory-btn" id="start-memory-btn">
+                        <i class="fas fa-play"></i> 开始游戏
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 记忆力游戏面板 -->
+        <div class="game-container memory-game-panel" id="memory-game-panel">
+            <div class="game-header memory-header">
+                <h2>记忆力测试</h2>
+                <p>记住高亮显示的方块顺序</p>
+                <div class="timer-display">
+                    <i class="fas fa-clock"></i>
+                    <span id="memory-timer">90</span>秒
+                </div>
+                <div class="game-progress">
+                    <div class="progress-bar" id="memory-progress"></div>
+                </div>
+            </div>
+            
+            <div class="game-body">
+                <div class="instruction-container">
+                    <h3>当前关卡: <span id="memory-level">1</span></h3>
+                    <p id="memory-status">观察方块高亮顺序，然后重复点击</p>
+                </div>
+                
+                <div class="game-content">
+                    <div class="memory-game" id="memory-game-grid">
+                        <div class="memory-card" data-index="0"></div>
+                        <div class="memory-card" data-index="1"></div>
+                        <div class="memory-card" data-index="2"></div>
+                        <div class="memory-card" data-index="3"></div>
+                        <div class="memory-card" data-index="4"></div>
+                        <div class="memory-card" data-index="5"></div>
+                        <div class="memory-card" data-index="6"></div>
+                        <div class="memory-card" data-index="7"></div>
+                        <div class="memory-card" data-index="8"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 记忆力游戏结果面板 -->
+        <div class="game-container memory-result-panel" id="memory-result-panel">
+            <div class="game-header memory-header">
+                <h2>记忆力测试结果</h2>
+                <p>您的短期记忆表现</p>
+            </div>
+            
+            <div class="game-body">
+                <div class="result-container">
+                    <div class="result-score" id="memory-score">0</div>
+                    <div class="result-text">您的记忆力得分</div>
+                    <div class="result-description" id="memory-result-description">
+                        测试结果分析加载中...
+                    </div>
+                </div>
+                
+                <div class="game-action">
+                    <button class="action-btn attention-btn" id="goto-attention-btn">
+                        <i class="fas fa-arrow-right"></i> 继续下一个测试
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 注意力游戏介绍面板 -->
+        <div class="game-container attention-intro-panel" id="attention-intro-panel">
+            <div class="game-header attention-header">
+                <h2>注意力测试</h2>
+                <p>测试您的专注力和反应速度</p>
+            </div>
+            
+            <div class="game-body">
+                <div class="instruction-container">
+                    <h3>数字追踪</h3>
+                    <p>在这个游戏中，您需要尽快找出并点击网格中的目标数字。</p>
+                    <p>目标数字会从1开始递增，每次正确点击后目标会变成下一个数字。速度和准确度都很重要！</p>
+                </div>
+                
+                <div class="game-action">
+                    <button class="action-btn attention-btn" id="start-attention-btn">
+                        <i class="fas fa-play"></i> 开始游戏
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 注意力游戏面板 -->
+        <div class="game-container attention-game-panel" id="attention-game-panel">
+            <div class="game-header attention-header">
+                <h2>注意力测试</h2>
+                <p>找出并点击目标数字：<span id="attention-target">1</span></p>
+                <div class="timer-display">
+                    <i class="fas fa-clock"></i>
+                    <span id="attention-timer">90</span>秒
+                </div>
+                <div class="game-progress">
+                    <div class="progress-bar" id="attention-progress"></div>
+                </div>
+            </div>
+            
+            <div class="game-body">
+                <div class="instruction-container">
+                    <h3>当前得分: <span id="attention-current-score">0</span></h3>
+                    <p id="attention-status">尽快找出并点击数字 1</p>
+                </div>
+                
+                <div class="game-content">
+                    <div class="attention-game" id="attention-game-grid">
+                        <!-- 注意力游戏网格，将由JS动态生成 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 注意力游戏结果面板 -->
+        <div class="game-container attention-result-panel" id="attention-result-panel">
+            <div class="game-header attention-header">
+                <h2>注意力测试结果</h2>
+                <p>您的注意力和反应速度表现</p>
+            </div>
+            
+            <div class="game-body">
+                <div class="result-container">
+                    <div class="result-score" id="attention-score">0</div>
+                    <div class="result-text">您的注意力得分</div>
+                    <div class="result-description" id="attention-result-description">
+                        测试结果分析加载中...
+                    </div>
+                </div>
+                
+                <div class="game-action">
+                    <button class="action-btn math-btn" id="goto-math-btn">
+                        <i class="fas fa-arrow-right"></i> 继续下一个测试
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 数学能力游戏介绍面板 -->
+        <div class="game-container math-intro-panel" id="math-intro-panel">
+            <div class="game-header math-header">
+                <h2>数学能力测试</h2>
+                <p>测试您的计算能力和数学反应速度</p>
+            </div>
+            
+            <div class="game-body">
+                <div class="instruction-container">
+                    <h3>快速计算</h3>
+                    <p>在这个游戏中，您需要在限定时间内快速解答一系列数学问题。</p>
+                    <p>问题会逐渐变得更具挑战性，计算速度和准确性都会影响您的最终得分。</p>
+                </div>
+                
+                <div class="game-action">
+                    <button class="action-btn math-btn" id="start-math-btn">
+                        <i class="fas fa-play"></i> 开始游戏
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 数学能力游戏面板 -->
+        <div class="game-container math-game-panel" id="math-game-panel">
+            <div class="game-header math-header">
+                <h2>数学能力测试</h2>
+                <p>快速计算问题并选择正确答案</p>
+                <div class="timer-display">
+                    <i class="fas fa-clock"></i>
+                    <span id="math-timer">90</span>秒
+                </div>
+                <div class="game-progress">
+                    <div class="progress-bar" id="math-progress"></div>
+                </div>
+            </div>
+            
+            <div class="game-body">
+                <div class="instruction-container">
+                    <h3>当前得分: <span id="math-current-score">0</span></h3>
+                    <p id="math-problem-level">难度等级: 简单</p>
+                </div>
+                
+                <div class="game-content">
+                    <div class="math-problem" id="math-problem">6 + 7 = ?</div>
+                    <div class="math-options" id="math-options">
+                        <div class="math-option" data-value="11">11</div>
+                        <div class="math-option" data-value="13">13</div>
+                        <div class="math-option" data-value="14">14</div>
+                        <div class="math-option" data-value="12">12</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 数学能力游戏结果面板 -->
+        <div class="game-container math-result-panel" id="math-result-panel">
+            <div class="game-header math-header">
+                <h2>数学能力测试结果</h2>
+                <p>您的计算能力表现</p>
+            </div>
+            
+            <div class="game-body">
+                <div class="result-container">
+                    <div class="result-score" id="math-score">0</div>
+                    <div class="result-text">您的数学能力得分</div>
+                    <div class="result-description" id="math-result-description">
+                        测试结果分析加载中...
+                    </div>
+                </div>
+                
+                <div class="game-action">
+                    <button class="action-btn" id="goto-final-results-btn">
+                        <i class="fas fa-arrow-right"></i> 查看总体测试结果
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 最终测试结果面板 -->
+        <div class="game-container final-results-panel" id="final-results-panel">
+            <div class="game-header">
+                <h2>认知能力测试结果</h2>
+                <p>您的综合认知能力表现</p>
+            </div>
+            
+            <div class="game-body">
+                <div class="result-container">
+                    <div class="result-text">您的认知能力测试结果</div>
+                    
+                    <div class="result-chart">
+                        <div class="result-bar result-bar-memory">
+                            <div class="result-bar-label">记忆力</div>
+                            <div class="result-bar-fill" id="memory-result-bar" style="width: 0%"></div>
+                            <div class="result-bar-score" id="memory-result-value">0</div>
+                        </div>
+                        
+                        <div class="result-bar result-bar-attention">
+                            <div class="result-bar-label">注意力</div>
+                            <div class="result-bar-fill" id="attention-result-bar" style="width: 0%"></div>
+                            <div class="result-bar-score" id="attention-result-value">0</div>
+                        </div>
+                        
+                        <div class="result-bar result-bar-math">
+                            <div class="result-bar-label">数学能力</div>
+                            <div class="result-bar-fill" id="math-result-bar" style="width: 0%"></div>
+                            <div class="result-bar-score" id="math-result-value">0</div>
+                        </div>
+                    </div>
+                    
+                    <div class="result-description" id="final-result-description">
+                        您的综合测试结果分析将根据三项测试的表现进行综合评估，提供个性化的认知能力分析和提升建议。
+                    </div>
+                </div>
+                
+                <div class="game-action">
+                    <button class="action-btn" id="finish-test-btn">
+                        <i class="fas fa-check"></i> 完成测试
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../js/app.js"></script>
+
+    <!-- 引入拆分后的JS文件 -->
+    <script src="../js/cognitive_assessment.js"></script>
+    <script src="../js/memory_game.js"></script>
+    <script src="../js/attention_game.js"></script>
+    <script src="../js/math_game.js"></script>
+    <!-- 添加修复脚本，确保它在最后加载 -->
+    <script src="../js/fix_goto_math.js"></script>
+    <script src="../js/fix_final_results.js"></script>
+    <script src="../js/fix_math_options.js"></script>
+</body>
+</html> 

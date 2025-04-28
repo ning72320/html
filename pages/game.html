@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>训练游戏</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #F8F9FA;
+            color: #333;
+        }
+        
+        .app-body {
+            max-width: 430px;
+            margin: 0 auto;
+            position: relative;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: white;
+            overflow: hidden;
+        }
+        
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 15px;
+            background-color: #fff;
+            font-size: 12px;
+            color: #000;
+        }
+        
+        .status-right {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .app-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .header-title {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .back-button {
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: #007AFF;
+            cursor: pointer;
+        }
+        
+        .game-container {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow-y: auto;
+        }
+        
+        .game-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .game-instructions {
+            background-color: #f5f5f5;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+        
+        .game-board {
+            width: 100%;
+            aspect-ratio: 1/1;
+            max-width: 350px;
+            background-color: #f0f0f0;
+            border-radius: 10px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 10px;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .game-cell {
+            background-color: white;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: all 0.2s ease;
+        }
+        
+        .game-cell:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        
+        .game-controls {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .control-button {
+            background-color: #007AFF;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 12px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background-color 0.2s;
+        }
+        
+        .control-button:hover {
+            background-color: #0056b3;
+        }
+        
+        .game-stats {
+            margin-top: 20px;
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+        }
+        
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .bottom-nav {
+            display: flex;
+            justify-content: space-around;
+            border-top: 1px solid #eee;
+            background-color: white;
+            padding: 10px 0;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #999;
+            text-decoration: none;
+            font-size: 12px;
+        }
+        
+        .nav-item i {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+        
+        .nav-item.active {
+            color: #007AFF;
+        }
+        
+        .memory-game {
+            display: none;
+        }
+        
+        .attention-game {
+            display: none;
+        }
+        
+        .sequence-game {
+            display: none;
+        }
+        
+        .active-game {
+            display: block;
+        }
+    </style>
+</head>
+<body class="app-body">
+    <div class="status-bar">
+        <div class="status-left">9:41</div>
+        <div class="status-right">
+            <i class="fas fa-signal"></i>
+            <i class="fas fa-wifi"></i>
+            <i class="fas fa-battery-full"></i>
+        </div>
+    </div>
+
+    <header class="app-header">
+        <button class="back-button" id="backButton">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        <div class="header-title">训练游戏</div>
+        <div style="width: 20px;"></div> <!-- 平衡布局的空元素 -->
+    </header>
+
+    <main class="game-container">
+        <!-- 记忆力游戏 -->
+        <div class="memory-game active-game" id="memoryGame">
+            <div class="game-title">位置记忆训练</div>
+            <div class="game-instructions">
+                记住高亮显示的位置，然后按照显示的顺序点击它们。每轮将增加一个新位置。
+            </div>
+            <div class="game-board" id="memoryBoard">
+                <!-- 游戏格子将由JS动态生成 -->
+            </div>
+            <div class="game-stats">
+                <div class="stat-item">
+                    <div class="stat-value" id="levelDisplay">1</div>
+                    <div class="stat-label">当前级别</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="scoreDisplay">0</div>
+                    <div class="stat-label">得分</div>
+                </div>
+            </div>
+            <div class="game-controls">
+                <button class="control-button" id="startGameButton">
+                    <i class="fas fa-play"></i> 开始游戏
+                </button>
+                <button class="control-button" id="resetGameButton" style="background-color: #FF3B30;">
+                    <i class="fas fa-redo"></i> 重新开始
+                </button>
+            </div>
+        </div>
+
+        <!-- 注意力游戏 -->
+        <div class="attention-game" id="attentionGame">
+            <div class="game-title">颜色匹配训练</div>
+            <div class="game-instructions">
+                当显示的颜色与文字内容一致时点击"匹配"，不一致时点击"不匹配"。请尽快做出反应。
+            </div>
+            <div style="height: 200px; display: flex; justify-content: center; align-items: center; margin-bottom: 30px;">
+                <div id="colorText" style="font-size: 36px; font-weight: bold;">红色</div>
+            </div>
+            <div class="game-stats">
+                <div class="stat-item">
+                    <div class="stat-value" id="correctDisplay">0</div>
+                    <div class="stat-label">正确</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="incorrectDisplay">0</div>
+                    <div class="stat-label">错误</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="timeDisplay">60</div>
+                    <div class="stat-label">剩余时间</div>
+                </div>
+            </div>
+            <div class="game-controls">
+                <button class="control-button" id="matchButton" style="background-color: #34C759;">
+                    <i class="fas fa-check"></i> 匹配
+                </button>
+                <button class="control-button" id="noMatchButton" style="background-color: #FF3B30;">
+                    <i class="fas fa-times"></i> 不匹配
+                </button>
+            </div>
+        </div>
+
+        <!-- 数字序列游戏 -->
+        <div class="sequence-game" id="sequenceGame">
+            <div class="game-title">数字序列训练</div>
+            <div class="game-instructions">
+                记住显示的数字序列，然后按正确的顺序输入它们。每轮的序列会变得更长。
+            </div>
+            <div style="min-height: 100px; display: flex; justify-content: center; align-items: center; margin-bottom: 20px;">
+                <div id="sequenceDisplay" style="font-size: 36px; font-weight: bold;">准备开始</div>
+            </div>
+            <div id="inputPad" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 300px; margin: 0 auto;">
+                <!-- 数字按钮由JS生成 -->
+            </div>
+            <div class="game-stats">
+                <div class="stat-item">
+                    <div class="stat-value" id="sequenceLevelDisplay">1</div>
+                    <div class="stat-label">当前级别</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="sequenceScoreDisplay">0</div>
+                    <div class="stat-label">得分</div>
+                </div>
+            </div>
+            <div class="game-controls" style="margin-top: 20px;">
+                <button class="control-button" id="startSequenceButton">
+                    <i class="fas fa-play"></i> 开始游戏
+                </button>
+                <button class="control-button" id="resetSequenceButton" style="background-color: #FF3B30;">
+                    <i class="fas fa-redo"></i> 重新开始
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <nav class="bottom-nav">
+        <a href="home.html" class="nav-item">
+            <i class="fas fa-home"></i>
+            <span>首页</span>
+        </a>
+        <a href="memory.html" class="nav-item">
+            <i class="fas fa-images"></i>
+            <span>记忆库</span>
+        </a>
+        <a href="results.html" class="nav-item">
+            <i class="fas fa-chart-line"></i>
+            <span>结果</span>
+        </a>
+        <a href="profile.html" class="nav-item">
+            <i class="fas fa-user"></i>
+            <span>我的</span>
+        </a>
+    </nav>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // URL参数解析
+            const urlParams = new URLSearchParams(window.location.search);
+            const gameType = urlParams.get('type') || 'memory';
+            
+            // 隐藏所有游戏，显示选定的游戏
+            document.querySelectorAll('.memory-game, .attention-game, .sequence-game').forEach(game => {
+                game.classList.remove('active-game');
+            });
+            
+            if (gameType === 'memory') {
+                document.getElementById('memoryGame').classList.add('active-game');
+                setupMemoryGame();
+            } else if (gameType === 'attention') {
+                document.getElementById('attentionGame').classList.add('active-game');
+                setupAttentionGame();
+            } else if (gameType === 'sequence') {
+                document.getElementById('sequenceGame').classList.add('active-game');
+                setupSequenceGame();
+            }
+            
+            // 返回按钮
+            document.getElementById('backButton').addEventListener('click', function() {
+                window.location.href = 'training.html';
+            });
+            
+            // 更新状态栏时间
+            updateStatusTime();
+            setInterval(updateStatusTime, 60000);
+        });
+        
+        function updateStatusTime() {
+            const now = new Date();
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            document.querySelector('.status-left').textContent = `${hours}:${minutes}`;
+        }
+        
+        // 位置记忆游戏
+        function setupMemoryGame() {
+            const memoryBoard = document.getElementById('memoryBoard');
+            const startButton = document.getElementById('startGameButton');
+            const resetButton = document.getElementById('resetGameButton');
+            const levelDisplay = document.getElementById('levelDisplay');
+            const scoreDisplay = document.getElementById('scoreDisplay');
+            
+            let sequence = [];
+            let playerSequence = [];
+            let level = 1;
+            let score = 0;
+            let isPlaying = false;
+            
+            // 创建游戏格子
+            for (let i = 0; i < 9; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'game-cell';
+                cell.dataset.index = i;
+                cell.addEventListener('click', cellClickHandler);
+                memoryBoard.appendChild(cell);
+            }
+            
+            function cellClickHandler() {
+                if (!isPlaying) return;
+                
+                const index = parseInt(this.dataset.index);
+                playerSequence.push(index);
+                
+                // 闪烁效果
+                this.style.backgroundColor = '#007AFF';
+                setTimeout(() => {
+                    this.style.backgroundColor = 'white';
+                }, 300);
+                
+                // 检查玩家输入
+                const currentStep = playerSequence.length - 1;
+                if (playerSequence[currentStep] !== sequence[currentStep]) {
+                    // 错误
+                    gameOver();
+                    return;
+                }
+                
+                // 如果完成当前序列
+                if (playerSequence.length === sequence.length) {
+                    score += level * 10;
+                    scoreDisplay.textContent = score;
+                    level++;
+                    levelDisplay.textContent = level;
+                    
+                    playerSequence = [];
+                    setTimeout(playSequence, 1000);
+                }
+            }
+            
+            function startGame() {
+                sequence = [];
+                playerSequence = [];
+                level = 1;
+                score = 0;
+                isPlaying = true;
+                
+                levelDisplay.textContent = level;
+                scoreDisplay.textContent = score;
+                
+                startButton.disabled = true;
+                addToSequence();
+                setTimeout(playSequence, 1000);
+            }
+            
+            function addToSequence() {
+                const randomIndex = Math.floor(Math.random() * 9);
+                sequence.push(randomIndex);
+            }
+            
+            function playSequence() {
+                isPlaying = false;
+                addToSequence();
+                
+                let currentStep = 0;
+                const interval = setInterval(() => {
+                    const cell = memoryBoard.children[sequence[currentStep]];
+                    
+                    // 高亮
+                    cell.style.backgroundColor = '#007AFF';
+                    setTimeout(() => {
+                        cell.style.backgroundColor = 'white';
+                    }, 500);
+                    
+                    currentStep++;
+                    if (currentStep >= sequence.length) {
+                        clearInterval(interval);
+                        isPlaying = true;
+                    }
+                }, 1000);
+            }
+            
+            function gameOver() {
+                isPlaying = false;
+                alert(`游戏结束！最终得分：${score}`);
+                startButton.disabled = false;
+            }
+            
+            startButton.addEventListener('click', startGame);
+            resetButton.addEventListener('click', startGame);
+        }
+        
+        // 颜色匹配游戏
+        function setupAttentionGame() {
+            const colorText = document.getElementById('colorText');
+            const matchButton = document.getElementById('matchButton');
+            const noMatchButton = document.getElementById('noMatchButton');
+            const correctDisplay = document.getElementById('correctDisplay');
+            const incorrectDisplay = document.getElementById('incorrectDisplay');
+            const timeDisplay = document.getElementById('timeDisplay');
+            
+            const colors = [
+                { name: '红色', code: '#FF3B30' },
+                { name: '蓝色', code: '#007AFF' },
+                { name: '绿色', code: '#34C759' },
+                { name: '黄色', code: '#FFCC00' }
+            ];
+            
+            let correct = 0;
+            let incorrect = 0;
+            let remainingTime = 60;
+            let currentMatch = false;
+            let timer;
+            let gameActive = false;
+            
+            function startGame() {
+                gameActive = true;
+                correct = 0;
+                incorrect = 0;
+                remainingTime = 60;
+                
+                correctDisplay.textContent = correct;
+                incorrectDisplay.textContent = incorrect;
+                timeDisplay.textContent = remainingTime;
+                
+                matchButton.disabled = false;
+                noMatchButton.disabled = false;
+                
+                timer = setInterval(() => {
+                    remainingTime--;
+                    timeDisplay.textContent = remainingTime;
+                    
+                    if (remainingTime <= 0) {
+                        endGame();
+                    }
+                }, 1000);
+                
+                showNextColor();
+            }
+            
+            function showNextColor() {
+                const textIndex = Math.floor(Math.random() * colors.length);
+                const colorIndex = Math.floor(Math.random() * colors.length);
+                
+                // 30%概率文字和颜色匹配
+                const isMatch = Math.random() < 0.3;
+                const finalColorIndex = isMatch ? textIndex : colorIndex;
+                
+                colorText.textContent = colors[textIndex].name;
+                colorText.style.color = colors[finalColorIndex].code;
+                
+                currentMatch = textIndex === finalColorIndex;
+            }
+            
+            function checkAnswer(playerAnswer) {
+                if (!gameActive) return;
+                
+                if (playerAnswer === currentMatch) {
+                    correct++;
+                    correctDisplay.textContent = correct;
+                } else {
+                    incorrect++;
+                    incorrectDisplay.textContent = incorrect;
+                }
+                
+                showNextColor();
+            }
+            
+            function endGame() {
+                gameActive = false;
+                clearInterval(timer);
+                matchButton.disabled = true;
+                noMatchButton.disabled = true;
+                
+                const finalScore = correct * 10 - incorrect * 5;
+                alert(`游戏结束！\n正确：${correct}\n错误：${incorrect}\n最终得分：${finalScore}`);
+            }
+            
+            matchButton.addEventListener('click', () => checkAnswer(true));
+            noMatchButton.addEventListener('click', () => checkAnswer(false));
+            
+            // 自动开始游戏
+            startGame();
+        }
+        
+        // 数字序列游戏
+        function setupSequenceGame() {
+            const sequenceDisplay = document.getElementById('sequenceDisplay');
+            const inputPad = document.getElementById('inputPad');
+            const startButton = document.getElementById('startSequenceButton');
+            const resetButton = document.getElementById('resetSequenceButton');
+            const levelDisplay = document.getElementById('sequenceLevelDisplay');
+            const scoreDisplay = document.getElementById('sequenceScoreDisplay');
+            
+            let sequence = [];
+            let playerInput = [];
+            let level = 1;
+            let score = 0;
+            let isPlaying = false;
+            
+            // 创建数字按钮
+            for (let i = 1; i <= 9; i++) {
+                const button = document.createElement('button');
+                button.className = 'game-cell';
+                button.textContent = i;
+                button.dataset.number = i;
+                button.addEventListener('click', () => {
+                    if (!isPlaying) return;
+                    
+                    const number = parseInt(button.dataset.number);
+                    playerInput.push(number);
+                    
+                    // 高亮效果
+                    button.style.backgroundColor = '#007AFF';
+                    button.style.color = 'white';
+                    setTimeout(() => {
+                        button.style.backgroundColor = 'white';
+                        button.style.color = 'black';
+                    }, 200);
+                    
+                    // 检查输入
+                    const currentStep = playerInput.length - 1;
+                    if (playerInput[currentStep] !== sequence[currentStep]) {
+                        gameOver();
+                        return;
+                    }
+                    
+                    // 如果完成当前序列
+                    if (playerInput.length === sequence.length) {
+                        score += level * 10;
+                        scoreDisplay.textContent = score;
+                        level++;
+                        levelDisplay.textContent = level;
+                        
+                        playerInput = [];
+                        setTimeout(showSequence, 1000);
+                    }
+                });
+                
+                inputPad.appendChild(button);
+            }
+            
+            function startGame() {
+                sequence = [];
+                playerInput = [];
+                level = 1;
+                score = 0;
+                
+                levelDisplay.textContent = level;
+                scoreDisplay.textContent = score;
+                
+                startButton.disabled = true;
+                resetButton.disabled = true;
+                
+                sequenceDisplay.textContent = '准备开始...';
+                setTimeout(showSequence, 1500);
+            }
+            
+            function generateSequence() {
+                sequence = [];
+                for (let i = 0; i < level + 2; i++) {
+                    const randomNumber = Math.floor(Math.random() * 9) + 1;
+                    sequence.push(randomNumber);
+                }
+            }
+            
+            function showSequence() {
+                isPlaying = false;
+                sequenceDisplay.textContent = '';
+                generateSequence();
+                
+                let currentIndex = 0;
+                const interval = setInterval(() => {
+                    sequenceDisplay.textContent = sequence[currentIndex];
+                    
+                    currentIndex++;
+                    if (currentIndex >= sequence.length) {
+                        clearInterval(interval);
+                        
+                        setTimeout(() => {
+                            sequenceDisplay.textContent = '请输入序列';
+                            isPlaying = true;
+                            resetButton.disabled = false;
+                        }, 500);
+                    }
+                }, 1000);
+            }
+            
+            function gameOver() {
+                isPlaying = false;
+                sequenceDisplay.textContent = '游戏结束';
+                alert(`游戏结束！最终得分：${score}`);
+                startButton.disabled = false;
+                resetButton.disabled = false;
+            }
+            
+            startButton.addEventListener('click', startGame);
+            resetButton.addEventListener('click', startGame);
+        }
+    </script>
+</body>
+</html> 

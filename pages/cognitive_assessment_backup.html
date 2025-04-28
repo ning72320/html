@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>认知能力测试 - 麦若</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #6A5ACD;
+            --secondary-color: #5D4FB8;
+            --light-yellow: #FFFACC;
+            --memory-color: #4CAF50;
+            --attention-color: #FF9800;
+            --math-color: #2196F3;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            background-image: none;
+        }
+
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 15px;
+            background: transparent;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .status-left {
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .status-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-right i {
+            font-size: 16px;
+        }
+
+        .app-header {
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            position: relative;
+        }
+
+        .back-button {
+            font-size: 20px;
+            color: #333;
+            text-decoration: none;
+            margin-right: 15px;
+        }
+
+        .page-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 0;
+            flex-grow: 1;
+            text-align: center;
+            margin-right: 30px;
+        }
+
+        .app-content {
+            padding: 20px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .game-container {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .game-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .game-header.memory-header {
+            background: linear-gradient(135deg, #4CAF50, #2E7D32);
+        }
+
+        .game-header.attention-header {
+            background: linear-gradient(135deg, #FF9800, #E65100);
+        }
+
+        .game-header.math-header {
+            background: linear-gradient(135deg, #2196F3, #0D47A1);
+        }
+
+        .game-header h2 {
+            margin: 0 0 10px 0;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .game-header p {
+            margin: 0;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .game-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 5px;
+            background-color: rgba(255, 255, 255, 0.3);
+            width: 100%;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: white;
+            width: 0%;
+            transition: width 1s linear;
+        }
+
+        .timer-display {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 5px 10px;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+
+        .timer-display i {
+            margin-right: 5px;
+        }
+
+        .game-body {
+            padding: 30px 20px;
+            min-height: 350px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .instruction-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .instruction-container h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin: 0 0 15px 0;
+        }
+
+        .instruction-container p {
+            font-size: 15px;
+            color: #666;
+            margin: 0 0 20px 0;
+            line-height: 1.5;
+        }
+
+        .game-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 200px;
+        }
+
+        .game-action {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .action-btn {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            min-width: 200px;
+        }
+
+        .action-btn.memory-btn {
+            background: linear-gradient(135deg, #4CAF50, #2E7D32);
+        }
+
+        .action-btn.attention-btn {
+            background: linear-gradient(135deg, #FF9800, #E65100);
+        }
+
+        .action-btn.math-btn {
+            background: linear-gradient(135deg, #2196F3, #0D47A1);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(106, 90, 205, 0.3);
+        }
+
+        .action-btn i {
+            margin-right: 8px;
+        }
+
+        /* 游戏结果样式 */
+        .result-container {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .result-score {
+            font-size: 60px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin: 0 0 10px 0;
+        }
+
+        .result-text {
+            font-size: 16px;
+            font-weight: 500;
+            color: #555;
+            margin: 0 0 20px 0;
+        }
+
+        .result-description {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.5;
+            margin: 0 0 30px 0;
+            text-align: left;
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        /* 游戏结果面板 */
+        .final-results {
+            display: none;
+        }
+
+        .result-chart {
+            width: 100%;
+            height: 200px;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .result-bar {
+            position: relative;
+            height: 30px;
+            margin: 15px 0;
+            border-radius: 15px;
+            background-color: #f0f0f0;
+            overflow: hidden;
+        }
+
+        .result-bar-fill {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            border-radius: 15px;
+        }
+
+        .result-bar-memory .result-bar-fill {
+            background-color: var(--memory-color);
+        }
+
+        .result-bar-attention .result-bar-fill {
+            background-color: var(--attention-color);
+        }
+
+        .result-bar-math .result-bar-fill {
+            background-color: var(--math-color);
+        }
+
+        .result-bar-label {
+            position: absolute;
+            top: 0;
+            left: 15px;
+            line-height: 30px;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            z-index: 2;
+        }
+
+        .result-bar-score {
+            position: absolute;
+            top: 0;
+            right: 15px;
+            line-height: 30px;
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        /* 记忆力游戏样式 */
+        .memory-game {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            width: 100%;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+
+        .memory-card {
+            aspect-ratio: 1/1;
+            background-color: #f0f0f0;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.3s ease;
+        }
+
+        .memory-card.highlight {
+            background-color: var(--memory-color);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        /* 注意力游戏样式 */
+        .attention-game {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            width: 100%;
+            max-width: 350px;
+            margin: 0 auto;
+        }
+
+        .attention-item {
+            aspect-ratio: 1/1;
+            background-color: #f0f0f0;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.2s ease;
+        }
+
+        .attention-item:hover {
+            transform: scale(1.05);
+        }
+
+        .attention-item.target {
+            background-color: var(--attention-color);
+            color: white;
+        }
+
+        /* 数学能力游戏样式 */
+        .math-problem {
+            font-size: 32px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        .math-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .math-option {
+            background-color: #f0f0f0;
+            border: 2px solid transparent;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .math-option:hover {
+            background-color: #e9e9e9;
+            transform: translateY(-2px);
+        }
+
+        .math-option.selected {
+            border-color: var(--math-color);
+            background-color: rgba(33, 150, 243, 0.1);
+        }
+
+        /* 分步显示相关内容 */
+        .intro-panel, .memory-game-panel, .memory-result-panel,
+        .attention-intro-panel, .attention-game-panel, .attention-result-panel,
+        .math-intro-panel, .math-game-panel, .math-result-panel,
+        .final-results-panel {
+            display: none;
+        }
+
+        .active-panel {
+            display: block;
+        }
+    </style>
+</head>
+<body class="app-body">
+    <div class="status-bar">
+        <div class="status-left">18:35</div>
+        <div class="status-right">
+            <i class="fas fa-signal"></i>
+            <i class="fas fa-wifi"></i>
+            <span>65%</span>
+        </div>
+    </div>
+
+    <header class="app-header">
+        <a href="cognitive_test.html" class="back-button">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+        <h1 class="page-title">认知能力测试</h1>
+    </header>
+
+    <main class="app-content">
+        <!-- 记忆力游戏介绍面板 -->
+        <div class="game-container memory-intro-panel active-panel" id="memory-intro-panel">
+            <div class="game-header memory-header">
+                <h2>记忆力测试</h2>
+                <p>测试您的短期记忆能力</p>
+            </div>
+            
+            <div class="game-body">
+                <div class="instruction-container">
+                    <h3>记忆色块</h3>
+                    <p>在这个游戏中，您需要记住突出显示的色块顺序，然后按相同顺序点击它们。</p>
+                    <p>每轮游戏会增加一个色块，看看您能记住多长的序列！</p>
+                </div>
+                
+                <div class="game-action">
+                    <button class="action-btn memory-btn" id="start-memory-btn">
+                        <i class="fas fa-play"></i> 开始游戏
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 记忆力游戏面板 -->
+        <div class="game-container memory-game-panel" id="memory-game-panel">
+            <div class="game-header memory-header">
+                <h2>记忆力测试</h2>
+                <p>记住高亮显示的方块顺序</p>
+                <div class="timer-display">
+                    <i class="fas fa-clock"></i>
+                    <span id="memory-timer">90</span>秒
+                </div>
+                <div class="game-progress">
+                    <div class="progress-bar" id="memory-progress"></div>
+                </div>
+            </div>
+            
+            <div class="game-body">
+                <div class="instruction-container">
+                    <h3>当前关卡: <span id="memory-level">1</span></h3>
+                    <p id="memory-status">观察方块高亮顺序，然后重复点击</p>
+                </div>
+                
+                <div class="game-content">
+                    <div class="memory-game" id="memory-game-grid">
+                        <div class="memory-card" data-index="0"></div>
+                        <div class="memory-card" data-index="1"></div>
+                        <div class="memory-card" data-index="2"></div>
+                        <div class="memory-card" data-index="3"></div>
+                        <div class="memory-card" data-index="4"></div>
+                        <div class="memory-card" data-index="5"></div>
+                        <div class="memory-card" data-index="6"></div>
+                        <div class="memory-card" data-index="7"></div>
+                        <div class="memory-card" data-index="8"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 记忆力游戏结果面板 -->
+        <div class="game-container memory-result-panel" id="memory-result-panel">
+            <div class="game-header memory-header">
+                <h2>记忆力测试结果</h2>
+                <p>您的短期记忆表现</p>
+            </div>
+            
+            <div class="game-body">
+                <div class="result-container">
+                    <div class="result-score" id="memory-score">0</div>
+                    <div class="result-text">您的记忆力得分</div>
+                    <div class="result-description" id="memory-result-description">
+                        测试结果分析加载中...
+                    </div>
+                </div>
+                
+                <div class="game-action">
+                    <button class="action-btn attention-btn" id="goto-attention-btn">
+                        <i class="fas fa-arrow-right"></i> 继续下一个测试
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 注意力游戏介绍面板 -->
+        <div class="game-container attention-intro-panel" id="attention-intro-panel">
+            <div class="game-header attention-header">
+                <h2>注意力测试</h2>
+                <p>测试您的专注力和反应速度</p>
+            </div>
+            
+            <div class="game-body">
+                <div class="instruction-container">
+                    <h3>数字追踪</h3>
+                    <p>在这个游戏中，您需要尽快找出并点击网格中的目标数字。</p>
+                    <p>目标数字会从1开始递增，每次正确点击后目标会变成下一个数字。速度和准确度都很重要！</p>
+                </div>
+                
+                <div class="game-action">
+                    <button class="action-btn attention-btn" id="start-attention-btn">
+                        <i class="fas fa-play"></i> 开始游戏
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 注意力游戏面板 -->
+        <div class="game-container attention-game-panel" id="attention-game-panel">
+            <div class="game-header attention-header">
+                <h2>注意力测试</h2>
+                <p>找出并点击目标数字：<span id="attention-target">1</span></p>
+                <div class="timer-display">
+                    <i class="fas fa-clock"></i>
+                    <span id="attention-timer">90</span>秒
+                </div>
+                <div class="game-progress">
+                    <div class="progress-bar" id="attention-progress"></div>
+                </div>
+            </div>
+            
+            <div class="game-body">
+                <div class="instruction-container">
+                    <h3>当前得分: <span id="attention-current-score">0</span></h3>
+                    <p id="attention-status">尽快找出并点击数字 1</p>
+                </div>
+                
+                <div class="game-content">
+                    <div class="attention-game" id="attention-game-grid">
+                        <!-- 注意力游戏网格，将由JS动态生成 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 注意力游戏结果面板 -->
+        <div class="game-container attention-result-panel" id="attention-result-panel">
+            <div class="game-header attention-header">
+                <h2>注意力测试结果</h2>
+                <p>您的注意力和反应速度表现</p>
+            </div>
+            
+            <div class="game-body">
+                <div class="result-container">
+                    <div class="result-score" id="attention-score">0</div>
+                    <div class="result-text">您的注意力得分</div>
+                    <div class="result-description" id="attention-result-description">
+                        测试结果分析加载中...
+                    </div>
+                </div>
+                
+                <div class="game-action">
+                    <button class="action-btn math-btn" id="goto-math-btn">
+                        <i class="fas fa-arrow-right"></i> 继续下一个测试
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../js/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 设置时间
+            function updateTime() {
+                const now = new Date();
+                let hours = now.getHours();
+                let minutes = now.getMinutes();
+                hours = hours < 10 ? '0' + hours : hours;
+                minutes = minutes < 10 ? '0' + minutes : minutes;
+                document.querySelector('.status-left').textContent = hours + ':' + minutes;
+            }
+            
+            updateTime();
+            setInterval(updateTime, 60000);
+            
+            // 游戏状态变量
+            let gameState = {
+                memory: {
+                    score: 0,
+                    level: 1,
+                    sequence: [],
+                    userSequence: [],
+                    isPlaying: false,
+                    isShowingSequence: false,
+                    timer: 90,
+                    interval: null
+                },
+                attention: {
+                    score: 0,
+                    currentTarget: 1,
+                    correctClicks: 0,
+                    wrongClicks: 0,
+                    timer: 90,
+                    interval: null
+                },
+                math: {
+                    score: 0,
+                    correctAnswers: 0,
+                    wrongAnswers: 0,
+                    timer: 90,
+                    interval: null
+                }
+            };
+            
+            // 显示面板函数
+            function showPanel(panelId) {
+                // 隐藏所有面板
+                document.querySelectorAll('.game-container').forEach(panel => {
+                    panel.classList.remove('active-panel');
+                    panel.style.display = 'none'; // 直接设置style
+                });
+                
+                // 显示指定面板
+                const panel = document.getElementById(panelId);
+                if (panel) {
+                    panel.classList.add('active-panel');
+                    panel.style.display = 'block'; // 直接设置style
+                } else {
+                    console.error('找不到面板:', panelId);
+                }
+            }
+            
+            // 记忆力游戏相关函数
+            function startMemoryGame() {
+                showPanel('memory-game-panel');
+                
+                // 直接通过style属性设置显示和隐藏
+                document.getElementById('memory-game-panel').style.display = 'block';
+                document.getElementById('memory-intro-panel').style.display = 'none';
+                
+                // 重置游戏状态
+                gameState.memory = {
+                    score: 0,
+                    level: 1,
+                    sequence: [],
+                    userSequence: [],
+                    isPlaying: true,
+                    isShowingSequence: false,
+                    timer: 90,
+                    interval: null
+                };
+                
+                // 更新UI
+                document.getElementById('memory-level').textContent = gameState.memory.level;
+                document.getElementById('memory-status').textContent = '观察方块高亮顺序，然后重复点击';
+                
+                // 启动定时器
+                startMemoryTimer();
+                
+                // 生成新序列
+                generateNewSequence();
+            }
+            
+            function startMemoryTimer() {
+                // 更新定时器UI
+                document.getElementById('memory-timer').textContent = gameState.memory.timer;
+                
+                // 更新进度条
+                const progressBar = document.getElementById('memory-progress');
+                progressBar.style.width = '100%';
+                
+                // 设置定时器
+                gameState.memory.interval = setInterval(() => {
+                    gameState.memory.timer--;
+                    
+                    if (gameState.memory.timer <= 0) {
+                        // 时间到，结束游戏
+                        clearInterval(gameState.memory.interval);
+                        endMemoryGame();
+                    } else {
+                        // 更新UI
+                        document.getElementById('memory-timer').textContent = gameState.memory.timer;
+                        
+                        // 更新进度条
+                        const progressPercent = (gameState.memory.timer / 90) * 100;
+                        progressBar.style.width = progressPercent + '%';
+                    }
+                }, 1000);
+            }
+            
+            function generateNewSequence() {
+                // 获取所有记忆卡片
+                const cards = document.querySelectorAll('.memory-card');
+                
+                // 随机生成新序列
+                gameState.memory.sequence = [];
+                for (let i = 0; i < gameState.memory.level; i++) {
+                    const randomIndex = Math.floor(Math.random() * 9);
+                    gameState.memory.sequence.push(randomIndex);
+                }
+                
+                // 显示序列
+                gameState.memory.isShowingSequence = true;
+                document.getElementById('memory-status').textContent = '请观察...';
+                
+                // 禁用卡片点击
+                cards.forEach(card => {
+                    card.style.pointerEvents = 'none';
+                });
+                
+                // 依次高亮显示序列
+                let index = 0;
+                const showSequence = setInterval(() => {
+                    // 清除所有高亮
+                    cards.forEach(card => card.classList.remove('highlight'));
+                    
+                    if (index < gameState.memory.sequence.length) {
+                        // 高亮当前卡片
+                        const cardIndex = gameState.memory.sequence[index];
+                        cards[cardIndex].classList.add('highlight');
+                        index++;
+                    } else {
+                        // 序列显示完毕
+                        clearInterval(showSequence);
+                        
+                        // 稍等片刻后清除高亮
+                        setTimeout(() => {
+                            cards.forEach(card => card.classList.remove('highlight'));
+                            
+                            // 允许用户点击
+                            gameState.memory.isShowingSequence = false;
+                            gameState.memory.userSequence = [];
+                            document.getElementById('memory-status').textContent = '请按顺序点击方块';
+                            
+                            // 启用卡片点击
+                            cards.forEach(card => {
+                                card.style.pointerEvents = 'auto';
+                            });
+                        }, 500);
+                    }
+                }, 800);
+            }
+            
+            // 处理记忆卡片点击
+            const memoryCards = document.querySelectorAll('.memory-card');
+            memoryCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    if (gameState.memory.isShowingSequence) return;
+                    
+                    const cardIndex = parseInt(this.getAttribute('data-index'));
+                    
+                    // 高亮点击的卡片
+                    this.classList.add('highlight');
+                    setTimeout(() => this.classList.remove('highlight'), 300);
+                    
+                    // 记录用户点击
+                    gameState.memory.userSequence.push(cardIndex);
+                    
+                    // 检查是否正确
+                    const currentIndex = gameState.memory.userSequence.length - 1;
+                    if (gameState.memory.userSequence[currentIndex] !== gameState.memory.sequence[currentIndex]) {
+                        // 点击错误
+                        document.getElementById('memory-status').textContent = '顺序错误，尝试新的序列';
+                        
+                        // 减少得分
+                        gameState.memory.score = Math.max(0, gameState.memory.score - 5);
+                        
+                        // 禁用卡片点击
+                        memoryCards.forEach(card => {
+                            card.style.pointerEvents = 'none';
+                        });
+                        
+                        // 显示正确序列
+                        setTimeout(() => {
+                            // 生成新序列
+                            generateNewSequence();
+                        }, 1000);
+                        
+                        return;
+                    }
+                    
+                    // 检查是否完成当前序列
+                    if (gameState.memory.userSequence.length === gameState.memory.sequence.length) {
+                        // 完成当前序列
+                        document.getElementById('memory-status').textContent = '正确！进入下一关';
+                        
+                        // 增加得分
+                        gameState.memory.score += gameState.memory.level * 10;
+                        
+                        // 提升难度
+                        gameState.memory.level++;
+                        document.getElementById('memory-level').textContent = gameState.memory.level;
+                        
+                        // 禁用卡片点击
+                        memoryCards.forEach(card => {
+                            card.style.pointerEvents = 'none';
+                        });
+                        
+                        // 生成新序列
+                        setTimeout(() => {
+                            generateNewSequence();
+                        }, 1000);
+                    }
+                });
+            });
+            
+            function endMemoryGame() {
+                // 停止游戏
+                gameState.memory.isPlaying = false;
+                
+                // 禁用卡片点击
+                const cards = document.querySelectorAll('.memory-card');
+                cards.forEach(card => {
+                    card.style.pointerEvents = 'none';
+                });
+                
+                // 显示结果面板
+                showPanel('memory-result-panel');
+                
+                // 更新结果
+                document.getElementById('memory-score').textContent = gameState.memory.score;
+                
+                // 根据分数生成评估
+                let resultText = '';
+                if (gameState.memory.score >= 200) {
+                    resultText = '您的短期记忆能力非常出色！您能够轻松记住长序列的信息，这说明您的工作记忆容量较大，大脑信息处理效率高。这种能力在学习新知识、解决复杂问题和多任务处理中非常有价值。';
+                } else if (gameState.memory.score >= 100) {
+                    resultText = '您的短期记忆能力良好。您能够记住中等长度的信息序列，这表明您有一个健康的工作记忆系统。继续训练可以进一步提高这一能力，帮助您在日常生活中更高效地处理信息。';
+                } else {
+                    resultText = '您的短期记忆能力有提升空间。短期记忆是可以通过训练提高的，建议您定期进行记忆力练习，如记忆卡片、数字序列或单词列表等活动，这将有助于增强您的认知功能。';
+                }
+                
+                document.getElementById('memory-result-description').textContent = resultText;
+            }
+            
+            // 注意力游戏相关函数
+            function startAttentionGame() {
+                showPanel('attention-game-panel');
+                
+                // 直接通过style属性设置显示和隐藏
+                document.getElementById('attention-game-panel').style.display = 'block';
+                document.getElementById('attention-intro-panel').style.display = 'none';
+                
+                // 重置游戏状态
+                gameState.attention = {
+                    score: 0,
+                    currentTarget: 1,
+                    correctClicks: 0,
+                    wrongClicks: 0,
+                    timer: 90,
+                    interval: null
+                };
+                
+                // 更新UI
+                document.getElementById('attention-target').textContent = gameState.attention.currentTarget;
+                document.getElementById('attention-current-score').textContent = gameState.attention.score;
+                document.getElementById('attention-status').textContent = `尽快找出并点击数字 ${gameState.attention.currentTarget}`;
+                
+                // 生成游戏网格
+                generateAttentionGrid();
+                
+                // 启动定时器
+                startAttentionTimer();
+            }
+            
+            function generateAttentionGrid() {
+                const gridContainer = document.getElementById('attention-game-grid');
+                gridContainer.innerHTML = '';
+                
+                // 生成25个数字(5x5网格)
+                const numbers = [];
+                const totalNumbers = 25;
+                
+                // 确保包含目标数字
+                numbers.push(gameState.attention.currentTarget);
+                
+                // 生成其他随机数字
+                for (let i = 1; i < totalNumbers; i++) {
+                    let num;
+                    do {
+                        // 生成1-30之间的随机数
+                        num = Math.floor(Math.random() * 30) + 1;
+                    } while (numbers.includes(num));
+                    
+                    numbers.push(num);
+                }
+                
+                // 打乱数组
+                shuffleArray(numbers);
+                
+                // 创建网格
+                for (let i = 0; i < numbers.length; i++) {
+                    const item = document.createElement('div');
+                    item.className = 'attention-item';
+                    item.textContent = numbers[i];
+                    item.setAttribute('data-number', numbers[i]);
+                    
+                    // 添加点击事件
+                    item.addEventListener('click', handleAttentionItemClick);
+                    
+                    gridContainer.appendChild(item);
+                }
+            }
+            
+            function shuffleArray(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+                return array;
+            }
+            
+            function handleAttentionItemClick(event) {
+                const clickedNumber = parseInt(event.target.getAttribute('data-number'));
+                
+                if (clickedNumber === gameState.attention.currentTarget) {
+                    // 点击正确
+                    event.target.classList.add('target');
+                    
+                    // 增加得分和正确点击次数
+                    gameState.attention.score += 10;
+                    gameState.attention.correctClicks++;
+                    
+                    // 更新目标
+                    gameState.attention.currentTarget++;
+                    
+                    // 更新UI
+                    document.getElementById('attention-target').textContent = gameState.attention.currentTarget;
+                    document.getElementById('attention-current-score').textContent = gameState.attention.score;
+                    document.getElementById('attention-status').textContent = `尽快找出并点击数字 ${gameState.attention.currentTarget}`;
+                    
+                    // 生成新网格
+                    setTimeout(() => {
+                        generateAttentionGrid();
+                    }, 300);
+                } else {
+                    // 点击错误
+                    event.target.style.backgroundColor = '#ffcccc';
+                    setTimeout(() => {
+                        event.target.style.backgroundColor = '';
+                    }, 300);
+                    
+                    // 减少得分并记录错误点击
+                    gameState.attention.score = Math.max(0, gameState.attention.score - 5);
+                    gameState.attention.wrongClicks++;
+                    
+                    // 更新UI
+                    document.getElementById('attention-current-score').textContent = gameState.attention.score;
+                }
+            }
+            
+            function startAttentionTimer() {
+                // 更新定时器UI
+                document.getElementById('attention-timer').textContent = gameState.attention.timer;
+                
+                // 更新进度条
+                const progressBar = document.getElementById('attention-progress');
+                progressBar.style.width = '100%';
+                
+                // 设置定时器
+                gameState.attention.interval = setInterval(() => {
+                    gameState.attention.timer--;
+                    
+                    if (gameState.attention.timer <= 0) {
+                        // 时间到，结束游戏
+                        clearInterval(gameState.attention.interval);
+                        endAttentionGame();
+                    } else {
+                        // 更新UI
+                        document.getElementById('attention-timer').textContent = gameState.attention.timer;
+                        
+                        // 更新进度条
+                        const progressPercent = (gameState.attention.timer / 90) * 100;
+                        progressBar.style.width = progressPercent + '%';
+                    }
+                }, 1000);
+            }
+            
+            function endAttentionGame() {
+                // 禁用所有注意力项目点击
+                const attentionItems = document.querySelectorAll('.attention-item');
+                attentionItems.forEach(item => {
+                    item.removeEventListener('click', handleAttentionItemClick);
+                    item.style.pointerEvents = 'none';
+                });
+                
+                // 显示结果面板
+                showPanel('attention-result-panel');
+                
+                // 直接通过style属性设置显示和隐藏
+                document.getElementById('attention-result-panel').style.display = 'block';
+                document.getElementById('attention-game-panel').style.display = 'none';
+                
+                // 更新结果
+                document.getElementById('attention-score').textContent = gameState.attention.score;
+                
+                // 计算准确率
+                const totalClicks = gameState.attention.correctClicks + gameState.attention.wrongClicks;
+                const accuracy = totalClicks > 0 ? (gameState.attention.correctClicks / totalClicks * 100).toFixed(1) : 0;
+                
+                // 根据分数生成评估
+                let resultText = '';
+                if (gameState.attention.score >= 200) {
+                    resultText = `您的注意力和反应速度非常出色！您成功找到了${gameState.attention.correctClicks}个目标，准确率为${accuracy}%。这表明您具有高度集中的注意力和快速的视觉搜索能力，这在需要快速处理信息和做出决策的情境中非常有价值。`;
+                } else if (gameState.attention.score >= 100) {
+                    resultText = `您的注意力和反应速度良好。您成功找到了${gameState.attention.correctClicks}个目标，准确率为${accuracy}%。这表明您有稳定的注意力和不错的视觉搜索速度，通过有针对性的训练，这些能力还可以进一步提高。`;
+                } else {
+                    resultText = `您的注意力和反应速度有提升空间。您成功找到了${gameState.attention.correctClicks}个目标，准确率为${accuracy}%。建议增加专注力训练，如阅读、冥想或视觉搜索游戏，这些活动可以帮助提高您的注意力集中能力和处理速度。`;
+                }
+                
+                document.getElementById('attention-result-description').textContent = resultText;
+            }
+            
+            // 绑定按钮事件
+            const startMemoryBtn = document.getElementById('start-memory-btn');
+            startMemoryBtn.addEventListener('click', function() {
+                startMemoryGame();
+            });
+            
+            const startAttentionBtn = document.getElementById('start-attention-btn');
+            startAttentionBtn.addEventListener('click', startAttentionGame);
+            
+            const gotoAttentionBtn = document.getElementById('goto-attention-btn');
+            gotoAttentionBtn.addEventListener('click', function() {
+                // 显示注意力游戏介绍面板
+                showPanel('attention-intro-panel');
+            });
+            
+            const gotoMathBtn = document.getElementById('goto-math-btn');
+            gotoMathBtn.addEventListener('click', function() {
+                // 显示数学测试介绍
+                alert("数学能力测试正在开发中，敬请期待！"); window.location.href = "home.html"();
+            });
+        });
+    </script>
+</body>
+</html> 

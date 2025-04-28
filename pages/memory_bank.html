@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>个人记忆库</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            padding-bottom: 70px;
+        }
+        
+        .header {
+            background-color: #fff;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        .header h1 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .ai-assistant {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #f0f7ff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .ai-assistant:hover {
+            background-color: #e0edff;
+        }
+        
+        .ai-assistant img {
+            width: 24px;
+            height: 24px;
+        }
+        
+        .container {
+            padding: 20px;
+        }
+        
+        .banner {
+            background: linear-gradient(135deg, #f0f7ff, #e0edff);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .banner-content {
+            flex: 2;
+        }
+        
+        .banner-content h2 {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #333;
+        }
+        
+        .banner-content p {
+            color: #555;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .start-button {
+            background: linear-gradient(90deg, #4b92ff, #6fa9ff);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 10px rgba(75, 146, 255, 0.3);
+        }
+        
+        .start-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(75, 146, 255, 0.4);
+        }
+        
+        .banner-image {
+            flex: 1;
+            text-align: center;
+        }
+        
+        .banner-image img {
+            max-width: 100%;
+            max-height: 120px;
+            border-radius: 10px;
+        }
+        
+        .title-section {
+            margin-bottom: 25px;
+        }
+        
+        .title-section h2 {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .title-section p {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .memory-themes {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 16px;
+        }
+        
+        .theme-card {
+            background-color: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        
+        .theme-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .theme-card h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #333;
+        }
+        
+        .progress-container {
+            width: 100%;
+            height: 8px;
+            background-color: #f0f0f0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #4b92ff, #6fa9ff);
+            border-radius: 4px;
+        }
+        
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .add-theme {
+            background-color: #f8f8f8;
+            border: 2px dashed #ddd;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            min-height: 140px;
+        }
+        
+        .add-theme:hover {
+            border-color: #4b92ff;
+        }
+        
+        .add-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #f0f7ff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 10px;
+            color: #4b92ff;
+            font-size: 24px;
+        }
+        
+        .add-theme p {
+            color: #888;
+            font-size: 14px;
+        }
+        
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background-color: #fff;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            height: 100%;
+            color: #999;
+        }
+        
+        .nav-item.active {
+            color: #4b92ff;
+        }
+        
+        .nav-icon {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+        
+        .nav-text {
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="status-bar">
+        <div class="status-left">9:41</div>
+        <div class="status-right">
+            <i class="fas fa-signal"></i>
+            <i class="fas fa-wifi"></i>
+            <i class="fas fa-battery-full"></i>
+        </div>
+    </div>
+    <header class="header">
+        <h1>个人记忆库</h1>
+        <div class="user-avatar">
+            <img src="../img/WechatIMG11.jpg" alt="用户头像" onerror="this.src='https://via.placeholder.com/50?text=用户'">
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="banner">
+            <div class="banner-content">
+                <h2>生成您的个人回忆录</h2>
+                <p>通过记录生活中的重要时刻和故事，构建专属于您的人生回忆录。每一个主题都是您人生的重要篇章，记录下来，留给未来。</p>
+                
+            </div>
+            <div class="banner-image">
+                <img src="../img/memories.png" alt="回忆录" onerror="this.src='https://via.placeholder.com/150?text=回忆'">
+            </div>
+        </div>
+        
+        <div class="title-section">
+            <h2>我的记忆主题</h2>
+            <p>记录生活中重要的记忆，构建专属于你的记忆银行</p>
+        </div>
+        
+        <div class="memory-themes">
+            <!-- 童年与家乡 -->
+            <div class="theme-card">
+                <h3>童年与家乡</h3>
+                <div class="progress-container">
+                    <div class="progress-bar" style="width: 0%;"></div>
+                </div>
+                <div class="progress-text">
+                    <span>已完成: 0/20</span>
+                    <span>0%</span>
+                </div>
+            </div>
+            
+            <!-- 家庭背景 -->
+            <div class="theme-card">
+                <h3>家庭背景</h3>
+                <div class="progress-container">
+                    <div class="progress-bar" style="width: 0%;"></div>
+                </div>
+                <div class="progress-text">
+                    <span>已完成: 0/20</span>
+                    <span>0%</span>
+                </div>
+            </div>
+            
+            <!-- 教育经历 -->
+            <div class="theme-card">
+                <h3>教育经历</h3>
+                <div class="progress-container">
+                    <div class="progress-bar" style="width: 0%;"></div>
+                </div>
+                <div class="progress-text">
+                    <span>已完成: 0/20</span>
+                    <span>0%</span>
+                </div>
+            </div>
+            
+            <!-- 职业生涯 -->
+            <div class="theme-card">
+                <h3>职业生涯</h3>
+                <div class="progress-container">
+                    <div class="progress-bar" style="width: 0%;"></div>
+                </div>
+                <div class="progress-text">
+                    <span>已完成: 0/20</span>
+                    <span>0%</span>
+                </div>
+            </div>
+            
+            <!-- 婚姻与家庭 -->
+            <div class="theme-card hunyin">
+                <h3>婚姻与家庭</h3>
+                <div class="progress-container">
+                    <div class="progress-bar" style="width: 25%;"></div>
+                </div>
+                <div class="progress-text">
+                    <span>已完成: 4/20</span>
+                    <span>25%</span>
+                </div>
+            </div>
+            
+            <!-- 子女教育 -->
+            <div class="theme-card">
+                <h3>子女教育</h3>
+                <div class="progress-container">
+                    <div class="progress-bar" style="width: 0%;"></div>
+                </div>
+                <div class="progress-text">
+                    <span>已完成: 0/20</span>
+                    <span>0%</span>
+                </div>
+            </div>
+            
+            <!-- 人生挑战 -->
+            <div class="theme-card">
+                <h3>人生挑战</h3>
+                <div class="progress-container">
+                    <div class="progress-bar" style="width: 0%;"></div>
+                </div>
+                <div class="progress-text">
+                    <span>已完成: 0/20</span>
+                    <span>0%</span>
+                </div>
+            </div>
+            
+            <!-- 朋友与社交 -->
+            <div class="theme-card">
+                <h3>朋友与社交</h3>
+                <div class="progress-container">
+                    <div class="progress-bar" style="width: 0%;"></div>
+                </div>
+                <div class="progress-text">
+                    <span>已完成: 0/20</span>
+                    <span>0%</span>
+                </div>
+            </div>
+            
+            <!-- 兴趣与爱好 -->
+            <div class="theme-card">
+                <h3>兴趣与爱好</h3>
+                <div class="progress-container">
+                    <div class="progress-bar" style="width: 0%;"></div>
+                </div>
+                <div class="progress-text">
+                    <span>已完成: 0/20</span>
+                    <span>0%</span>
+                </div>
+            </div>
+            
+            <!-- 人生哲学 -->
+            <div class="theme-card">
+                <h3>人生哲学</h3>
+                <div class="progress-container">
+                    <div class="progress-bar" style="width: 0%;"></div>
+                </div>
+                <div class="progress-text">
+                    <span>已完成: 0/20</span>
+                    <span>0%</span>
+                </div>
+            </div>
+            
+            <!-- 社会变迁 -->
+            <div class="theme-card">
+                <h3>社会变迁</h3>
+                <div class="progress-container">
+                    <div class="progress-bar" style="width: 0%;"></div>
+                </div>
+                <div class="progress-text">
+                    <span>已完成: 0/20</span>
+                    <span>0%</span>
+                </div>
+            </div>
+            
+            <!-- 人生感悟 -->
+            <div class="theme-card">
+                <h3>人生感悟</h3>
+                <div class="progress-container">
+                    <div class="progress-bar" style="width: 0%;"></div>
+                </div>
+                <div class="progress-text">
+                    <span>已完成: 0/20</span>
+                    <span>0%</span>
+                </div>
+            </div>
+            
+            <!-- 添加新主题 -->
+            <div class="theme-card add-theme">
+                <div class="add-icon">+</div>
+                <p>创建新主题</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 底部导航 -->
+    <nav class="bottom-nav">
+        <a href="home.html" class="nav-item">
+            <i class="fas fa-home"></i>
+            <span>首页</span>
+        </a>
+        <a href="memory_bank.html" class="nav-item active">
+            <i class="fas fa-images"></i>
+            <span>记忆库</span>
+        </a>
+        <a href="academy.html" class="nav-item">
+            <i class="fas fa-graduation-cap"></i>
+            <span>学院</span>
+        </a>
+        <a href="results.html" class="nav-item">
+            <i class="fas fa-chart-line"></i>
+            <span>结果</span>
+        </a>
+        <a href="profile.html" class="nav-item">
+            <i class="fas fa-user"></i>
+            <span>我的</span>
+        </a>
+    </nav>
+    
+    <script>
+
+    document.addEventListener('DOMContentLoaded', function() {
+         
+            const startTrainingBtn = document.querySelector('.hunyin');
+            if (startTrainingBtn) {
+                startTrainingBtn.addEventListener('click', function() {
+                    
+                    window.location.href = 'memory.html';
+                });
+            }
+            
+            // 为banner中的开始按钮添加点击事件
+            const startButton = document.querySelector('.start-button');
+            if (startButton) {
+                startButton.addEventListener('click', function() {
+                    // 滚动到主题区域
+                    document.querySelector('.memory-themes').scrollIntoView({ behavior: 'smooth' });
+                    // 提示用户选择一个主题开始记录
+                    alert('请选择一个记忆主题，开始记录您的珍贵回忆！');
+                });
+            }
+    });
+        // 为主题卡片添加点击事件
+        document.querySelectorAll('.theme-card:not(.add-theme)').forEach(card => {
+            card.addEventListener('click', () => {
+                const themeName = card.querySelector('h3').textContent;
+                console.log(`点击了主题: ${themeName}`);
+                // 这里可以添加导航到主题详情页的逻辑
+            });
+        });
+        
+        // 为添加新主题卡片添加点击事件
+        document.querySelector('.add-theme').addEventListener('click', () => {
+            console.log('点击了添加新主题');
+           
+            // 这里可以添加创建新主题的逻辑
+        });
+    </script>
+</body>
+</html> 

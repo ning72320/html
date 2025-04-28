@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>阿尔兹海默症认知训练应用原型</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #f5f5f7;
+            padding: 40px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 16px;
+        }
+        
+        .header p {
+            font-size: 18px;
+            color: #666;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>阿尔兹海默症临床前患者认知和记忆训练应用</h1>
+        <p>基于数字人的认知训练应用，帮助阿尔兹海默症临床前期患者进行记忆和认知能力训练</p>
+    </div>
+    
+    <div class="prototype-container">
+        <div class="prototype-item">
+            <iframe src="pages/home.html" width="393" height="852"></iframe>
+            <div class="prototype-label">首页</div>
+        </div>
+        <div class="prototype-item">
+            <iframe src="pages/memory_bank.html" width="393" height="852"></iframe>
+            <div class="prototype-label">个人记忆库</div>
+        </div>
+        <div class="prototype-item">
+            <iframe src="pages/memory.html" width="393" height="852"></iframe>
+            <div class="prototype-label">个人记忆库详情</div>
+        </div>
+        
+        <div class="prototype-item">
+            <iframe src="pages/results.html" width="393" height="852"></iframe>
+            <div class="prototype-label">训练结果</div>
+        </div>
+        
+        <div class="prototype-item">
+            <iframe src="pages/profile.html" width="393" height="852"></iframe>
+            <div class="prototype-label">我的</div>
+        </div>
+        
+        <div class="prototype-item">
+            <iframe src="pages/chat.html" width="393" height="852"></iframe>
+            <div class="prototype-label">数字人对话</div>
+        </div>
+        <div class="prototype-item">
+            <iframe src="pages/training-chat.html" width="393" height="852"></iframe>
+            <div class="prototype-label">训练数字人对话</div>
+        </div>
+        <div class="prototype-item">
+            <iframe src="pages/chat.html?mode=memory" width="393" height="852"></iframe>
+            <div class="prototype-label">记忆训练对话（场景引导回忆）</div>
+        </div>
+        <div class="prototype-item">
+            <iframe src="pages/memory-detail.html" width="393" height="852"></iframe>
+            <div class="prototype-label">记忆详情</div>
+        </div>
+        
+        <div class="prototype-item">
+            <iframe src="pages/training.html" width="393" height="852"></iframe>
+            <div class="prototype-label">训练界面</div>
+        </div>
+        
+        <div class="prototype-item">
+            <iframe src="pages/settings.html" width="393" height="852"></iframe>
+            <div class="prototype-label">设置</div>
+        </div>
+    </div>
+    
+    <script>
+        // This script helps make sure all frames are loaded properly
+        window.addEventListener('load', function() {
+            const frames = document.querySelectorAll('iframe');
+            frames.forEach(frame => {
+                frame.addEventListener('load', function() {
+                    console.log('Frame loaded:', this.src);
+                });
+            });
+        });
+    </script>
+</body>
+</html> 
