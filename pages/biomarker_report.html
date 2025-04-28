@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>生物标志物报告 - 麦若</title>
+    <title>检测报告 - 麦若</title>
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -105,12 +105,26 @@
             height: 500px;
             overflow: hidden;
             background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         
         .pdf-iframe {
             width: 100%;
             height: 100%;
             border: none;
+        }
+        
+        .pdf-page {
+            max-width: 100%;
+            max-height: 100%;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: none;
+        }
+        
+        .pdf-page.active {
+            display: block;
         }
         
         .pdf-controls {
@@ -250,7 +264,7 @@
     </style>
 </head>
 <body class="app-body">
-    <div class="status-bar" style="display: none;">
+    <div class="status-bar">
         <div class="status-left">18:15</div>
         <div class="status-right">
             <i class="fas fa-signal"></i>
@@ -263,7 +277,7 @@
         <a href="home.html" class="back-button">
             <i class="fas fa-arrow-left"></i>
         </a>
-        <h1 class="page-title">生物标志物报告</h1>
+        <h1 class="page-title">检测报告</h1>
     </header>
 
     <main class="app-content">
@@ -274,7 +288,16 @@
             </div>
             
             <div class="pdf-container">
-                <iframe class="pdf-iframe" src="report.pdf" frameborder="0"></iframe>
+                <img src="../img/page1.png" class="pdf-page active" data-page="1" alt="报告第1页">
+                <img src="../assets/report/page2.jpg" class="pdf-page" data-page="2" alt="报告第2页">
+                <img src="../assets/report/page3.jpg" class="pdf-page" data-page="3" alt="报告第3页">
+                <img src="../assets/report/page4.jpg" class="pdf-page" data-page="4" alt="报告第4页">
+                <img src="../assets/report/page5.jpg" class="pdf-page" data-page="5" alt="报告第5页">
+                <img src="../assets/report/page6.jpg" class="pdf-page" data-page="6" alt="报告第6页">
+                <img src="../assets/report/page7.jpg" class="pdf-page" data-page="7" alt="报告第7页">
+                <img src="../assets/report/page8.jpg" class="pdf-page" data-page="8" alt="报告第8页">
+                <img src="../assets/report/page9.jpg" class="pdf-page" data-page="9" alt="报告第9页">
+                <img src="../assets/report/page10.jpg" class="pdf-page" data-page="10" alt="报告第10页">
             </div>
             
             <div class="pdf-controls">
@@ -326,35 +349,44 @@
             }
             
             // PDF相关功能
-            const pdfIframe = document.querySelector('.pdf-iframe');
+            const pdfContainer = document.querySelector('.pdf-container');
+            const pdfPages = document.querySelectorAll('.pdf-page');
             const pdfPlaceholder = document.querySelector('.pdf-placeholder');
             const pdfControls = document.querySelector('.pdf-controls');
             const prevPageBtn = pdfControls.querySelector('button:first-child');
             const nextPageBtn = pdfControls.querySelector('button:last-child');
             const pageCount = document.querySelector('.pdf-page-count');
             
-            // 当PDF加载失败时显示占位符
-            pdfIframe.addEventListener('error', function() {
-                pdfIframe.style.display = 'none';
-                pdfPlaceholder.style.display = 'flex';
-                pdfControls.style.display = 'none';
-            });
-            
-            // 模拟PDF加载成功
             let currentPage = 1;
-            const totalPages = 10;
+            const totalPages = pdfPages.length;
             
             // 更新页码显示
             function updatePageCount() {
                 pageCount.textContent = currentPage + '/' + totalPages;
             }
             
+            // 显示当前页
+            function showCurrentPage() {
+                pdfPages.forEach(page => {
+                    page.classList.remove('active');
+                });
+                const activePage = document.querySelector(`.pdf-page[data-page="${currentPage}"]`);
+                if (activePage) {
+                    activePage.classList.add('active');
+                }
+                
+                // 更新导航按钮状态
+                prevPageBtn.disabled = currentPage === 1;
+                nextPageBtn.disabled = currentPage === totalPages;
+                
+                updatePageCount();
+            }
+            
             // 上一页按钮点击事件
             prevPageBtn.addEventListener('click', function() {
                 if (currentPage > 1) {
                     currentPage--;
-                    updatePageCount();
-                    // 这里添加实际的PDF跳转逻辑
+                    showCurrentPage();
                 }
             });
             
@@ -362,13 +394,44 @@
             nextPageBtn.addEventListener('click', function() {
                 if (currentPage < totalPages) {
                     currentPage++;
-                    updatePageCount();
-                    // 这里添加实际的PDF跳转逻辑
+                    showCurrentPage();
                 }
             });
             
-            // 初始化页码显示
-            updatePageCount();
+            // 初始化页面显示
+            showCurrentPage();
+            
+            // 处理触摸滑动翻页
+            let touchStartX = 0;
+            pdfContainer.addEventListener('touchstart', function(e) {
+                touchStartX = e.touches[0].clientX;
+            });
+            
+            pdfContainer.addEventListener('touchend', function(e) {
+                const touchEndX = e.changedTouches[0].clientX;
+                const diff = touchStartX - touchEndX;
+                
+                // 向左滑动，下一页
+                if (diff > 50 && currentPage < totalPages) {
+                    currentPage++;
+                    showCurrentPage();
+                }
+                
+                // 向右滑动，上一页
+                if (diff < -50 && currentPage > 1) {
+                    currentPage--;
+                    showCurrentPage();
+                }
+            });
+            
+            // 错误处理：如果图片加载失败
+            pdfPages.forEach(page => {
+                page.addEventListener('error', function() {
+                    pdfContainer.innerHTML = '';
+                    pdfPlaceholder.style.display = 'flex';
+                    pdfControls.style.display = 'none';
+                });
+            });
         });
     </script>
 </body>
