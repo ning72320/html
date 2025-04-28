@@ -433,7 +433,7 @@
     </style>
 </head>
 <body class="app-body">
-    <div class="status-bar"  style="display: none;">
+    <div class="status-bar" style="display: none;">
         <div class="status-left">18:13</div>
         <div class="status-right">
             <i class="fas fa-signal"></i>
@@ -500,27 +500,39 @@
         </section>
 
         <!-- 场景三：用户没有任何报告 -->
-        <section class="report-card" style="background: linear-gradient(135deg, #FF9F1C, #F57600); display: none;" id="no-report-card">
+        <section class="report-card" style="background: linear-gradient(135deg, #4b4741, #44403d);display: none; " id="no-report-card">
             <div class="report-icon">
                 <i class="fas fa-brain"></i>
                
             </div>
             <div class="report-content">
-                <h3>总体认知能力评估-三</h3>
-                <button class="report-btn" id="create-report-btn">
-                    <i class="fas fa-flask"></i> 现在测试你的大脑
+                <h3>AI正在分析你的报告</h3>
+
+            </div>
+        </section>
+
+        <!-- 场景四：AI已经完成报告分析 -->
+        <section class="report-card" style="background: linear-gradient(135deg, #6A5ACD, #5D4FB8); display: none;" id="completed-analysis-card">
+            <div class="report-icon">
+                <i class="fas fa-chart-pie"></i>
+            </div>
+            <div class="report-content">
+                <h3>AI已完成您的报告分析</h3>
+                <button class="report-btn" id="view-analysis-btn">
+                    <i class="fas fa-search"></i> 查看详情
                 </button>
             </div>
         </section>
 
         <!-- 添加场景切换的展示代码 -->
         <div style="margin-top: 20px; background: #f5f5f5; padding: 15px; border-radius: 10px;">
-            <h4 style="margin-top: 0; color: #333;">👉 研发说明：二种报告场景</h4>
-            <p style="margin-bottom: 10px; font-size: 14px;">此区域有二种不同显示场景，请根据用户状态选择显示哪一种：</p>
-            <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+            <h4 style="margin-top: 0; color: #333;">👉 研发说明：四种报告场景</h4>
+            <p style="margin-bottom: 10px; font-size: 14px;">此区域有四种不同显示场景，请根据用户状态选择显示哪一种：</p>
+            <div style="display: flex; gap: 10px; margin-bottom: 10px; flex-wrap: wrap;">
                 <button id="show-biomarker" class="toggle-btn" style="background: #4CAF50; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer;">场景一：有生物标志物报告</button>
                 <button id="show-other" class="toggle-btn" style="background: #FF9F1C; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer;">场景二：没有生物标志物报告</button>
-                <button id="show-none" class="toggle-btn" style="background: #8E8E8E; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer;display: none;">场景三：无报告</button>
+                <button id="show-none" class="toggle-btn" style="background: #8E8E8E; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer;">场景三：AI正在分析您的报告</button>
+                <button id="show-completed" class="toggle-btn" style="background: #6A5ACD; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer;">场景四：AI已完成报告分析</button>
             </div>
             <p style="margin: 0; font-size: 14px; color: #666;">注：这个说明区域仅用于开发阶段，生产环境请删除。</p>
         </div>
@@ -599,17 +611,20 @@
             const biomarkerReportCard = document.querySelector('.report-card');
             const otherReportCard = document.getElementById('other-report-card');
             const noReportCard = document.getElementById('no-report-card');
+            const completedAnalysisCard = document.getElementById('completed-analysis-card');
             
             // 场景切换按钮
             const showBiomarkerBtn = document.getElementById('show-biomarker');
             const showOtherBtn = document.getElementById('show-other');
             const showNoneBtn = document.getElementById('show-none');
+            const showCompletedBtn = document.getElementById('show-completed');
             
             // 隐藏所有报告卡片
             function hideAllReports() {
                 biomarkerReportCard.style.display = 'none';
                 otherReportCard.style.display = 'none';
                 noReportCard.style.display = 'none';
+                completedAnalysisCard.style.display = 'none';
             }
             
             // 场景一：显示生物标志物报告
@@ -630,6 +645,12 @@
                 noReportCard.style.display = 'flex';
             });
             
+            // 场景四：AI已完成报告分析
+            showCompletedBtn.addEventListener('click', function() {
+                hideAllReports();
+                completedAnalysisCard.style.display = 'flex';
+            });
+            
             // 默认显示场景一
             biomarkerReportCard.style.display = 'flex';
             
@@ -638,6 +659,14 @@
             if (viewOtherReportBtn) {
                 viewOtherReportBtn.addEventListener('click', function() {
                     window.location.href = 'cognitive_test.html';
+                });
+            }
+            
+            // AI分析报告查看按钮点击事件
+            const viewAnalysisBtn = document.getElementById('view-analysis-btn');
+            if (viewAnalysisBtn) {
+                viewAnalysisBtn.addEventListener('click', function() {
+                    window.location.href = 'report_analysis.html';
                 });
             }
             

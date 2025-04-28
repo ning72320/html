@@ -288,7 +288,7 @@
     </style>
 </head>
 <body class="app-body">
-    <div class="status-bar" style="display: none;">
+    <div class="status-bar">
         <div class="status-left" id="time-display">18:13</div>
         <div class="status-right">
             <i class="fas fa-signal"></i>
@@ -421,13 +421,13 @@
             const checkoutBtn = document.getElementById('checkout-btn');
             checkoutBtn.addEventListener('click', function() {
                 // 这里可以根据选中的套餐处理支付逻辑
-                alert('您选择了: ' + 
+                alert('即将跳转到支付页面，您选择了: ' + 
                       (selectedPlan === 'monthly' ? '月度会员 ¥99/月' : 
                        selectedPlan === 'quarterly' ? '季度会员 ¥252/季' : 
                        '年度会员 ¥891/年'));
-                alert('开通成功'); 
+                       
                 // 实际项目中，这里应该跳转到支付页面
-                window.location.href = 'home2.html';
+                // window.location.href = 'payment.html?plan=' + selectedPlan;
             });
         });
     </script>
