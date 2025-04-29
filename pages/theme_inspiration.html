@@ -1,0 +1,1253 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>主题灵感</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+        }
+        
+        :root {
+            --primary: #4b92ff;
+            --primary-light: #e0edff;
+            --primary-lighter: #f0f7ff;
+            --text-primary: #333;
+            --text-secondary: #666;
+            --text-muted: #888;
+            --background: #f5f5f5;
+            --card-bg: #ffffff;
+            --border-color: #eaeaea;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+            --rounded-sm: 8px;
+            --rounded-md: 12px;
+            --rounded-lg: 16px;
+            --rounded-full: 9999px;
+        }
+        
+        body {
+            background-color: var(--background);
+            color: var(--text-primary);
+            padding-bottom: 70px;
+            line-height: 1.5;
+        }
+        
+        .container {
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        
+        .back-button {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--card-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 16px;
+            box-shadow: var(--shadow-sm);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .back-button:hover {
+            background-color: var(--primary-lighter);
+            transform: translateY(-2px);
+        }
+        
+        .title {
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .inspiration-card {
+            background-color: var(--card-bg);
+            border-radius: var(--rounded-lg);
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-md);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .inspiration-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary), #6fa9ff);
+        }
+        
+        .inspiration-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .ai-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--primary-lighter);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 16px;
+            color: var(--primary);
+            font-size: 24px;
+        }
+        
+        .ai-info {
+            flex: 1;
+        }
+        
+        .ai-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+        
+        .ai-role {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+        
+        .message-content {
+            font-size: 16px;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+        }
+        
+        .speech-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(90deg, var(--primary), #6fa9ff);
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            border-radius: var(--rounded-full);
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(75, 146, 255, 0.2);
+            transition: all 0.3s ease;
+            width: 100%;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+        
+        .speech-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(75, 146, 255, 0.3);
+        }
+        
+        .speech-button.recording {
+            background: linear-gradient(90deg, #ff4b4b, #ff6f6f);
+            animation: pulse 1.5s infinite;
+        }
+        
+        .speech-icon {
+            margin-right: 12px;
+            font-size: 18px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            margin-top: 24px;
+        }
+        
+        .action-button {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 12px 24px;
+            border-radius: var(--rounded-full);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            min-width: 160px;
+            justify-content: center;
+        }
+        
+        .action-button:hover {
+            background-color: var(--primary-lighter);
+            color: var(--primary);
+            border-color: var(--primary-light);
+        }
+        
+        .action-icon {
+            margin-right: 8px;
+            font-size: 16px;
+        }
+        
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 64px;
+            background-color: var(--card-bg);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+            z-index: 100;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            height: 100%;
+            color: var(--text-muted);
+            transition: all 0.2s ease;
+        }
+        
+        .nav-item.active {
+            color: var(--primary);
+        }
+        
+        .nav-item:hover:not(.active) {
+            color: var(--text-secondary);
+        }
+        
+        .nav-icon {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+        
+        .nav-text {
+            font-size: 12px;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .container {
+                padding: 16px;
+            }
+            
+            .inspiration-card {
+                padding: 20px;
+            }
+            
+            .message-content {
+                font-size: 15px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                gap: 12px;
+            }
+            
+            .action-button {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+        
+        /* Add styles for the recording panel */
+        .recording-panel {
+            position: fixed;
+            bottom: -90vh; /* Start off-screen */
+            left: 0;
+            right: 0;
+            height: 90vh;
+            background-color: var(--card-bg);
+            border-radius: var(--rounded-lg) var(--rounded-lg) 0 0;
+            box-shadow: var(--shadow-lg);
+            z-index: 150;
+            padding: 24px 20px;
+            transition: all 0.3s ease-in-out;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .recording-panel.active {
+            bottom: 0;
+        }
+        
+        .panel-content {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+        
+        .action-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 0 20px;
+            margin-top: auto;
+        }
+        
+        .panel-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .panel-title {
+            font-size: 22px;
+            font-weight: 600;
+            margin-right: auto;
+        }
+        
+        .tab-container {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 20px;
+        }
+        
+        .tab {
+            padding: 12px 16px;
+            font-size: 16px;
+            color: var(--text-secondary);
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .tab.active {
+            color: var(--primary);
+            font-weight: 500;
+        }
+        
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 16px;
+            right: 16px;
+            height: 3px;
+            background-color: var(--primary);
+            border-radius: 3px 3px 0 0;
+        }
+        
+        .dropdown-button {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--card-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 1px solid var(--border-color);
+        }
+        
+        .close-button {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--card-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            margin-left: 10px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .recording-status-container {
+            display: flex;
+            align-items: center;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .recording-dot {
+            width: 12px;
+            height: 12px;
+            background-color: #ff4b4b;
+            border-radius: 50%;
+            margin-right: 8px;
+            animation: pulse 1.5s infinite;
+        }
+        
+        .recording-status {
+            color: var(--text-secondary);
+            font-size: 16px;
+        }
+        
+        .transcription-area {
+            padding: 0;
+            color: var(--text-secondary);
+            min-height: 60px;
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 50px;
+        }
+        
+        .panel-button {
+            flex: 1;
+            padding: 14px;
+            border-radius: var(--rounded-full);
+            border: none;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 50px;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        
+        .start-button {
+            background: linear-gradient(90deg, var(--primary), #6fa9ff);
+            color: white;
+            box-shadow: 0 4px 12px rgba(75, 146, 255, 0.2);
+        }
+        
+        .start-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(75, 146, 255, 0.3);
+        }
+        
+        .start-button.recording {
+            background: linear-gradient(90deg, #ff4b4b, #ff6f6f);
+            animation: pulse 1.5s infinite;
+        }
+        
+        .confirm-button {
+            background-color: #f0f0f0;
+            color: var(--text-secondary);
+        }
+        
+        .confirm-button:hover {
+            background-color: #e0e0e0;
+        }
+        
+        .countdown {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 120px;
+            font-weight: 600;
+            color: var(--primary);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 200;
+            line-height: 1;
+            margin: 0;
+            padding: 0;
+            pointer-events: none;
+        }
+        
+        .countdown.active {
+            opacity: 1;
+        }
+        
+        /* Overlay backdrop when panel is active */
+        .backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 140;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .backdrop.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        /* Add styles for the thinking animation */
+        .thinking-dots {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .dot {
+            width: 10px;
+            height: 10px;
+            background-color: var(--primary);
+            border-radius: 50%;
+            opacity: 0.6;
+            animation: thinking 1.4s infinite ease-in-out both;
+        }
+        
+        @keyframes thinking {
+            0%, 100% { transform: scale(0.6); }
+            50% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="back-button" onclick="history.back()">
+                <i class="fas fa-arrow-left"></i>
+            </div>
+            <h1 class="title">主题灵感</h1>
+        </div>
+        
+        <div class="inspiration-card">
+            <div class="inspiration-header">
+                <div class="ai-avatar">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="ai-info">
+                    <div class="ai-name">AI助手</div>
+                    <div class="ai-role">记忆与故事引导专家</div>
+                </div>
+            </div>
+            
+            <div class="message-content" id="ai-message">
+                <!-- AI引导语会根据主题动态加载 -->
+            </div>
+            
+            <button class="speech-button" id="speech-button">
+                <i class="fas fa-microphone speech-icon"></i>
+                <span id="speech-text">开始口述</span>
+            </button>
+            
+            <div class="user-response" id="user-response" style="display: none; margin-top: 20px; padding: 15px; background-color: var(--primary-lighter); border-radius: var(--rounded-md); color: var(--text-secondary);">
+                <!-- 用户录音内容会显示在这里 -->
+            </div>
+            
+            <div class="ai-followup" id="ai-followup" style="display: none; margin-top: 20px; padding: 15px; background-color: var(--primary-light); border-radius: var(--rounded-md); color: var(--text-secondary); border-left: 3px solid var(--primary);">
+                <div id="followup-text"></div>
+                <div class="followup-actions" style="display: flex; margin-top: 15px; gap: 10px;">
+                    <button class="action-button" id="continue-speech">
+                        <i class="fas fa-microphone action-icon"></i>
+                        继续口述
+                    </button>
+                    <button class="action-button" id="end-speech">
+                        <i class="fas fa-check-circle action-icon"></i>
+                        结束口述
+                    </button>
+                </div>
+            </div>
+            
+            <div class="photo-upload-prompt" id="photo-upload-prompt" style="display: none; margin-top: 20px; padding: 15px; background-color: var(--primary-light); border-radius: var(--rounded-md); color: var(--text-secondary); border-left: 3px solid var(--primary);">
+                <div>感谢您的分享！关于这个话题，要不要上传相关照片来进行补充呢？</div>
+                <div class="upload-actions" style="display: flex; margin-top: 15px; gap: 10px;">
+                    <button class="action-button" id="upload-photo">
+                        <i class="fas fa-image action-icon"></i>
+                        上传照片
+                    </button>
+                    <button class="action-button" id="skip-upload">
+                        <i class="fas fa-times-circle action-icon"></i>
+                        不需要
+                    </button>
+                </div>
+            </div>
+            
+            <div class="photo-display" id="photo-display" style="display: none; margin-top: 20px;">
+                <img id="uploaded-photo" style="max-width: 100%; border-radius: var(--rounded-md); box-shadow: var(--shadow-md);" />
+                <div class="photo-caption" style="margin-top: 10px; font-style: italic; color: var(--text-muted); text-align: center;">照片补充</div>
+            </div>
+            
+            <div class="photo-description-prompt" id="photo-description-prompt" style="display: none; margin-top: 20px; padding: 15px; background-color: var(--primary-light); border-radius: var(--rounded-md); color: var(--text-secondary); border-left: 3px solid var(--primary);">
+                <div>这张照片看起来很有意义，要不要为它添加一些描述和回忆呢？</div>
+                <div class="description-actions" style="display: flex; margin-top: 15px; gap: 10px;">
+                    <button class="action-button" id="describe-photo">
+                        <i class="fas fa-microphone action-icon"></i>
+                        口述描述
+                    </button>
+                    <button class="action-button" id="skip-description">
+                        <i class="fas fa-times-circle action-icon"></i>
+                        不需要
+                    </button>
+                </div>
+            </div>
+            
+            <div class="photo-description" id="photo-description" style="display: none; margin-top: 20px; padding: 15px; background-color: var(--primary-lighter); border-radius: var(--rounded-md); color: var(--text-secondary);">
+                <!-- 照片描述内容会显示在这里 -->
+            </div>
+            
+            <div class="completion-message" id="completion-message" style="display: none; margin-top: 20px; padding: 15px; background-color: var(--primary-lighter); border-radius: var(--rounded-md); color: var(--primary); font-weight: 500; text-align: center;">
+                感谢分享，AI助手将马上整理汇总保存您的记忆
+            </div>
+            
+            <div class="ai-thinking" id="ai-thinking" style="display: none; margin-top: 20px; padding: 15px; background-color: var(--primary-lighter); border-radius: var(--rounded-md); color: var(--text-secondary);">
+                <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 15px;">
+                    <div class="thinking-dots" style="display: flex; gap: 8px;">
+                        <div class="dot" style="width: 10px; height: 10px; background-color: var(--primary); border-radius: 50%; opacity: 0.6; animation: thinking 1.4s infinite ease-in-out both;"></div>
+                        <div class="dot" style="width: 10px; height: 10px; background-color: var(--primary); border-radius: 50%; opacity: 0.6; animation: thinking 1.4s infinite ease-in-out both; animation-delay: 0.2s;"></div>
+                        <div class="dot" style="width: 10px; height: 10px; background-color: var(--primary); border-radius: 50%; opacity: 0.6; animation: thinking 1.4s infinite ease-in-out both; animation-delay: 0.4s;"></div>
+                    </div>
+                    <span style="margin-left: 12px;">AI助手正在沉思中...</span>
+                </div>
+            </div>
+            
+            <div class="ai-summary" id="ai-summary" style="display: none; margin-top: 20px; padding: 20px; background-color: white; border-radius: var(--rounded-md); color: var(--text-secondary); box-shadow: var(--shadow-md);">
+                <div class="summary-header" style="margin-bottom: 15px; display: flex; align-items: center;">
+                    <div style="width: 40px; height: 40px; border-radius: 50%; background-color: var(--primary-lighter); display: flex; align-items: center; justify-content: center; margin-right: 12px;">
+                        <i class="fas fa-robot" style="color: var(--primary);"></i>
+                    </div>
+                    <div>
+                        <div style="font-weight: 600; color: var(--text-primary);">AI助手</div>
+                        <div style="font-size: 14px; color: var(--text-muted);">记忆汇总与保存</div>
+                    </div>
+                </div>
+                <div class="summary-content" id="summary-content">
+                    <!-- AI生成的汇总内容会显示在这里 -->
+                </div>
+            </div>
+        </div>
+        
+        <div class="action-buttons">
+            <button class="action-button">
+                <i class="fas fa-lightbulb action-icon"></i>
+                换一个灵感
+            </button>
+        </div>
+    </div>
+    
+    <!-- 底部导航 -->
+    <nav class="bottom-nav">
+        <a href="home.html" class="nav-item">
+            <i class="fas fa-home nav-icon"></i>
+            <span class="nav-text">首页</span>
+        </a>
+        <a href="memory_bank.html" class="nav-item active">
+            <i class="fas fa-images nav-icon"></i>
+            <span class="nav-text">记忆库</span>
+        </a>
+        <a href="academy.html" class="nav-item">
+            <i class="fas fa-graduation-cap nav-icon"></i>
+            <span class="nav-text">学院</span>
+        </a>
+        <a href="results.html" class="nav-item">
+            <i class="fas fa-chart-line nav-icon"></i>
+            <span class="nav-text">结果</span>
+        </a>
+        <a href="profile.html" class="nav-item">
+            <i class="fas fa-user nav-icon"></i>
+            <span class="nav-text">我的</span>
+        </a>
+    </nav>
+    
+    <!-- 录音面板 -->
+    <div class="recording-panel" id="recording-panel">
+        <div class="panel-content">
+            <div class="panel-header">
+                <h1 class="panel-title">家乡的自然风光与环境</h1>
+                
+                <div class="close-button" id="close-panel">
+                    <i class="fas fa-times"></i>
+                </div>
+            </div>
+            
+            <div class="tab-container">
+                <div class="tab active">口述录音</div>
+            </div>
+            
+            <div class="recording-status-container">
+                <div class="recording-dot"></div>
+                <div class="recording-status">准备开始录音</div>
+            </div>
+            
+            <div class="transcription-area" id="transcription-area">
+                <!-- 转录文本将在这里显示 -->
+            </div>
+        </div>
+        
+        <div class="action-row">
+            <button class="panel-button start-button" id="start-recording">
+                <i class="fas fa-microphone"></i>
+            </button>
+            <button class="panel-button confirm-button" id="confirm-recording">
+                <i class="fas fa-check"></i>
+            </button>
+        </div>
+    </div>
+    
+    <!-- 背景遮罩 -->
+    <div class="backdrop" id="backdrop"></div>
+    
+    <!-- 倒计时数字 -->
+    <div class="countdown" id="countdown"></div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 从URL获取主题参数
+            const urlParams = new URLSearchParams(window.location.search);
+            const theme = urlParams.get('theme') || '主题';
+            
+            // 根据不同主题显示不同的引导语
+            const inspirationMessages = {
+                '童年与家乡': '请分享一下您童年时期最美好的回忆，可以是一个特别的地方、一段难忘的经历，或者是家乡的某个传统习俗。这些珍贵的记忆将成为您个人故事的重要组成部分。',
+                '家庭背景': '能否讲述一下您家族的历史或传统？也许是祖辈的故事，家族的名字由来，或者是代代相传的家训。这些都是构成您身份的重要元素。',
+                '教育经历': '回想一下您求学时期有什么难忘的经历？可能是一位启发您的老师，一个重要的学习转折点，或者是一段挑战自我的经历。',
+                '职业生涯': '在您的职业道路上，有什么关键的决定或经历塑造了您今天的职业状态？请分享这段故事以及从中获得的领悟。',
+                '婚姻与家庭': '请分享您与伴侣的相遇、相知到相守的故事，或者是组建家庭后的一个温馨瞬间。这些记忆是您人生中最宝贵的财富之一。',
+                '子女教育': '在教育子女的过程中，有什么特别的瞬间让您感到欣慰或有所领悟？可以是一次对话、一个决定或者是看到孩子成长的某个时刻。',
+                '人生挑战': '人生中总会面临各种挑战，您是如何克服一个重大困难的？这段经历对您有什么样的影响和启示？',
+                '朋友与社交': '友谊是人生的重要组成部分，能否分享一段珍贵的友谊故事，或者是朋友对您生活产生重大影响的经历？',
+                '兴趣与爱好': '您有什么特别的兴趣爱好？请分享是什么引发了这个爱好，以及它如何丰富了您的生活。',
+                '人生哲学': '随着年龄的增长，我们对生活的理解也在不断深化。您有什么人生信条或者领悟是您一直坚持的？这些理念是如何形成的？',
+                '社会变迁': '您见证了哪些社会变迁？这些变化如何影响了您的生活方式、价值观或者日常习惯？',
+                '人生感悟': '回顾人生历程，您最大的领悟是什么？有什么经验或智慧您希望传递给后代？'
+            };
+            
+            // 设置页面标题
+            document.title = `${theme} - 主题灵感`;
+            document.querySelector('.title').textContent = `${theme}`;
+            
+            // 设置AI引导语
+            const aiMessage = document.getElementById('ai-message');
+            aiMessage.textContent = inspirationMessages[theme] || 
+                `请分享一下关于"${theme}"的记忆或故事。您可以从任何角度出发，分享一个具体的事件、一段特别的经历，或者是对这个主题的个人感悟。这些记忆将成为您个人故事的重要组成部分。`;
+            
+            // 语音按钮交互
+            const speechButton = document.getElementById('speech-button');
+            const speechText = document.getElementById('speech-text');
+            const recordingPanel = document.getElementById('recording-panel');
+            const backdrop = document.getElementById('backdrop');
+            const closePanel = document.getElementById('close-panel');
+            const transcriptionArea = document.getElementById('transcription-area');
+            const startButton = document.getElementById('start-recording');
+            const countdown = document.getElementById('countdown');
+            const confirmButton = document.getElementById('confirm-recording');
+            
+            let isRecording = false;
+            let countdownInterval;
+            
+            // 开始录音按钮点击事件
+            startButton.addEventListener('click', function() {
+                if (!isRecording) {
+                    startCountdown();
+                } else {
+                    stopRecording();
+                }
+            });
+            
+            // 开始倒计时
+            function startCountdown() {
+                let seconds = 5;
+                const countdownElement = document.getElementById('countdown');
+                
+                countdownElement.textContent = seconds;
+                countdownElement.classList.add('active');
+                startButton.querySelector('i').style.display = 'none';
+                
+                countdownInterval = setInterval(() => {
+                    seconds--;
+                    countdownElement.textContent = seconds;
+                    
+                    if (seconds <= 0) {
+                        clearInterval(countdownInterval);
+                        countdownElement.classList.remove('active');
+                        startRecording();
+                    }
+                }, 1000);
+            }
+            
+            // 开始录音
+            function startRecording() {
+                isRecording = true;
+                startButton.classList.add('recording');
+                document.querySelector('.recording-status').textContent = '正在录音...';
+                
+                // 模拟录音过程
+                setTimeout(() => {
+                    const mockTranscriptions = [
+                        "记得小时候，我们家乡的山清水秀，空气特别好。每到春天，山上的野花开满了整个山坡，五颜六色特别漂亮。",
+                        "我们那里四季分明，夏天虽然有点热，但是树荫下乘凉特别舒服。冬天下雪的时候，整个村子都变成了白色的世界。",
+                        "家乡的小河清澈见底，小时候常常和小伙伴们一起去河里捉小鱼，那时候的自然环境真的很好，现在想想都觉得很珍贵。"
+                    ];
+                    
+                    const randomIndex = Math.floor(Math.random() * mockTranscriptions.length);
+                    transcriptionArea.textContent = mockTranscriptions[randomIndex];
+                    document.querySelector('.recording-status').textContent = '录音已完成';
+                }, 2000);
+            }
+            
+            // 停止录音
+            function stopRecording() {
+                isRecording = false;
+                startButton.classList.remove('recording');
+                startButton.querySelector('i').style.display = 'block';
+                clearInterval(countdownInterval);
+                countdown.classList.remove('active');
+                document.querySelector('.recording-status').textContent = '准备开始录音';
+            }
+            
+            // 打开录音面板
+            function openRecordingPanel() {
+                recordingPanel.classList.add('active');
+                backdrop.classList.add('active');
+                
+                // 设置面板标题为当前主题
+                document.querySelector('.recording-panel .panel-title').textContent = theme;
+            }
+            
+            // 关闭录音面板
+            function closeRecordingPanel() {
+                recordingPanel.classList.remove('active');
+                backdrop.classList.remove('active');
+                
+                // 重置转录区域
+                transcriptionArea.textContent = "等待识别录音文本......";
+                
+                // 停止录音
+                stopRecording();
+            }
+            
+            speechButton.addEventListener('click', function() {
+                if (!isRecording) {
+                    // 打开录音面板
+                    openRecordingPanel();
+                }
+            });
+            
+            // 关闭面板按钮
+            closePanel.addEventListener('click', closeRecordingPanel);
+            
+            // 点击背景遮罩关闭面板
+            backdrop.addEventListener('click', closeRecordingPanel);
+            
+            // 换一个灵感按钮
+            document.querySelector('.action-button').addEventListener('click', function() {
+                // 这里可以添加获取新灵感的逻辑
+                const newMessages = [
+                    `在"${theme}"方面，有什么您希望后代了解或记住的重要经验或教训？`,
+                    `关于"${theme}"，是否有一个特别的人物对您产生了重大影响？请讲述这段关系。`
+                ];
+                
+                // 随机选择一个新的灵感提示
+                const randomIndex = Math.floor(Math.random() * newMessages.length);
+                aiMessage.textContent = newMessages[randomIndex];
+                
+                // 添加一个简单的过渡效果
+                aiMessage.style.opacity = '0';
+                setTimeout(() => {
+                    aiMessage.style.opacity = '1';
+                }, 300);
+            });
+            
+            // 上传照片按钮事件
+            document.getElementById('upload-photo').addEventListener('click', function() {
+                // 创建文件输入元素
+                const fileInput = document.createElement('input');
+                fileInput.type = 'file';
+                fileInput.accept = 'image/*';
+                
+                // 监听文件选择事件
+                fileInput.addEventListener('change', function(e) {
+                    if (e.target.files && e.target.files[0]) {
+                        const reader = new FileReader();
+                        
+                        reader.onload = function(event) {
+                            // 设置上传的照片
+                            const uploadedPhoto = document.getElementById('uploaded-photo');
+                            uploadedPhoto.src = event.target.result;
+                            
+                            // 显示照片区域
+                            document.getElementById('photo-display').style.display = 'block';
+                            
+                            // 隐藏照片上传提示
+                            document.getElementById('photo-upload-prompt').style.display = 'none';
+                            
+                            // 显示照片描述提示，询问用户是否要为照片添加描述
+                            document.getElementById('photo-description-prompt').style.display = 'block';
+                            
+                            // 等待图片加载完成后滚动
+                            uploadedPhoto.onload = function() {
+                                // 滚动到照片底部
+                                const photoBottom = document.getElementById('photo-display').getBoundingClientRect().bottom;
+                                window.scrollTo({
+                                    top: window.scrollY + photoBottom - window.innerHeight + 20,
+                                    behavior: 'smooth'
+                                });
+                                
+                                // 然后再滚动到描述提示
+                                setTimeout(() => {
+                                    document.getElementById('photo-description-prompt').scrollIntoView({ 
+                                        behavior: 'smooth',
+                                        block: 'center' 
+                                    });
+                                }, 500);
+                            };
+                        }
+                        
+                        reader.readAsDataURL(e.target.files[0]);
+                    }
+                });
+                
+                // 触发文件选择对话框
+                fileInput.click();
+            });
+            
+            // 不需要上传照片按钮事件
+            document.getElementById('skip-upload').addEventListener('click', function() {
+                // 隐藏照片上传提示
+                document.getElementById('photo-upload-prompt').style.display = 'none';
+                
+                // 调用完成流程
+                finishDescription();
+            });
+            
+            // 添加照片描述口述按钮事件
+            document.getElementById('describe-photo').addEventListener('click', function() {
+                // 打开录音面板进行照片描述
+                openRecordingPanel();
+                
+                // 设置录音面板标题
+                document.querySelector('.panel-title').textContent = "为照片添加描述";
+                
+                // 更改录音状态文本
+                document.querySelector('.recording-status').textContent = "准备描述照片";
+                
+                // 设置一个标记，指示当前是为照片进行录音
+                window.isDescribingPhoto = true;
+            });
+            
+            // 不需要照片描述按钮事件
+            document.getElementById('skip-description').addEventListener('click', function() {
+                // 隐藏照片描述提示
+                document.getElementById('photo-description-prompt').style.display = 'none';
+                
+                // 调用完成流程
+                finishDescription();
+            });
+            
+            // 修改确认按钮事件，处理照片描述的情况
+            const originalConfirmEvent = confirmButton.onclick;
+            confirmButton.onclick = null;
+            
+            confirmButton.addEventListener('click', function() {
+                // 获取录音转录的内容
+                const transcribedText = transcriptionArea.textContent;
+                
+                // 如果有内容
+                if (transcribedText && transcribedText.trim() !== '' && 
+                    transcribedText !== '<!-- 转录文本将在这里显示 -->') {
+                    
+                    // 判断是普通口述还是照片描述
+                    if (window.isDescribingPhoto) {
+                        // 照片描述录音
+                        const photoDescriptionElement = document.getElementById('photo-description');
+                        
+                        // 检查是否已有内容，如果有则追加，没有则创建新内容
+                        if (photoDescriptionElement.style.display === 'block') {
+                            // 创建新段落并添加到现有内容下方
+                            const newParagraph = document.createElement('p');
+                            newParagraph.textContent = transcribedText;
+                            newParagraph.style.marginTop = '15px';
+                            newParagraph.style.paddingTop = '15px';
+                            newParagraph.style.borderTop = '1px solid var(--border-color)';
+                            photoDescriptionElement.appendChild(newParagraph);
+                        } else {
+                            // 首次录音，直接设置内容
+                            photoDescriptionElement.textContent = transcribedText;
+                            photoDescriptionElement.style.display = 'block';
+                        }
+                        
+                        // 重置标记
+                        window.isDescribingPhoto = false;
+                        
+                        // 关闭录音面板
+                        closeRecordingPanel();
+                        
+                        // 隐藏照片描述提示
+                        document.getElementById('photo-description-prompt').style.display = 'none';
+                        
+                        // 恢复面板标题
+                        document.querySelector('.panel-title').textContent = theme;
+                        
+                        // 创建照片描述继续提示，直接放在照片描述内容后面
+                        const continuePrompt = document.createElement('div');
+                        continuePrompt.id = 'photo-continue-prompt';
+                        continuePrompt.style.marginTop = '20px';
+                        continuePrompt.style.padding = '15px';
+                        continuePrompt.style.backgroundColor = 'var(--primary-light)';
+                        continuePrompt.style.borderRadius = 'var(--rounded-md)';
+                        continuePrompt.style.color = 'var(--text-secondary)';
+                        continuePrompt.style.borderLeft = '3px solid var(--primary)';
+                        
+                        // 创建提示文本
+                        const promptText = document.createElement('div');
+                        promptText.textContent = '照片描述已添加，要继续为这张照片补充更多细节吗？';
+                        continuePrompt.appendChild(promptText);
+                        
+                        // 创建按钮容器
+                        const actionContainer = document.createElement('div');
+                        actionContainer.style.display = 'flex';
+                        actionContainer.style.marginTop = '15px';
+                        actionContainer.style.gap = '10px';
+                        
+                        // 创建继续描述按钮
+                        const continueButton = document.createElement('button');
+                        continueButton.className = 'action-button';
+                        continueButton.innerHTML = '<i class="fas fa-microphone action-icon"></i>继续描述照片';
+                        continueButton.onclick = function() {
+                            // 移除此提示
+                            continuePrompt.remove();
+                            
+                            // 打开录音面板
+                            openRecordingPanel();
+                            
+                            // 设置录音面板标题
+                            document.querySelector('.panel-title').textContent = "继续为照片添加描述";
+                            
+                            // 更改录音状态文本
+                            document.querySelector('.recording-status').textContent = "继续描述照片";
+                            
+                            // 设置标记，指示当前是为照片继续录音
+                            window.isDescribingPhoto = true;
+                        };
+                        
+                        // 创建完成按钮
+                        const finishButton = document.createElement('button');
+                        finishButton.className = 'action-button';
+                        finishButton.innerHTML = '<i class="fas fa-check-circle action-icon"></i>描述完成';
+                        finishButton.onclick = function() {
+                            // 移除此提示
+                            continuePrompt.remove();
+                            
+                            // 调用完成流程
+                            finishDescription();
+                        };
+                        
+                        // 添加按钮到容器
+                        actionContainer.appendChild(continueButton);
+                        actionContainer.appendChild(finishButton);
+                        
+                        // 添加按钮容器到提示
+                        continuePrompt.appendChild(actionContainer);
+                        
+                        // 添加提示到照片描述后面
+                        photoDescriptionElement.after(continuePrompt);
+                        
+                        // 平滑滚动到继续提示
+                        continuePrompt.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    } else {
+                        // 普通口述录音
+                        const userResponseElement = document.getElementById('user-response');
+                        
+                        // 检查是否已有内容，如果有则追加，没有则创建新内容
+                        if (userResponseElement.style.display === 'block') {
+                            // 创建新段落并添加到现有内容下方
+                            const newParagraph = document.createElement('p');
+                            newParagraph.textContent = transcribedText;
+                            newParagraph.style.marginTop = '15px';
+                            newParagraph.style.paddingTop = '15px';
+                            newParagraph.style.borderTop = '1px solid var(--border-color)';
+                            userResponseElement.appendChild(newParagraph);
+                        } else {
+                            // 首次录音，直接设置内容
+                            userResponseElement.textContent = transcribedText;
+                            userResponseElement.style.display = 'block';
+                        }
+                        
+                        // 关闭录音面板
+                        closeRecordingPanel();
+                        
+                        // 隐藏语音按钮
+                        speechButton.style.display = "none";
+                        
+                        // 隐藏"换一个灵感"按钮
+                        const actionButtons = document.querySelector('.action-buttons');
+                        if (actionButtons) {
+                            actionButtons.style.display = "none";
+                        }
+                        
+                        // 1秒后显示AI助手的后续提问
+                        setTimeout(() => {
+                            const aiFollowupElement = document.getElementById('ai-followup');
+                            const followupText = document.getElementById('followup-text');
+                            const followupQuestions = [
+                                "您刚才分享了很棒的内容，还有更多想要补充的吗？",
+                                "您说的很有意思，想要继续分享更多细节吗？",
+                                "感谢您的分享！关于这个话题，您还有其他方面想要讲述吗？",
+                                "非常精彩的回忆，如果您还有更多想法，请继续口述。"
+                            ];
+                            
+                            // 随机选择一个后续问题
+                            const randomIndex = Math.floor(Math.random() * followupQuestions.length);
+                            followupText.textContent = followupQuestions[randomIndex];
+                            aiFollowupElement.style.display = 'block';
+                            
+                            // 平滑滚动到AI助手的提问
+                            aiFollowupElement.scrollIntoView({ behavior: 'smooth' });
+                        }, 1000);
+                    }
+                }
+            });
+            
+            // 添加继续口述按钮事件
+            document.getElementById('continue-speech').addEventListener('click', function() {
+                openRecordingPanel();
+            });
+            
+            // 添加结束口述按钮事件
+            document.getElementById('end-speech').addEventListener('click', function() {
+                // 隐藏AI跟进区域
+                document.getElementById('ai-followup').style.display = 'none';
+                
+                // 显示照片上传提示
+                document.getElementById('photo-upload-prompt').style.display = 'block';
+                
+                // 平滑滚动到照片上传提示
+                document.getElementById('photo-upload-prompt').scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            // 生成记忆汇总
+            function generateMemorySummary() {
+                // 获取用户的记忆内容
+                const userResponses = [];
+                
+                // 获取普通口述内容
+                const userResponseElement = document.getElementById('user-response');
+                if (userResponseElement && userResponseElement.style.display === 'block') {
+                    Array.from(userResponseElement.childNodes).forEach(node => {
+                        if (node.textContent && node.textContent.trim() !== '') {
+                            userResponses.push(node.textContent.trim());
+                        }
+                    });
+                    
+                    // 如果没有子节点，则取整个内容
+                    if (userResponses.length === 0 && userResponseElement.textContent.trim() !== '') {
+                        userResponses.push(userResponseElement.textContent.trim());
+                    }
+                }
+                
+                // 获取照片描述内容
+                const photoDescriptionElement = document.getElementById('photo-description');
+                if (photoDescriptionElement && photoDescriptionElement.style.display === 'block') {
+                    Array.from(photoDescriptionElement.childNodes).forEach(node => {
+                        if (node.textContent && node.textContent.trim() !== '') {
+                            userResponses.push("照片描述: " + node.textContent.trim());
+                        }
+                    });
+                    
+                    // 如果没有子节点，则取整个内容
+                    if (photoDescriptionElement.textContent.trim() !== '' && 
+                        !userResponses.some(text => text.includes("照片描述"))) {
+                        userResponses.push("照片描述: " + photoDescriptionElement.textContent.trim());
+                    }
+                }
+                
+                // 生成汇总内容
+                const summaryElement = document.getElementById('summary-content');
+                
+                // 当前主题
+                const theme = document.querySelector('.panel-title').textContent;
+                
+                let summaryHTML = `
+                    <p>AI助手花了十秒的时间整理汇总并保存了您的记忆，以下是汇总的内容：</p>
+                    <div style="margin: 15px 0; padding: 15px; background-color: var(--primary-lighter); border-radius: var(--rounded-md); border-left: 3px solid var(--primary);">
+                        <h3 style="margin-top: 0; color: var(--primary);">${theme}</h3>
+                `;
+                
+                // 添加用户内容
+                userResponses.forEach((response, index) => {
+                    if (response.includes("照片描述")) {
+                        summaryHTML += `<p style="margin-bottom: 10px;"><strong>📷 ${response}</strong></p>`;
+                    } else {
+                        summaryHTML += `<p style="margin-bottom: 10px;">${index + 1}. ${response}</p>`;
+                    }
+                });
+                
+                // 添加结尾
+                summaryHTML += `
+                    </div>
+                    <p>您的记忆已成功保存到记忆库。您随时可以在记忆库中查看和编辑这些珍贵的回忆。</p>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <button class="action-button" style="background-color: var(--primary); color: white; border: none; padding: 10px 20px;">
+                            <i class="fas fa-images action-icon"></i>
+                            前往记忆库
+                        </button>
+                    </div>
+                `;
+                
+                summaryElement.innerHTML = summaryHTML;
+            }
+            
+            // 定义处理结束流程的函数
+            function finishDescription() {
+                console.log("开始执行完成流程");
+                // 移除继续描述提示
+                const continuePrompt = document.getElementById('photo-continue-prompt');
+                if (continuePrompt) {
+                    continuePrompt.remove();
+                }
+                
+                // 显示完成消息
+                const completionMessage = document.getElementById('completion-message');
+                completionMessage.style.display = 'block';
+                
+                // 平滑滚动到完成消息
+                completionMessage.scrollIntoView({ behavior: 'smooth' });
+                
+                console.log("显示完成消息");
+                
+                // 显示AI思考动画
+                setTimeout(() => {
+                    console.log("显示思考动画");
+                    const aiThinking = document.getElementById('ai-thinking');
+                    aiThinking.style.display = 'block';
+                    
+                    // 10秒后显示汇总内容
+                    setTimeout(() => {
+                        console.log("显示汇总内容");
+                        // 隐藏思考动画
+                        aiThinking.style.display = 'none';
+                        
+                        // 生成汇总内容
+                        generateMemorySummary();
+                        
+                        // 显示汇总内容
+                        const aiSummary = document.getElementById('ai-summary');
+                        aiSummary.style.display = 'block';
+                        
+                        // 平滑滚动到汇总内容
+                        aiSummary.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }, 5000); // 缩短到5秒，方便测试
+                }, 1500);
+            }
+        });
+    </script>
+</body>
+</html>
