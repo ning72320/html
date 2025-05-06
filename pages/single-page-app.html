@@ -1,0 +1,1490 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI智能引导选择系统 - 情趣用品推荐助手</title>
+    <meta name="description" content="通过AI引导式聊天，为用户提供个性化情趣产品推荐，采用iOS风格的用户界面和自然交互体验。">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #FF6B6B;
+            --secondary-color: #FFD166;
+            --background-color: #f5f5f7;
+            --text-color: #1d1d1f;
+            --light-text: #86868b;
+            --card-bg: #ffffff;
+            --card-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            --border-radius: 12px;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            height: 100vh;
+        }
+
+        /* iOS 状态栏 */
+        .ios-status-bar {
+            height: 44px;
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .status-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .status-time {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .status-right {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .battery-icon {
+            width: 25px;
+            height: 12px;
+            border: 1px solid #000;
+            border-radius: 3px;
+            padding: 1px;
+            position: relative;
+        }
+
+        .battery-level {
+            height: 100%;
+            width: 70%;
+            background-color: #000;
+            border-radius: 1px;
+        }
+
+        /* iOS 导航栏 */
+        .ios-nav-bar {
+            height: 83px;
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--light-text);
+            text-decoration: none;
+            font-size: 10px;
+        }
+
+        .nav-item.active {
+            color: var(--primary-color);
+        }
+
+        .nav-item i {
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+
+        /* 内容区域 */
+        .content-area {
+            padding: 20px 16px;
+            height: calc(100vh - 44px);
+            overflow-y: auto;
+        }
+
+        /* 卡片样式 */
+        .ios-card {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            padding: 16px;
+            margin-bottom: 16px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .ios-card:active {
+            transform: scale(0.98);
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.03);
+        }
+
+        /* 按钮样式 */
+        .ios-button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 16px;
+            font-weight: 600;
+            font-size: 17px;
+            width: 100%;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .ios-button:active {
+            background-color: #e05e5e;
+            transform: scale(0.98);
+        }
+
+        .ios-button.secondary {
+            background-color: #e0e0e6;
+            color: var(--text-color);
+        }
+
+        /* 进度条样式 */
+        .progress-container {
+            width: 100%;
+            height: 8px;
+            background-color: #e0e0e6;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 8px 0;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: var(--primary-color);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        /* 选项卡片样式 */
+        .option-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 12px;
+            box-shadow: var(--card-shadow);
+            transition: all 0.2s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option-card:active {
+            background-color: #f9f9f9;
+        }
+
+        .option-card.selected {
+            border: 2px solid var(--primary-color);
+            box-shadow: 0 0 0 1px var(--primary-color);
+        }
+
+        .option-card .check-mark {
+            color: var(--primary-color);
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .option-card.selected .check-mark {
+            opacity: 1;
+        }
+
+        /* 波纹效果 */
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            transform: scale(0);
+            animation: ripple 0.6s linear;
+            background-color: rgba(255, 107, 107, 0.3);
+        }
+
+        @keyframes ripple {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        /* 结果页样式 */
+        .result-product {
+            display: flex;
+            margin-bottom: 20px;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+        }
+
+        .product-image {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+        }
+
+        .product-info {
+            flex: 1;
+            padding: 12px;
+            background-color: white;
+        }
+
+        .match-score {
+            display: inline-block;
+            padding: 4px 8px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        /* 页面过渡动画 */
+        .view {
+            display: none;
+            animation: fadeIn 0.3s ease forwards;
+        }
+
+        .view.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* 响应式调整 */
+        @media (min-width: 640px) {
+            .content-area {
+                max-width: 640px;
+                margin: 0 auto;
+            }
+        }
+
+        /* 聊天界面样式 */
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 0;
+        }
+
+        .message {
+            display: flex;
+            margin-bottom: 24px;
+        }
+
+        .message.user {
+            justify-content: flex-end;
+        }
+
+        .message.ai {
+            justify-content: flex-start;
+        }
+
+        .message-content {
+            max-width: 80%;
+            padding: 14px 18px;
+            border-radius: 18px;
+            font-size: 16px;
+            line-height: 1.5;
+            position: relative;
+        }
+
+        .user .message-content {
+            background-color: var(--primary-color);
+            color: white;
+            border-bottom-right-radius: 4px;
+            margin-right: 10px;
+        }
+
+        .ai .message-content {
+            background-color: #e0e0e6;
+            color: var(--text-color);
+            border-bottom-left-radius: 4px;
+            margin-left: 10px;
+        }
+
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .ai .message-avatar {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .user .message-avatar {
+            background-color: #4a89dc;
+            color: white;
+        }
+
+        .chat-input-container {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-top: 1px solid #e0e0e6;
+            margin-top: 10px;
+        }
+
+        .chat-input {
+            flex: 1;
+            border: 1px solid #e0e0e6;
+            border-radius: 24px;
+            padding: 12px 16px;
+            font-size: 15px;
+            outline: none;
+            background-color: white;
+        }
+
+        .chat-send-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 42px;
+            height: 42px;
+            margin-left: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .chat-send-btn:disabled {
+            background-color: #e0e0e6;
+            color: #999;
+        }
+
+        .quick-reply {
+            display: inline-block;
+            background-color: white;
+            border: 1px solid #e0e0e6;
+            border-radius: 18px;
+            padding: 12px 18px;
+            margin: 8px 8px 8px 0;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            font-weight: 500;
+        }
+
+        .quick-reply:hover, .quick-reply:active {
+            background-color: #f5f5f7;
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .quick-replies-container {
+            display: flex;
+            flex-wrap: wrap;
+            margin-top: 20px;
+            padding-left: 46px;
+        }
+
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            margin-top: 5px;
+            margin-left: 46px;
+            color: var(--light-text);
+            font-size: 14px;
+        }
+
+        .typing-dots {
+            display: flex;
+            margin-left: 8px;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--light-text);
+            margin-right: 3px;
+            animation: typingAnimation 1.4s infinite ease-in-out;
+        }
+
+        .typing-dot:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typingAnimation {
+            0%, 60%, 100% {
+                transform: translateY(0);
+                opacity: 0.6;
+            }
+            30% {
+                transform: translateY(-5px);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- iOS状态栏 -->
+    <div class="ios-status-bar">
+        <div class="status-left">
+            <span class="status-time">09:41</span>
+        </div>
+        <div class="status-right">
+            <div class="signal-icon">
+                <i class="fas fa-signal"></i>
+            </div>
+            <div class="wifi-icon">
+                <i class="fas fa-wifi"></i>
+            </div>
+            <div class="battery-icon">
+                <div class="battery-level"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 内容区域 -->
+    <div class="content-area">
+        <!-- 进度指示 -->
+        <div class="mb-6">
+            <div class="flex items-center justify-between mb-2">
+                <h1 class="text-xl font-bold" id="page-title">欢迎使用AI选择助手</h1>
+                <div class="progress-text text-sm text-gray-600">已收集 0% 需求信息</div>
+            </div>
+            <div class="progress-container">
+                <div class="progress-bar" style="width: 0%;"></div>
+            </div>
+            <p class="text-gray-600 text-sm mt-2" id="page-subtitle">让AI帮您找到最适合的产品</p>
+        </div>
+        
+        <!-- 欢迎页视图 -->
+        <div class="view active" id="welcome-view">
+            <div class="welcome-content flex flex-col items-center justify-center py-8">
+                <div class="welcome-icon mb-8 text-center">
+                    <i class="fas fa-lightbulb text-6xl text-pink-500"></i>
+                </div>
+                
+                <h2 class="text-2xl font-bold mb-4 text-center">智能决策助手</h2>
+                <p class="text-gray-600 mb-8 text-center px-4">通过自然对话，让AI为您推荐最适合的产品</p>
+                
+                <div class="features w-full px-4 mb-8">
+                    <div class="feature flex items-start mb-4">
+                        <div class="feature-icon text-pink-500 mr-3">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <div class="feature-text">
+                            <h3 class="font-semibold">AI智能推荐</h3>
+                            <p class="text-sm text-gray-600">根据您的偏好自动调整决策权重</p>
+                        </div>
+                    </div>
+                    
+                    <div class="feature flex items-start mb-4">
+                        <div class="feature-icon text-pink-500 mr-3">
+                            <i class="fas fa-comments"></i>
+                        </div>
+                        <div class="feature-text">
+                            <h3 class="font-semibold">聊天式交互</h3>
+                            <p class="text-sm text-gray-600">通过自然对话了解您的需求</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="ios-button start-btn" id="start-chat-btn">开始对话</button>
+            </div>
+        </div>
+        
+        <!-- 聊天视图 -->
+        <div class="view" id="chat-view">
+            <div class="chat-container">
+                <div class="chat-messages" id="chat-messages">
+                    <!-- 消息将通过JS动态加载 -->
+                </div>
+                
+                <div class="typing-indicator" id="typing-indicator" style="display: none;">
+                    <span>AI正在输入</span>
+                    <div class="typing-dots">
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                    </div>
+                </div>
+                
+                <div class="quick-replies-container" id="quick-replies">
+                    <!-- 快速回复选项将通过JS动态加载 -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- 决策树视图 -->
+        <div class="view" id="decision-view">
+            <div class="decision-tree-container">
+                <!-- 动态加载选项 -->
+            </div>
+            
+            <div class="decision-controls mt-8 flex justify-between">
+                <button class="ios-button secondary w-5/12" id="back-btn">
+                    <i class="fas fa-arrow-left mr-2"></i> 上一步
+                </button>
+                <button class="ios-button w-5/12" id="next-btn">
+                    下一步 <i class="fas fa-arrow-right ml-2"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- 结果视图 -->
+        <div class="view" id="results-view">
+            <div class="mb-6">
+                <h2 class="text-xl font-bold mb-4">您的个性化推荐</h2>
+                <p class="text-gray-600 text-sm">基于您的偏好，我们推荐以下产品</p>
+            </div>
+            
+            <div class="results-container">
+                <!-- 结果将通过JS动态加载 -->
+            </div>
+            
+            <div class="mt-8">
+                <button class="ios-button mb-4" id="restart-btn">重新开始</button>
+                <button class="ios-button secondary" id="save-results-btn">保存结果</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 决策树数据
+        const decisionTree = {
+            nodes: [
+                {
+                    id: "motivation",
+                    question: "您想使用情趣产品的主要目的是什么？",
+                    options: [
+                        {text: "增进亲密关系", next: "relationship_goal", weight: 0.9},
+                        {text: "个人放松享受", next: "personal_goal", weight: 0.8},
+                        {text: "尝试新体验", next: "experience_goal", weight: 0.8},
+                        {text: "解决特定问题", next: "problem_goal", weight: 0.7}
+                    ]
+                },
+                {
+                    id: "relationship_goal",
+                    question: "您希望在亲密关系中实现什么目标？",
+                    options: [
+                        {text: "增加互动趣味性", next: "product_type", weight: 0.9},
+                        {text: "提升亲密感受", next: "product_type", weight: 0.8},
+                        {text: "改善沟通体验", next: "product_type", weight: 0.7},
+                        {text: "突破关系瓶颈", next: "product_type", weight: 0.8}
+                    ]
+                },
+                {
+                    id: "personal_goal",
+                    question: "个人放松享受方面，您更看重什么？",
+                    options: [
+                        {text: "舒适的自我呵护", next: "product_type", weight: 0.9},
+                        {text: "探索身体敏感", next: "product_type", weight: 0.8},
+                        {text: "减轻压力释放", next: "product_type", weight: 0.7},
+                        {text: "提升愉悦体验", next: "product_type", weight: 0.8}
+                    ]
+                },
+                {
+                    id: "experience_goal",
+                    question: "在尝试新体验方面，您期待什么？",
+                    options: [
+                        {text: "安全温和的入门", next: "product_type", weight: 0.9},
+                        {text: "多样化的感官刺激", next: "product_type", weight: 0.7},
+                        {text: "新颖的互动玩法", next: "product_type", weight: 0.8},
+                        {text: "渐进式的探索", next: "product_type", weight: 0.8}
+                    ]
+                },
+                {
+                    id: "problem_goal",
+                    question: "您希望解决哪方面的问题？",
+                    options: [
+                        {text: "改善亲密感受", next: "product_type", weight: 0.9},
+                        {text: "增强互动参与感", next: "product_type", weight: 0.8},
+                        {text: "提高敏感度", next: "product_type", weight: 0.7},
+                        {text: "降低敏感度", next: "product_type", weight: 0.6}
+                    ]
+                },
+                {
+                    id: "product_type",
+                    question: "基于您的需求，您对哪类产品更感兴趣？",
+                    options: [
+                        {text: "情趣内衣", next: "lingerie_type", weight: 0.8},
+                        {text: "震动按摩器", next: "vibrator_type", weight: 0.9},
+                        {text: "互动套装", next: "couple_type", weight: 0.7},
+                        {text: "辅助配件", next: "accessory_type", weight: 0.6}
+                    ]
+                },
+                {
+                    id: "lingerie_type",
+                    question: "您偏好哪种风格的情趣内衣？",
+                    options: [
+                        {text: "浪漫蕾丝风", next: "material", weight: 0.9},
+                        {text: "性感诱惑风", next: "material", weight: 0.8},
+                        {text: "甜美可爱风", next: "material", weight: 0.7},
+                        {text: "个性角色扮演", next: "material", weight: 0.6}
+                    ]
+                },
+                {
+                    id: "vibrator_type",
+                    question: "您对震动按摩器有什么偏好？",
+                    options: [
+                        {text: "小巧便携型", next: "material", weight: 0.9},
+                        {text: "多功能复合型", next: "material", weight: 0.8},
+                        {text: "远程控制型", next: "material", weight: 0.7},
+                        {text: "仿真体验型", next: "material", weight: 0.6}
+                    ]
+                },
+                {
+                    id: "couple_type",
+                    question: "作为互动套装，您注重哪方面？",
+                    options: [
+                        {text: "同步体验", next: "material", weight: 0.9},
+                        {text: "远程互动", next: "material", weight: 0.8},
+                        {text: "角色游戏", next: "material", weight: 0.7},
+                        {text: "多重刺激", next: "material", weight: 0.6}
+                    ]
+                },
+                {
+                    id: "accessory_type",
+                    question: "在辅助配件中，您优先考虑什么？",
+                    options: [
+                        {text: "舒适辅助道具", next: "material", weight: 0.9},
+                        {text: "情趣精油/润滑", next: "material", weight: 0.8},
+                        {text: "情侣互动游戏", next: "material", weight: 0.7},
+                        {text: "环境氛围营造", next: "material", weight: 0.6}
+                    ]
+                },
+                {
+                    id: "material",
+                    question: "您偏好的材质类型是？",
+                    options: [
+                        {text: "医用硅胶", next: "features", weight: 0.9},
+                        {text: "高密度ABS", next: "features", weight: 0.7},
+                        {text: "亲肤TPE", next: "features", weight: 0.8},
+                        {text: "特殊绒面", next: "features", weight: 0.6}
+                    ]
+                },
+                {
+                    id: "features",
+                    question: "您还关注哪些附加功能？",
+                    options: [
+                        {text: "完全防水", next: "results", weight: 0.8},
+                        {text: "静音设计", next: "results", weight: 0.9},
+                        {text: "充电便捷", next: "results", weight: 0.7},
+                        {text: "小巧便携", next: "results", weight: 0.6},
+                        {text: "智能互联", next: "results", weight: 0.5}
+                    ]
+                }
+            ]
+        };
+        
+        // 示例产品数据
+        const productData = [
+            {
+                id: 1,
+                name: "彩虹雨露 - 高级触感震动体验",
+                description: "医用级硅胶，12种震动模式，IPX7防水",
+                price: "¥399",
+                image: "https://images.unsplash.com/photo-1615963244664-5b845b2025ee?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+                matchScore: 98,
+                tags: ["震动按摩器", "医用硅胶", "多段可调", "静音设计"]
+            },
+            {
+                id: 2,
+                name: "浪漫时光 - 情侣互动体验套装",
+                description: "APP互动控制，双人同步，亲肤材质",
+                price: "¥599",
+                image: "https://images.unsplash.com/photo-1583107741026-59952844ddb3?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+                matchScore: 92,
+                tags: ["互动套装", "亲肤TPE", "互动APP联动", "智能互联"]
+            },
+            {
+                id: 3,
+                name: "初体验 - 新手入门套装",
+                description: "简单操作，温和体验，隐私包装发货",
+                price: "¥299",
+                image: "https://images.unsplash.com/photo-1513346940221-6f673d962e97?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+                matchScore: 85,
+                tags: ["震动按摩器", "医用硅胶", "入门级", "温和渐进"]
+            },
+            {
+                id: 4,
+                name: "魅惑蕾丝 - 性感透视情趣内衣",
+                description: "舒适面料，透视设计，突显曲线美",
+                price: "¥199",
+                image: "https://images.unsplash.com/photo-1618075254960-0b6598052992?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+                matchScore: 90,
+                tags: ["情趣内衣", "性感诱惑风", "舒适面料", "突显曲线"]
+            },
+            {
+                id: 5,
+                name: "甜心精油 - 按摩润滑二合一",
+                description: "天然植物精华，温和滋润，可食用级别",
+                price: "¥159",
+                image: "https://images.unsplash.com/photo-1608571423927-23a2ca2801c8?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+                matchScore: 88,
+                tags: ["辅助配件", "情趣精油/润滑", "天然材质", "温和滋润"]
+            }
+        ];
+        
+        // 聊天对话流程配置
+        const chatFlow = [
+            {
+                id: "greeting",
+                aiMessage: "您好！我是您的私人情趣体验顾问。为了帮您找到最合适的产品，我想了解一下您的真实需求。请问您想使用情趣产品的主要目的是什么呢？",
+                quickReplies: ["增进亲密关系", "个人放松享受", "尝试新体验", "解决特定问题"],
+                nextState: "motivation_selected"
+            },
+            {
+                id: "motivation_selected",
+                aiResponses: {
+                    "增进亲密关系": "增进亲密关系是很美好的目标。能具体分享一下，您希望在亲密关系中实现什么样的改变或提升吗？",
+                    "个人放松享受": "自我放松和享受是很健康的需求。在个人放松享受方面，您更看重哪些体验呢？",
+                    "尝试新体验": "探索新体验是人类的天性。关于尝试新体验，您有什么特别期待的吗？",
+                    "解决特定问题": "理解您的需求。能否告诉我您希望解决哪方面的问题，这样我能更精准地推荐合适的产品。"
+                },
+                quickRepliesMap: {
+                    "增进亲密关系": ["增加互动趣味性", "提升亲密感受", "改善沟通体验", "突破关系瓶颈"],
+                    "个人放松享受": ["舒适的自我呵护", "探索身体敏感", "减轻压力释放", "提升愉悦体验"],
+                    "尝试新体验": ["安全温和的入门", "多样化的感官刺激", "新颖的互动玩法", "渐进式的探索"],
+                    "解决特定问题": ["改善亲密感受", "增强互动参与感", "提高敏感度", "降低敏感度"]
+                },
+                collectNodeId: "motivation",
+                nextState: "goal_selected"
+            },
+            {
+                id: "goal_selected",
+                aiResponses: {
+                    "增加互动趣味性": "为关系增添趣味是很棒的想法。基于您的需求，您对哪类产品更感兴趣呢？",
+                    "提升亲密感受": "提升亲密感受能让关系更加和谐。您对以下哪类产品更感兴趣？",
+                    "改善沟通体验": "通过适当的产品确实能改善沟通。您对哪类产品更感兴趣？",
+                    "突破关系瓶颈": "突破关系瓶颈需要合适的方式。您对哪类产品更感兴趣？",
+                    
+                    "舒适的自我呵护": "自我呵护是一种尊重自己的表现。您对哪类产品更感兴趣？",
+                    "探索身体敏感": "了解自己的身体是很健康的事情。您对哪类产品更感兴趣？",
+                    "减轻压力释放": "释放压力对身心健康都很重要。您对哪类产品更感兴趣？",
+                    "提升愉悦体验": "提升愉悦感能让生活更加美好。您对哪类产品更感兴趣？",
+                    
+                    "安全温和的入门": "安全温和的体验是很好的起点。您对哪类产品更感兴趣？",
+                    "多样化的感官刺激": "多样化的感官体验能带来新鲜感。您对哪类产品更感兴趣？",
+                    "新颖的互动玩法": "尝试新颖的互动方式很有趣。您对哪类产品更感兴趣？",
+                    "渐进式的探索": "渐进式探索是很明智的选择。您对哪类产品更感兴趣？",
+                    
+                    "改善亲密感受": "针对改善亲密感受，您对哪类产品更感兴趣？",
+                    "增强互动参与感": "提高互动参与感能增进关系。您对哪类产品更感兴趣？",
+                    "提高敏感度": "关于提高敏感度的需求，您对哪类产品更感兴趣？",
+                    "降低敏感度": "针对降低敏感度的需求，您对哪类产品更感兴趣？"
+                },
+                quickRepliesMap: {
+                    "default": ["情趣内衣", "震动按摩器", "互动套装", "辅助配件"]
+                },
+                collectNodeId: function(userResponse) {
+                    // 根据用户回复确定收集的节点ID
+                    if (["增加互动趣味性", "提升亲密感受", "改善沟通体验", "突破关系瓶颈"].includes(userResponse)) {
+                        return "relationship_goal";
+                    } else if (["舒适的自我呵护", "探索身体敏感", "减轻压力释放", "提升愉悦体验"].includes(userResponse)) {
+                        return "personal_goal";
+                    } else if (["安全温和的入门", "多样化的感官刺激", "新颖的互动玩法", "渐进式的探索"].includes(userResponse)) {
+                        return "experience_goal";
+                    } else if (["改善亲密感受", "增强互动参与感", "提高敏感度", "降低敏感度"].includes(userResponse)) {
+                        return "problem_goal";
+                    }
+                    return null;
+                },
+                nextState: "product_type_selected"
+            },
+            {
+                id: "product_type_selected",
+                aiResponses: {
+                    "情趣内衣": "情趣内衣是增添情趣的绝佳选择。您偏好哪种风格的情趣内衣呢？",
+                    "震动按摩器": "震动按摩器是很受欢迎的选择。您对震动按摩器有什么偏好呢？",
+                    "互动套装": "互动套装能带来丰富的体验。作为互动套装，您注重哪方面呢？",
+                    "辅助配件": "辅助配件能让体验更加丰富。在辅助配件中，您优先考虑什么？"
+                },
+                quickRepliesMap: {
+                    "情趣内衣": ["浪漫蕾丝风", "性感诱惑风", "甜美可爱风", "个性角色扮演"],
+                    "震动按摩器": ["小巧便携型", "多功能复合型", "远程控制型", "仿真体验型"],
+                    "互动套装": ["同步体验", "远程互动", "角色游戏", "多重刺激"],
+                    "辅助配件": ["舒适辅助道具", "情趣精油/润滑", "情侣互动游戏", "环境氛围营造"]
+                },
+                collectNodeId: "product_type",
+                nextState: "product_detail_selected"
+            },
+            {
+                id: "product_detail_selected",
+                aiResponses: {
+                    "浪漫蕾丝风": "浪漫蕾丝能带来优雅的气质。关于材质，您有什么偏好吗？",
+                    "性感诱惑风": "性感诱惑风格能增添神秘感。您对材质有什么要求？",
+                    "甜美可爱风": "甜美可爱的风格充满活力。您对材质有什么偏好？",
+                    "个性角色扮演": "角色扮演能带来全新体验。材质方面您有什么考虑？",
+                    
+                    "小巧便携型": "小巧便携的产品使用更加灵活。您对材质有什么偏好？",
+                    "多功能复合型": "多功能产品能带来丰富体验。您对材质有什么要求？",
+                    "远程控制型": "远程控制增加了更多可能性。材质方面您偏好什么？",
+                    "仿真体验型": "仿真体验需要精选材质。您对材质有什么偏好？",
+                    
+                    "同步体验": "同步体验能增进默契。材质方面您有什么考虑？",
+                    "远程互动": "远程互动打破了空间限制。您对材质有什么偏好？",
+                    "角色游戏": "角色游戏能激发想象力。材质方面您考虑什么？",
+                    "多重刺激": "多重刺激带来丰富感受。您对材质有什么要求？",
+                    
+                    "舒适辅助道具": "舒适是体验的基础。您对材质有什么偏好？",
+                    "情趣精油/润滑": "优质的精油/润滑能提升体验。您偏好哪种材质？",
+                    "情侣互动游戏": "互动游戏增添趣味。材质方面您有什么考虑？",
+                    "环境氛围营造": "氛围营造能让体验更完整。关于材质您有什么偏好？"
+                },
+                quickRepliesMap: {
+                    "default": ["医用硅胶", "高密度ABS", "亲肤TPE", "特殊绒面"]
+                },
+                collectNodeId: function(userResponse) {
+                    // 根据用户回复确定收集的节点ID
+                    if (["浪漫蕾丝风", "性感诱惑风", "甜美可爱风", "个性角色扮演"].includes(userResponse)) {
+                        return "lingerie_type";
+                    } else if (["小巧便携型", "多功能复合型", "远程控制型", "仿真体验型"].includes(userResponse)) {
+                        return "vibrator_type";
+                    } else if (["同步体验", "远程互动", "角色游戏", "多重刺激"].includes(userResponse)) {
+                        return "couple_type";
+                    } else if (["舒适辅助道具", "情趣精油/润滑", "情侣互动游戏", "环境氛围营造"].includes(userResponse)) {
+                        return "accessory_type";
+                    }
+                    return null;
+                },
+                nextState: "material_selected"
+            },
+            {
+                id: "material_selected",
+                aiResponses: {
+                    "医用硅胶": "医用硅胶是非常安全的材质，触感柔软接近真实。您还关注哪些附加功能呢？",
+                    "高密度ABS": "高密度ABS材质坚固耐用，振动传递效果好。您还关注哪些附加功能呢？",
+                    "亲肤TPE": "亲肤TPE材质柔软舒适，触感极佳。您还关注哪些附加功能呢？",
+                    "特殊绒面": "特殊绒面材质带来独特的肌肤触感。您还关注哪些附加功能呢？"
+                },
+                quickReplies: ["完全防水", "静音设计", "充电便捷", "小巧便携", "智能互联"],
+                collectNodeId: "material",
+                nextState: "features_selected"
+            },
+            {
+                id: "features_selected",
+                aiMessage: "非常感谢您的分享！基于您的需求和偏好，我们已经为您筛选出最匹配的产品。请查看为您精心推荐的产品，希望能给您带来美好体验。",
+                collectNodeId: "features",
+                nextState: "complete"
+            },
+            {
+                id: "complete",
+                aiMessage: "如果您对推荐有任何疑问，或者需要其他方面的建议，随时可以告诉我。祝您使用愉快！",
+                action: "showResults"
+            }
+        ];
+        
+        // 应用状态
+        let appState = {
+            currentView: 'welcome-view',
+            currentNodeId: 'scene',
+            previousNodes: [],
+            selectedOptions: {},
+            chatState: "greeting",
+            chatHistory: []
+        };
+        
+        // DOM元素缓存
+        const elements = {
+            views: {
+                welcome: document.getElementById('welcome-view'),
+                chat: document.getElementById('chat-view'),
+                decision: document.getElementById('decision-view'),
+                results: document.getElementById('results-view')
+            },
+            buttons: {
+                startChat: document.getElementById('start-chat-btn'),
+                back: document.getElementById('back-btn'),
+                next: document.getElementById('next-btn'),
+                restart: document.getElementById('restart-btn'),
+                saveResults: document.getElementById('save-results-btn')
+            },
+            container: document.querySelector('.decision-tree-container'),
+            resultsContainer: document.querySelector('.results-container'),
+            progressBar: document.querySelector('.progress-bar'),
+            progressText: document.querySelector('.progress-text'),
+            pageTitle: document.getElementById('page-title'),
+            pageSubtitle: document.getElementById('page-subtitle'),
+            chatMessages: document.getElementById('chat-messages'),
+            quickReplies: document.getElementById('quick-replies'),
+            typingIndicator: document.getElementById('typing-indicator')
+        };
+        
+        // 当前时间
+        function updateClock() {
+            const now = new Date();
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            const timeElements = document.querySelectorAll('.status-time');
+            timeElements.forEach(el => {
+                el.textContent = `${hours}:${minutes}`;
+            });
+        }
+        
+        // 初始化应用
+        function initializeApp() {
+            // 更新时间
+            updateClock();
+            setInterval(updateClock, 60000);
+            
+            // 绑定事件
+            bindEventListeners();
+        }
+        
+        // 绑定事件监听器
+        function bindEventListeners() {
+            // 开始对话按钮
+            elements.buttons.startChat.addEventListener('click', () => {
+                navigateToView('chat-view');
+                startChatFlow();
+            });
+            
+            // 后退按钮
+            elements.buttons.back.addEventListener('click', goToPreviousNode);
+            
+            // 下一步按钮
+            elements.buttons.next.addEventListener('click', () => {
+                const selectedOption = document.querySelector('.option-card.selected');
+                if (selectedOption) {
+                    const nextNodeId = selectedOption.getAttribute('data-next');
+                    if (nextNodeId) {
+                        if (nextNodeId === 'results') {
+                            showResults();
+                        } else {
+                            navigateToNode(nextNodeId);
+                        }
+                    }
+                } else {
+                    alert('请先选择一个选项');
+                }
+            });
+            
+            // 重新开始按钮
+            elements.buttons.restart.addEventListener('click', () => {
+                resetApp();
+                navigateToView('chat-view');
+                startChatFlow();
+            });
+            
+            // 保存结果按钮
+            elements.buttons.saveResults.addEventListener('click', () => {
+                alert('结果已保存到您的收藏夹');
+            });
+        }
+        
+        // 切换视图
+        function navigateToView(viewId) {
+            // 隐藏所有视图
+            Object.values(elements.views).forEach(view => view.classList.remove('active'));
+            
+            // 显示指定视图
+            document.getElementById(viewId).classList.add('active');
+            
+            // 更新应用状态
+            appState.currentView = viewId;
+            
+            // 更新页面标题
+            updatePageTitleForView(viewId);
+        }
+        
+        // 更新页面标题
+        function updatePageTitleForView(viewId) {
+            switch(viewId) {
+                case 'welcome-view':
+                    elements.pageTitle.textContent = '欢迎使用AI选择助手';
+                    elements.pageSubtitle.textContent = '让AI帮您找到最适合的产品';
+                    break;
+                case 'chat-view':
+                    elements.pageTitle.textContent = 'AI智能对话';
+                    elements.pageSubtitle.textContent = '告诉我您的需求，我会为您推荐合适的产品';
+                    break;
+                case 'decision-view':
+                    elements.pageTitle.textContent = '选择偏好';
+                    elements.pageSubtitle.textContent = '请根据您的偏好进行选择，AI将为您量身定制推荐';
+                    break;
+                case 'results-view':
+                    elements.pageTitle.textContent = '推荐结果';
+                    elements.pageSubtitle.textContent = '基于您的偏好，我们为您精选了以下产品';
+                    break;
+            }
+        }
+        
+        // 开始聊天流程
+        function startChatFlow() {
+            // 清空聊天历史
+            appState.chatHistory = [];
+            elements.chatMessages.innerHTML = '';
+            
+            // 重置聊天状态
+            appState.chatState = 'greeting';
+            
+            // 重置选择记录
+            appState.selectedOptions = {};
+            
+            // 显示欢迎消息
+            const greetingFlow = findChatFlowById('greeting');
+            if (greetingFlow) {
+                showAIMessage(greetingFlow.aiMessage, () => {
+                    // 添加快速回复选项
+                    if (greetingFlow.quickReplies) {
+                        showQuickReplies(greetingFlow.quickReplies);
+                    }
+                });
+            }
+            
+            // 重置进度条
+            updateProgressBar();
+        }
+        
+        // 查找聊天流程配置
+        function findChatFlowById(id) {
+            return chatFlow.find(flow => flow.id === id);
+        }
+        
+        // 发送用户消息
+        function sendUserMessage(replyContent) {
+            if (!replyContent || replyContent.trim() === '') return;
+            
+            // 显示用户消息
+            addMessage('user', replyContent);
+            
+            // 清空快速回复
+            elements.quickReplies.innerHTML = '';
+            
+            // 显示AI正在输入
+            elements.typingIndicator.style.display = 'flex';
+            
+            // 处理用户输入并推进对话流程
+            setTimeout(() => {
+                processUserInput(replyContent);
+                elements.typingIndicator.style.display = 'none';
+            }, 1000);
+        }
+        
+        // 处理用户输入
+        function processUserInput(userInput) {
+            // 获取当前聊天流程
+            const currentFlow = findChatFlowById(appState.chatState);
+            if (!currentFlow) return;
+            
+            // 收集用户选择
+            if (currentFlow.collectNodeId) {
+                let nodeId;
+                if (typeof currentFlow.collectNodeId === 'function') {
+                    nodeId = currentFlow.collectNodeId(userInput);
+                } else {
+                    nodeId = currentFlow.collectNodeId;
+                }
+                
+                if (nodeId) {
+                    appState.selectedOptions[nodeId] = userInput;
+                    updateProgressBar();
+                }
+            }
+            
+            // 进入下一个状态
+            if (currentFlow.nextState) {
+                appState.chatState = currentFlow.nextState;
+                const nextFlow = findChatFlowById(appState.chatState);
+                
+                if (nextFlow) {
+                    // 根据用户输入选择AI回复
+                    let aiResponse;
+                    if (nextFlow.aiMessage) {
+                        aiResponse = nextFlow.aiMessage;
+                    } else if (nextFlow.aiResponses) {
+                        aiResponse = nextFlow.aiResponses[userInput] || nextFlow.aiResponses['default'];
+                    }
+                    
+                    if (aiResponse) {
+                        // 显示AI消息，并在完成后显示快速回复选项
+                        showAIMessage(aiResponse, () => {
+                            // 显示快速回复选项
+                            if (nextFlow.quickReplies) {
+                                showQuickReplies(nextFlow.quickReplies);
+                            } else if (nextFlow.quickRepliesMap) {
+                                let replies = nextFlow.quickRepliesMap[userInput] || nextFlow.quickRepliesMap['default'];
+                                if (replies) {
+                                    showQuickReplies(replies);
+                                }
+                            }
+                        });
+                    }
+                    
+                    // 执行特定动作
+                    if (nextFlow.action === 'showResults') {
+                        setTimeout(() => {
+                            showResults();
+                        }, 2000); // 给用户更多时间阅读AI的最终消息
+                    }
+                }
+            }
+        }
+        
+        // 添加消息到聊天界面
+        function addMessage(type, content) {
+            // 创建消息元素
+            const messageContainer = document.createElement('div');
+            messageContainer.className = `message ${type}`;
+            
+            const avatar = document.createElement('div');
+            avatar.className = 'message-avatar';
+            
+            if (type === 'ai') {
+                avatar.innerHTML = '<i class="fas fa-robot"></i>';
+            } else {
+                avatar.innerHTML = '<i class="fas fa-user"></i>';
+            }
+            
+            const messageContent = document.createElement('div');
+            messageContent.className = 'message-content';
+            messageContent.textContent = content;
+            
+            if (type === 'ai') {
+                messageContainer.appendChild(avatar);
+                messageContainer.appendChild(messageContent);
+            } else {
+                messageContainer.appendChild(messageContent);
+                messageContainer.appendChild(avatar);
+            }
+            
+            // 添加到聊天记录
+            elements.chatMessages.appendChild(messageContainer);
+            
+            // 保存到历史记录
+            appState.chatHistory.push({
+                type: type,
+                content: content
+            });
+            
+            // 滚动到底部
+            elements.chatMessages.scrollTop = elements.chatMessages.scrollHeight;
+        }
+        
+        // 显示AI消息带打字效果
+        function showAIMessage(message, quickRepliesCallback = null) {
+            // 添加消息框但内容为空
+            const messageContainer = document.createElement('div');
+            messageContainer.className = 'message ai';
+            
+            const avatar = document.createElement('div');
+            avatar.className = 'message-avatar';
+            avatar.innerHTML = '<i class="fas fa-robot"></i>';
+            
+            const messageContent = document.createElement('div');
+            messageContent.className = 'message-content';
+            messageContent.textContent = '';
+            
+            messageContainer.appendChild(avatar);
+            messageContainer.appendChild(messageContent);
+            
+            elements.chatMessages.appendChild(messageContainer);
+            elements.chatMessages.scrollTop = elements.chatMessages.scrollHeight;
+            
+            // 模拟打字效果
+            let i = 0;
+            const typingInterval = setInterval(() => {
+                if (i < message.length) {
+                    messageContent.textContent += message.charAt(i);
+                    elements.chatMessages.scrollTop = elements.chatMessages.scrollHeight;
+                    i++;
+                } else {
+                    clearInterval(typingInterval);
+                    
+                    // 保存到历史记录
+                    appState.chatHistory.push({
+                        type: 'ai',
+                        content: message
+                    });
+                    
+                    // 消息显示完成后，如果有快速回复回调，则执行
+                    if (quickRepliesCallback) {
+                        // 延迟500毫秒以确保用户有时间阅读完消息后再显示回复选项
+                        setTimeout(() => {
+                            quickRepliesCallback();
+                        }, 500);
+                    }
+                }
+            }, 30);
+        }
+        
+        // 显示快速回复选项
+        function showQuickReplies(replies) {
+            elements.quickReplies.innerHTML = '';
+            
+            replies.forEach(reply => {
+                const quickReplyBtn = document.createElement('div');
+                quickReplyBtn.className = 'quick-reply';
+                quickReplyBtn.textContent = reply;
+                
+                quickReplyBtn.addEventListener('click', () => {
+                    sendUserMessage(reply);
+                });
+                
+                elements.quickReplies.appendChild(quickReplyBtn);
+            });
+        }
+        
+        // 查找决策树节点
+        function findNodeById(nodeId) {
+            return decisionTree.nodes.find(node => node.id === nodeId);
+        }
+        
+        // 渲染决策树节点
+        function renderDecisionNode(node) {
+            if (!node) return;
+            
+            // 清空容器
+            elements.container.innerHTML = '';
+            
+            // 创建问题标题
+            const questionTitle = document.createElement('h2');
+            questionTitle.className = 'text-xl font-semibold mb-4';
+            questionTitle.textContent = node.question;
+            elements.container.appendChild(questionTitle);
+            
+            // 创建选项组
+            const optionGroup = document.createElement('div');
+            optionGroup.className = 'option-group';
+            
+            // 添加选项
+            node.options.forEach(option => {
+                const optionCard = document.createElement('div');
+                optionCard.className = 'option-card';
+                optionCard.setAttribute('data-next', option.next);
+                
+                optionCard.innerHTML = `
+                    <div class="option-text">${option.text}</div>
+                    <div class="check-mark"><i class="fas fa-check-circle"></i></div>
+                `;
+                
+                // 如果该选项已被选择，标记为选中状态
+                if (appState.selectedOptions[node.id] === option.text) {
+                    optionCard.classList.add('selected');
+                    optionCard.querySelector('.check-mark').style.opacity = '1';
+                }
+                
+                // 点击选项
+                optionCard.addEventListener('click', function() {
+                    createRippleEffect(event);
+                    toggleOptionSelection(this);
+                    
+                    // 存储用户选择
+                    appState.selectedOptions[node.id] = option.text;
+                });
+                
+                optionGroup.appendChild(optionCard);
+            });
+            
+            elements.container.appendChild(optionGroup);
+            updateProgressBar();
+        }
+        
+        // 创建波纹效果
+        function createRippleEffect(e) {
+            const button = e.target.closest('.option-card');
+            if (!button) return;
+            
+            const ripple = document.createElement('span');
+            ripple.classList.add('ripple');
+            button.appendChild(ripple);
+            
+            const rect = button.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            
+            ripple.style.width = ripple.style.height = `${size}px`;
+            ripple.style.left = `${e.clientX - rect.left - size / 2}px`;
+            ripple.style.top = `${e.clientY - rect.top - size / 2}px`;
+            
+            ripple.classList.add('active');
+            
+            setTimeout(() => {
+                ripple.remove();
+            }, 600);
+        }
+        
+        // 切换选项选中状态
+        function toggleOptionSelection(option) {
+            // 取消同级其他选项的选中状态
+            const optionGroup = option.closest('.option-group');
+            if (optionGroup) {
+                const siblingOptions = optionGroup.querySelectorAll('.option-card');
+                siblingOptions.forEach(opt => {
+                    opt.classList.remove('selected');
+                    const checkMark = opt.querySelector('.check-mark');
+                    if (checkMark) checkMark.style.opacity = '0';
+                });
+            }
+            
+            // 选中当前选项
+            option.classList.add('selected');
+            const checkMark = option.querySelector('.check-mark');
+            if (checkMark) checkMark.style.opacity = '1';
+        }
+        
+        // 更新进度条
+        function updateProgressBar() {
+            const totalNodes = decisionTree.nodes.length;
+            const completedNodes = Object.keys(appState.selectedOptions).length;
+            
+            if (totalNodes > 0) {
+                const progress = (completedNodes / totalNodes) * 100;
+                elements.progressBar.style.width = `${progress}%`;
+                elements.progressText.textContent = `已收集 ${Math.round(progress)}% 需求信息`;
+            }
+        }
+        
+        // 导航到指定节点
+        function navigateToNode(nodeId) {
+            const node = findNodeById(nodeId);
+            if (node) {
+                // 保存当前节点到历史
+                appState.previousNodes.push(appState.currentNodeId);
+                
+                // 更新当前节点
+                appState.currentNodeId = nodeId;
+                
+                // 渲染新节点
+                renderDecisionNode(node);
+            }
+        }
+        
+        // 返回上一节点
+        function goToPreviousNode() {
+            if (appState.previousNodes.length > 0) {
+                // 获取上一个节点ID
+                const previousNodeId = appState.previousNodes.pop();
+                
+                // 从选择记录中移除当前节点
+                delete appState.selectedOptions[appState.currentNodeId];
+                
+                // 更新当前节点
+                appState.currentNodeId = previousNodeId;
+                
+                // 渲染上一个节点
+                renderDecisionNode(findNodeById(previousNodeId));
+                
+                // 更新进度条
+                updateProgressBar();
+            } else {
+                // 如果没有历史记录，返回欢迎页
+                navigateToView('welcome-view');
+            }
+        }
+        
+        // 显示结果
+        function showResults() {
+            // 导航到结果视图
+            navigateToView('results-view');
+            
+            // 清空结果容器
+            elements.resultsContainer.innerHTML = '';
+            
+            // 根据选择生成推荐
+            const recommendations = generateRecommendations();
+            
+            // 渲染推荐结果
+            recommendations.forEach(product => {
+                const productEl = document.createElement('div');
+                productEl.className = 'result-product';
+                productEl.innerHTML = `
+                    <img src="${product.image}" alt="${product.name}" class="product-image">
+                    <div class="product-info">
+                        <div class="match-score">${product.matchScore}% 匹配</div>
+                        <h3 class="text-lg font-semibold mb-1">${product.name}</h3>
+                        <p class="text-sm text-gray-600 mb-2">${product.description}</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-lg font-semibold text-pink-500">${product.price}</span>
+                            <button class="text-white bg-pink-500 px-4 py-1 rounded-full text-sm">加入购物车</button>
+                        </div>
+                        <div class="tags mt-2 flex flex-wrap">
+                            ${product.tags.map(tag => `<span class="bg-gray-200 text-gray-700 text-xs px-2 py-1 rounded-full mr-1 mb-1">${tag}</span>`).join('')}
+                        </div>
+                    </div>
+                `;
+                
+                // 添加到购物车按钮
+                const addToCartBtn = productEl.querySelector('button');
+                addToCartBtn.addEventListener('click', () => {
+                    alert(`已添加 ${product.name} 到购物车`);
+                });
+                
+                elements.resultsContainer.appendChild(productEl);
+            });
+        }
+        
+        // 生成推荐
+        function generateRecommendations() {
+            // 在实际应用中，这里应该有基于用户选择的复杂算法
+            // 为演示，我们直接返回示例数据，并根据用户选择进行一些简单过滤
+            
+            // 对产品进行排序（根据与用户选择的匹配度）
+            return productData.sort((a, b) => b.matchScore - a.matchScore);
+        }
+        
+        // 重置应用
+        function resetApp() {
+            // 重置状态
+            appState = {
+                currentView: 'chat-view',
+                currentNodeId: 'scene',
+                previousNodes: [],
+                selectedOptions: {},
+                chatState: "greeting",
+                chatHistory: []
+            };
+            
+            // 清空聊天记录
+            elements.chatMessages.innerHTML = '';
+            elements.quickReplies.innerHTML = '';
+            
+            // 更新进度条
+            elements.progressBar.style.width = '0%';
+            elements.progressText.textContent = '已收集 0% 需求信息';
+        }
+        
+        // 初始化应用
+        document.addEventListener('DOMContentLoaded', initializeApp);
+    </script>
+</body>
+</html> 
